@@ -87,7 +87,7 @@ create index stores_geo_idx on stores (latitude, longitude);
 create type price_source as enum (
   'scrape',        -- pulled from the retailer
   'loyalty_sync',  -- pulled against a linked member account
-  'receipt_ocr',   -- read off a photographed receipt
+  'receipt',       -- transcribed from a receipt the shopper holds
   'user_report'    -- typed in by a user
 );
 
@@ -109,6 +109,39 @@ create table price_observations (
 create index price_obs_lookup_idx
   on price_observations (package_id, store_id, observed_at desc);
 create index price_obs_store_idx on price_observations (store_id, observed_at desc);
+
+-- ------------------------------------------------------------- receipts
+--
+-- A receipt is both a price source and a spending record, which is why it is
+-- stored rather than being turned into observations and discarded. Prices flow
+-- one way -- receipt lines produce `price_observations` -- so a corrected
+-- receipt can regenerate them, and spend history survives a price correction.
+
+create table receipts (
+  id            uuid primary key default uuid_generate_v4(),
+  store_id      uuid not null references stores (id) on delete restrict,
+  owner_id      uuid not null references auth.users (id) on delete cascade,
+  -- When the shopper checked out, not when they entered it.
+  purchased_at  timestamptz not null,
+  -- Original photo in Supabase storage; null for a hand-entered receipt.
+  image_path    text,
+  created_at    timestamptz not null default now()
+);
+
+create index receipts_owner_idx on receipts (owner_id, purchased_at desc);
+
+create table receipt_lines (
+  id                uuid primary key default uuid_generate_v4(),
+  receipt_id        uuid not null references receipts (id) on delete cascade,
+  package_id        uuid not null references packages (id) on delete restrict,
+  quantity          integer not null check (quantity > 0),
+  -- Price of one package, not the line total; the line total is derived so the
+  -- two can never disagree.
+  unit_price_cents  integer not null check (unit_price_cents >= 0),
+  created_at        timestamptz not null default now()
+);
+
+create index receipt_lines_receipt_idx on receipt_lines (receipt_id);
 
 -- The current price per (package, store, member/public), which is what every
 -- comparison reads. Kept as a view so ingestion stays append-only and the
@@ -152,3 +185,25 @@ create policy "authors may edit unverified packages" on packages
 
 create policy "signed-in users may report prices" on price_observations
   for insert to authenticated with check (auth.uid() = reported_by);
+
+-- Receipts are private. They are a record of what someone bought and when,
+-- which is the most sensitive data in the app; only the prices derived from
+-- them are public.
+alter table receipts enable row level security;
+alter table receipt_lines enable row level security;
+
+create policy "owners read their receipts" on receipts
+  for select to authenticated using (auth.uid() = owner_id);
+create policy "owners write their receipts" on receipts
+  for insert to authenticated with check (auth.uid() = owner_id);
+create policy "owners delete their receipts" on receipts
+  for delete to authenticated using (auth.uid() = owner_id);
+
+create policy "owners read their receipt lines" on receipt_lines
+  for select to authenticated using (
+    exists (select 1 from receipts r where r.id = receipt_id and r.owner_id = auth.uid())
+  );
+create policy "owners write their receipt lines" on receipt_lines
+  for insert to authenticated with check (
+    exists (select 1 from receipts r where r.id = receipt_id and r.owner_id = auth.uid())
+  );

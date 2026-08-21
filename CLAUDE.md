@@ -4,8 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository status
 
-Skeleton stage. The comparison path and the trip planner work end to end against local seed data;
-every other feature is a route stub. There is no Supabase project, no hosting, and no paid service anywhere in the
+Skeleton stage. Comparison, trip planning and receipt entry work end to end against a local catalog
+store; every other feature is a route stub. There is no Supabase project, no hosting, and no paid service anywhere in the
 loop -- keep it that way unless the user says otherwise.
 
 ## Project: CartWise
@@ -110,14 +110,26 @@ src/lib/repository.ts  the data boundary + the in-memory implementation
 src/lib/compare.ts     scanned package -> ranked options across brands, sizes, stores
 src/lib/geo.ts         straight-line distance, round-trip routing, driving cost
 src/lib/trip.ts        shopping list -> which stores to visit and what to buy at each
+src/lib/store.ts       the live catalog: seed + entered receipts, persisted, observable
+src/lib/useCatalog.ts  React binding for the above
 src/lib/supabase.ts    the single Supabase client (unused so far -- nothing is hosted)
 src/data/seed.ts       fabricated catalog and prices, shaped like the real tables
 src/routes/Scan.tsx    the comparison screen
-src/routes/ShoppingList.tsx  the trip planner; the rest of src/routes/ is stubs
+src/routes/ShoppingList.tsx  the trip planner
+src/routes/Receipts.tsx      receipt entry; the rest of src/routes/ is stubs
 supabase/migrations/   schema, applied in filename order -- never applied anywhere yet
 ```
 
 ## Working without a backend
+
+Screens must read the catalog through `useCatalog()`, never by constructing their own repository.
+`catalogStore` is the single source of truth, and it swaps the repository object on every mutation so
+`useSyncExternalStore` sees the change; a screen holding its own repository silently goes stale the
+moment a receipt is saved. Whatever a `useMemo` derives from the repository has to list it as a
+dependency for the same reason.
+
+Receipts are stored; price observations are derived from them on every rebuild, never stored
+alongside. That direction is what lets a corrected or deleted receipt correct the prices it produced.
 
 `CatalogRepository` in `src/lib/repository.ts` is the seam. UI and comparison logic are written
 against that interface only, never against seed arrays or a Supabase client, so the day a project
@@ -146,6 +158,17 @@ before they were rules:
 - `bestByValue()` settles score ties on price. Without that, the same package at a member and a
   public price scores identically whenever quality dominates, and the winner is whichever row came
   back first.
+
+## Price provenance
+
+`price_observations.source` describes the *evidence*, not how it was transcribed -- which is why the
+enum member is `receipt` rather than `receipt_ocr`. A hand-typed receipt and a photographed one are
+the same kind of claim about what a shelf price was.
+
+Freshest observation wins, and an exact timestamp tie is settled by source trust
+(scrape > loyalty_sync > receipt > user_report). Ties are routine because dates round, so a test that
+means to exercise supersession has to use a strictly newer timestamp or it silently exercises the
+tie-break instead.
 
 Distances are straight-line, scaled by `DETOUR_FACTOR`, and therefore optimistic -- deliberately, so
 the planner costs nothing to run. Replacing `drivingMiles`/`routeMiles` in `src/lib/geo.ts` with the

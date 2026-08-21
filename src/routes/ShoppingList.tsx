@@ -10,12 +10,11 @@
  */
 import { useMemo, useState } from 'react'
 import { formatCents, formatPerUnit } from '../lib/compare'
-import { createInMemoryRepository } from '../lib/repository'
 import { formatMiles, optimizeTrip, type TripPlan } from '../lib/trip'
+import { useCatalog } from '../lib/useCatalog'
 import * as seed from '../data/seed'
 
-const repo = createInMemoryRepository(seed)
-const CONCEPTS = repo.getConcepts()
+const CONCEPTS = seed.concepts
 
 const INITIAL_QUANTITIES: Record<string, number> = {
   'c-eggs': 2,
@@ -26,6 +25,7 @@ const INITIAL_QUANTITIES: Record<string, number> = {
 }
 
 export function ShoppingList() {
+  const repo = useCatalog()
   const [quantities, setQuantities] = useState(INITIAL_QUANTITIES)
   const [maxStores, setMaxStores] = useState(3)
   const [hasRalphsCard, setHasRalphsCard] = useState(false)
@@ -41,7 +41,7 @@ export function ShoppingList() {
           memberRetailerIds: hasRalphsCard ? ['r-ralphs'] : [],
         },
       ),
-    [quantities, maxStores, hasRalphsCard],
+    [repo, quantities, maxStores, hasRalphsCard],
   )
 
   function setQuantity(conceptId: string, quantity: number) {
@@ -176,7 +176,7 @@ export function ShoppingList() {
 }
 
 function storeLabel(store: { retailerId: string; address: string }): string {
-  const retailer = repo.getRetailer(store.retailerId)?.name ?? 'Store'
+  const retailer = seed.retailers.find((r) => r.id === store.retailerId)?.name ?? 'Store'
   // Two Ralphs in the seed, so the city is what tells them apart.
   const city = store.address.split(',').slice(-2, -1)[0]?.trim() ?? ''
   return city ? `${retailer} (${city})` : retailer

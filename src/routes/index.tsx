@@ -1,11 +1,13 @@
 /**
- * One route per feature domain. Scan and ShoppingList are implemented (against
- * seed data); the rest are stubs, present so the shape and navigation exist.
+ * One route per feature domain. Scan, ShoppingList and Receipts are implemented
+ * (against the local catalog store); the rest are stubs, present so the shape
+ * and navigation exist.
  * Styling is deliberately minimal -- design comes later.
  */
 
 export { Scan } from './Scan'
 export { ShoppingList } from './ShoppingList'
+export { Receipts } from './Receipts'
 
 interface StubProps {
   title: string
@@ -42,14 +44,6 @@ export function Community() {
   return (
     <Stub title="Community">
       Local threads for budgeting tips, deals, and store recommendations.
-    </Stub>
-  )
-}
-
-export function Receipts() {
-  return (
-    <Stub title="Receipts">
-      Photograph a receipt to refresh prices and record what was actually spent.
     </Stub>
   )
 }

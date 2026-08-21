@@ -17,12 +17,11 @@ import {
   isStale,
   type CompareOption,
 } from '../lib/compare'
-import { createInMemoryRepository } from '../lib/repository'
+import { useCatalog } from '../lib/useCatalog'
 import * as seed from '../data/seed'
 
-const repo = createInMemoryRepository(seed)
-
 export function Scan() {
+  const repo = useCatalog()
   const [packageId, setPackageId] = useState('p-heinz-20')
   const [gtin, setGtin] = useState('')
   const [gtinError, setGtinError] = useState<string | null>(null)
@@ -30,7 +29,7 @@ export function Scan() {
 
   const comparison = useMemo(
     () => compareByPackage(repo, packageId, { qualityWeight, now: seed.SEED_NOW }),
-    [packageId, qualityWeight],
+    [repo, packageId, qualityWeight],
   )
 
   function lookUpGtin(event: React.FormEvent) {
@@ -50,8 +49,8 @@ export function Scan() {
     <section className="p-6">
       <h1 className="text-xl font-semibold">Scan</h1>
       <p className="mt-1 max-w-prose text-sm text-gray-600">
-        Standing in for the camera: pick a product or enter a barcode. Prices are
-        local seed data, not a live store feed.
+        Standing in for the camera: pick a product or enter a barcode. Prices come
+        from the local catalog, including any receipts you have entered.
       </p>
 
       <div className="mt-4 flex flex-wrap items-end gap-6">

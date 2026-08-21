@@ -286,7 +286,7 @@ export const priceObservations: PriceObservation[] = [
 
   // -- Ketchup at Target Westwood.
   obs('p-heinz-20', 's-target-westwood', 399, 'scrape', 1),
-  obs('p-heinz-64', 's-target-westwood', 949, 'receipt_ocr', 6),
+  obs('p-heinz-64', 's-target-westwood', 949, 'receipt', 6),
   obs('p-hunts-32', 's-target-westwood', 499, 'scrape', 1),
 
   // -- Ketchup in Santa Monica.
@@ -298,7 +298,7 @@ export const priceObservations: PriceObservation[] = [
   obs('p-bertolli-500', 's-target-westwood', 1049, 'scrape', 1),
   obs('p-bertolli-500', 's-ralphs-santa-monica', 999, 'scrape', 2),
   obs('p-365-1l', 's-wf-westwood', 1799, 'scrape', 2),
-  obs('p-365-1l', 's-wf-westwood', 1599, 'receipt_ocr', 1),
+  obs('p-365-1l', 's-wf-westwood', 1599, 'receipt', 1),
 
   // -- Eggs. Santa Monica is the cheap outlier.
   obs('p-lucerne-12', 's-ralphs-westwood', 549, 'scrape', 2),
