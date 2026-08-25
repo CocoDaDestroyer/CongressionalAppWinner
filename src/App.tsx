@@ -169,6 +169,7 @@ export default function App() {
         </form>
         <button type="button" className="site-account" aria-label="Account" />
       </nav>
+      <hr className="site-nav-rule" />
       <div className="page-stage">
         <div
           key={location.pathname}

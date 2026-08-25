@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --page: #ffffff;
+  --page: #f6f1e8;
   --nav-bg: #f6f1e8;
   --ink: #2a332c;
   --green: #3f6a4a;
@@ -48,6 +48,12 @@ body {
   padding: var(--nav-pad-y) var(--nav-pad-x);
   background: var(--nav-bg);
   --search-left: 40%;
+}
+
+.site-nav-rule {
+  margin: 0 var(--nav-pad-x);
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--green) 30%, transparent);
 }
 
 .site-logo {
