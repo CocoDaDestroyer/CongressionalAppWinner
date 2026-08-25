@@ -20,6 +20,7 @@ describe('App shell', () => {
     ]) {
       expect(screen.getByRole('link', { name: label })).toBeTruthy()
     }
+    expect(screen.getByRole('searchbox', { name: 'Search' })).toBeTruthy()
   })
 
   it('redirects the index to the scan route', () => {
