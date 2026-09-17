@@ -5,14 +5,31 @@
  * to check properly, so the transcription step is typed here instead -- but
  * everything downstream is real: a saved receipt writes price observations,
  * which immediately change what Scan and List recommend.
- *
- * Styling is deliberately plain; design comes later.
  */
 import { useMemo, useState } from 'react'
 import { formatCents } from '../lib/compare'
 import { catalogStore, receiptTotalCents } from '../lib/store'
 import { useCatalog, useReceipts } from '../lib/useCatalog'
 import * as seed from '../data/seed'
+import {
+  BUTTON_PRIMARY,
+  BUTTON_SECONDARY,
+  CARD,
+  FIELD_LABEL,
+  HEADING,
+  INPUT,
+  INTRO,
+  MUTED,
+  MUTED_SMALL,
+  PAGE,
+  SUBHEADING,
+  TABLE,
+  TABLE_CELL,
+  TABLE_HEAD_CELL,
+  TABLE_HEAD_ROW,
+  TABLE_ROW,
+  TABLE_WRAP,
+} from '../lib/ui'
 
 interface DraftLine {
   packageId: string
@@ -97,19 +114,19 @@ export function Receipts() {
   }
 
   return (
-    <section className="p-6">
-      <h1 className="text-xl font-semibold">Receipts</h1>
-      <p className="mt-1 max-w-prose text-sm text-gray-600">
+    <section className={PAGE}>
+      <h1 className={HEADING}>Receipts</h1>
+      <p className={INTRO}>
         Entering a receipt updates prices for everyone and records what you spent.
         Photo capture needs a phone, so type the lines for now -- everything after
         that step is the real thing.
       </p>
 
-      <div className="mt-4 flex flex-wrap gap-6 text-sm">
+      <div className="mt-5 flex flex-wrap gap-6 text-sm">
         <label>
-          <span className="block text-gray-600">Store</span>
+          <span className={FIELD_LABEL}>Store</span>
           <select
-            className="mt-1 border p-1"
+            className={`mt-1 ${INPUT}`}
             value={storeId}
             onChange={(e) => setStoreId(e.target.value)}
           >
@@ -121,9 +138,9 @@ export function Receipts() {
           </select>
         </label>
         <label>
-          <span className="block text-gray-600">Purchased</span>
+          <span className={FIELD_LABEL}>Purchased</span>
           <input
-            className="mt-1 border p-1"
+            className={`mt-1 ${INPUT}`}
             type="date"
             value={purchasedOn}
             onChange={(e) => setPurchasedOn(e.target.value)}
@@ -131,70 +148,72 @@ export function Receipts() {
         </label>
       </div>
 
-      <table className="mt-4 w-full max-w-3xl border-collapse text-sm">
-        <thead>
-          <tr className="border-b text-left">
-            <th className="py-1 pr-2">Item</th>
-            <th className="py-1 pr-2 w-20">Qty</th>
-            <th className="py-1 pr-2 w-28">Unit price</th>
-            <th className="py-1 w-24 text-right">Line</th>
-          </tr>
-        </thead>
-        <tbody>
-          {lines.map((line, index) => (
-            <tr key={index} className="border-b">
-              <td className="py-1 pr-2">
-                <select
-                  className="w-full border p-1"
-                  aria-label={`Item ${index + 1}`}
-                  value={line.packageId}
-                  onChange={(e) => updateLine(index, { packageId: e.target.value })}
-                >
-                  {seed.packages.map((pkg) => (
-                    <option key={pkg.id} value={pkg.id}>
-                      {pkg.displayName}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td className="py-1 pr-2">
-                <input
-                  className="w-full border p-1"
-                  aria-label={`Quantity ${index + 1}`}
-                  type="number"
-                  min={1}
-                  value={line.quantity}
-                  onChange={(e) =>
-                    updateLine(index, { quantity: Math.max(1, Number(e.target.value)) })
-                  }
-                />
-              </td>
-              <td className="py-1 pr-2">
-                <input
-                  className="w-full border p-1"
-                  aria-label={`Price ${index + 1}`}
-                  inputMode="decimal"
-                  placeholder="4.29"
-                  value={line.price}
-                  onChange={(e) => updateLine(index, { price: e.target.value })}
-                />
-              </td>
-              <td className="py-1 text-right tabular-nums">
-                {formatCents(Math.round(Number(line.price || 0) * 100) * line.quantity)}
-              </td>
+      <div className={`mt-5 max-w-3xl ${TABLE_WRAP}`}>
+        <table className={TABLE}>
+          <thead>
+            <tr className={TABLE_HEAD_ROW}>
+              <th className={TABLE_HEAD_CELL}>Item</th>
+              <th className={`${TABLE_HEAD_CELL} w-20`}>Qty</th>
+              <th className={`${TABLE_HEAD_CELL} w-28`}>Unit price</th>
+              <th className={`${TABLE_HEAD_CELL} w-24 text-right`}>Line</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {lines.map((line, index) => (
+              <tr key={index} className={TABLE_ROW}>
+                <td className={TABLE_CELL}>
+                  <select
+                    className={`w-full ${INPUT}`}
+                    aria-label={`Item ${index + 1}`}
+                    value={line.packageId}
+                    onChange={(e) => updateLine(index, { packageId: e.target.value })}
+                  >
+                    {seed.packages.map((pkg) => (
+                      <option key={pkg.id} value={pkg.id}>
+                        {pkg.displayName}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td className={TABLE_CELL}>
+                  <input
+                    className={`w-full ${INPUT}`}
+                    aria-label={`Quantity ${index + 1}`}
+                    type="number"
+                    min={1}
+                    value={line.quantity}
+                    onChange={(e) =>
+                      updateLine(index, { quantity: Math.max(1, Number(e.target.value)) })
+                    }
+                  />
+                </td>
+                <td className={TABLE_CELL}>
+                  <input
+                    className={`w-full ${INPUT}`}
+                    aria-label={`Price ${index + 1}`}
+                    inputMode="decimal"
+                    placeholder="4.29"
+                    value={line.price}
+                    onChange={(e) => updateLine(index, { price: e.target.value })}
+                  />
+                </td>
+                <td className={`${TABLE_CELL} text-right tabular-nums`}>
+                  {formatCents(Math.round(Number(line.price || 0) * 100) * line.quantity)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="mt-3 flex items-center gap-3 text-sm">
         <button
-          className="border px-2 py-1"
+          className={BUTTON_SECONDARY}
           onClick={() => setLines((l) => [...l, { ...BLANK_LINE }])}
         >
           Add line
         </button>
-        <button className="border px-3 py-1 font-medium" onClick={save}>
+        <button className={BUTTON_PRIMARY} onClick={save}>
           Save receipt
         </button>
         <span className="tabular-nums">Total {formatCents(draftTotal)}</span>
@@ -203,26 +222,24 @@ export function Receipts() {
       {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
       {saved && !error && <p className="mt-2 text-sm text-green-700">{saved}</p>}
 
-      <h2 className="mt-8 text-sm font-medium">
+      <h2 className={`mt-8 ${SUBHEADING}`}>
         Saved receipts {receipts.length > 0 && `(${receipts.length})`}
       </h2>
       {receipts.length === 0 ? (
-        <p className="mt-1 text-sm text-gray-600">
+        <p className={`mt-1 text-sm ${MUTED}`}>
           Nothing yet. Saved receipts persist in this browser.
         </p>
       ) : (
         <ul className="mt-2 space-y-3">
           {receipts.map((receipt) => (
-            <li key={receipt.id} className="max-w-3xl border p-3 text-sm">
+            <li key={receipt.id} className={`max-w-3xl ${CARD}`}>
               <div className="flex items-baseline justify-between">
                 <span className="font-medium">{storeName(receipt.storeId)}</span>
                 <span className="tabular-nums">
                   {formatCents(receiptTotalCents(receipt))}
                 </span>
               </div>
-              <div className="text-xs text-gray-500">
-                {receipt.purchasedAt.slice(0, 10)}
-              </div>
+              <div className={MUTED_SMALL}>{receipt.purchasedAt.slice(0, 10)}</div>
               <ul className="mt-2 space-y-0.5">
                 {receipt.lines.map((line) => (
                   <li key={line.id} className="flex justify-between">
@@ -237,7 +254,7 @@ export function Receipts() {
                 ))}
               </ul>
               <button
-                className="mt-2 border px-2 py-0.5 text-xs"
+                className={`mt-2 ${BUTTON_SECONDARY} px-2 py-0.5 text-xs`}
                 onClick={() => catalogStore.deleteReceipt(receipt.id)}
               >
                 Delete

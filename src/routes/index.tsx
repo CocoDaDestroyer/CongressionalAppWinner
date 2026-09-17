@@ -1,13 +1,14 @@
 /**
- * One route per feature domain. Scan, ShoppingList and Receipts are implemented
- * (against the local catalog store); the rest are stubs, present so the shape
- * and navigation exist.
- * Styling is deliberately minimal -- design comes later.
+ * One route per feature domain. Scan, ShoppingList, Receipts and Spending are
+ * implemented (against the local catalog store); the rest are stubs, present
+ * so the shape and navigation exist.
  */
+import { HEADING, INTRO, PAGE } from '../lib/ui'
 
 export { Scan } from './Scan'
 export { ShoppingList } from './ShoppingList'
 export { Receipts } from './Receipts'
+export { Spending } from './Spending'
 
 interface StubProps {
   title: string
@@ -16,9 +17,9 @@ interface StubProps {
 
 function Stub({ title, children }: StubProps) {
   return (
-    <section className="p-6">
-      <h1 className="text-xl font-semibold">{title}</h1>
-      <p className="mt-2 max-w-prose text-sm text-gray-600">{children}</p>
+    <section className={PAGE}>
+      <h1 className={HEADING}>{title}</h1>
+      <p className={INTRO}>{children}</p>
     </section>
   )
 }
@@ -44,14 +45,6 @@ export function Community() {
   return (
     <Stub title="Community">
       Local threads for budgeting tips, deals, and store recommendations.
-    </Stub>
-  )
-}
-
-export function Spending() {
-  return (
-    <Stub title="Spending">
-      Monthly and annual grocery spend, derived from receipts and purchases.
     </Stub>
   )
 }

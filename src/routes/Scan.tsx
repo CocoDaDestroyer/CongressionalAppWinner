@@ -5,8 +5,6 @@
  * check. Until then the same code path is driven by picking a package or typing
  * a GTIN by hand -- `compareByPackage` cannot tell the difference, so what you
  * see here is the real ranking, not a mock of it.
- *
- * Styling is deliberately plain; design comes later.
  */
 import { useMemo, useState } from 'react'
 import {
@@ -19,6 +17,26 @@ import {
 } from '../lib/compare'
 import { useCatalog } from '../lib/useCatalog'
 import * as seed from '../data/seed'
+import {
+  BUTTON_SECONDARY,
+  CARD,
+  FIELD_LABEL,
+  HEADING,
+  INPUT,
+  INTRO,
+  MUTED_SMALL,
+  PAGE,
+  SLIDER,
+  sliderFill,
+  STAT_LABEL,
+  TABLE,
+  TABLE_CELL,
+  TABLE_HEAD_CELL,
+  TABLE_HEAD_ROW,
+  TABLE_ROW,
+  TABLE_ROW_HIGHLIGHT,
+  TABLE_WRAP,
+} from '../lib/ui'
 
 export function Scan() {
   const repo = useCatalog()
@@ -46,18 +64,18 @@ export function Scan() {
   }
 
   return (
-    <section className="p-6">
-      <h1 className="text-xl font-semibold">Scan</h1>
-      <p className="mt-1 max-w-prose text-sm text-gray-600">
+    <section className={PAGE}>
+      <h1 className={HEADING}>Scan</h1>
+      <p className={INTRO}>
         Standing in for the camera: pick a product or enter a barcode. Prices come
         from the local catalog, including any receipts you have entered.
       </p>
 
-      <div className="mt-4 flex flex-wrap items-end gap-6">
+      <div className="mt-5 flex flex-wrap items-end gap-6">
         <label className="text-sm">
-          <span className="block text-gray-600">Product</span>
+          <span className={FIELD_LABEL}>Product</span>
           <select
-            className="mt-1 border p-1"
+            className={`mt-1 ${INPUT}`}
             value={packageId}
             onChange={(e) => setPackageId(e.target.value)}
           >
@@ -70,24 +88,27 @@ export function Scan() {
         </label>
 
         <form className="text-sm" onSubmit={lookUpGtin}>
-          <span className="block text-gray-600">Barcode (GTIN-14)</span>
-          <input
-            className="mt-1 border p-1 font-mono"
-            placeholder="00013000006415"
-            value={gtin}
-            onChange={(e) => setGtin(e.target.value)}
-          />
-          <button className="ml-2 border px-2 py-1" type="submit">
-            Look up
-          </button>
+          <span className={FIELD_LABEL}>Barcode (GTIN-14)</span>
+          <div className="mt-1 flex gap-2">
+            <input
+              className={`${INPUT} font-mono`}
+              placeholder="00013000006415"
+              value={gtin}
+              onChange={(e) => setGtin(e.target.value)}
+            />
+            <button className={BUTTON_SECONDARY} type="submit">
+              Look up
+            </button>
+          </div>
         </form>
 
         <label className="text-sm">
-          <span className="block text-gray-600">
+          <span className={FIELD_LABEL}>
             Quality vs. price: {Math.round(qualityWeight * 100)}% quality
           </span>
           <input
-            className="mt-1 w-56"
+            className={`mt-3 w-56 ${SLIDER}`}
+            style={sliderFill(qualityWeight * 100)}
             type="range"
             min={0}
             max={1}
@@ -106,7 +127,7 @@ export function Scan() {
         <p className="mt-6 text-sm">No prices recorded for this product yet.</p>
       ) : (
         <>
-          <p className="mt-6 text-sm text-gray-600">
+          <p className={`${INTRO} mt-5`}>
             Comparing every <strong>{comparison.conceptName.toLowerCase()}</strong> in
             the catalog -- {comparison.options.length} price
             {comparison.options.length === 1 ? '' : 's'} across brands, sizes and
@@ -122,58 +143,60 @@ export function Scan() {
             />
           </div>
 
-          <table className="mt-6 w-full max-w-4xl border-collapse text-sm">
-            <thead>
-              <tr className="border-b text-left">
-                <th className="py-1 pr-4">Product</th>
-                <th className="py-1 pr-4">Store</th>
-                <th className="py-1 pr-4">Price</th>
-                <th className="py-1 pr-4">Per unit</th>
-                <th className="py-1 pr-4">Quality</th>
-                <th className="py-1">Source</th>
-              </tr>
-            </thead>
-            <tbody>
-              {comparison.options.map((option) => (
-                <tr
-                  key={option.key}
-                  className={
-                    option.key === comparison.bestValue?.key
-                      ? 'border-b bg-yellow-50'
-                      : 'border-b'
-                  }
-                >
-                  <td className="py-1 pr-4">
-                    {option.pkg.displayName}
-                    {option.pkg.verifiedAt === null && (
-                      <span className="ml-1 text-xs text-gray-500">(unverified)</span>
-                    )}
-                  </td>
-                  <td className="py-1 pr-4">
-                    {option.retailerName}
-                    {option.isMemberPrice && (
-                      <span className="ml-1 text-xs text-gray-500">(member)</span>
-                    )}
-                  </td>
-                  <td className="py-1 pr-4">{formatCents(option.priceCents)}</td>
-                  <td className="py-1 pr-4 font-medium">
-                    {formatPerUnit(option.normalized)}
-                  </td>
-                  <td className="py-1 pr-4">
-                    {option.quality === null
-                      ? '--'
-                      : `${Math.round(option.quality * 100)}% (${option.reviewCount})`}
-                  </td>
-                  <td className="py-1 text-xs text-gray-600">
-                    {option.sourceLabel}, {formatAge(option.ageDays)}
-                    {isStale(option) && (
-                      <span className="ml-1 text-amber-700">stale</span>
-                    )}
-                  </td>
+          <div className={`mt-6 max-w-4xl ${TABLE_WRAP}`}>
+            <table className={TABLE}>
+              <thead>
+                <tr className={TABLE_HEAD_ROW}>
+                  <th className={TABLE_HEAD_CELL}>Product</th>
+                  <th className={TABLE_HEAD_CELL}>Store</th>
+                  <th className={TABLE_HEAD_CELL}>Price</th>
+                  <th className={TABLE_HEAD_CELL}>Per unit</th>
+                  <th className={TABLE_HEAD_CELL}>Quality</th>
+                  <th className={TABLE_HEAD_CELL}>Source</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {comparison.options.map((option) => (
+                  <tr
+                    key={option.key}
+                    className={
+                      option.key === comparison.bestValue?.key
+                        ? TABLE_ROW_HIGHLIGHT
+                        : TABLE_ROW
+                    }
+                  >
+                    <td className={TABLE_CELL}>
+                      {option.pkg.displayName}
+                      {option.pkg.verifiedAt === null && (
+                        <span className={`ml-1 ${MUTED_SMALL}`}>(unverified)</span>
+                      )}
+                    </td>
+                    <td className={TABLE_CELL}>
+                      {option.retailerName}
+                      {option.isMemberPrice && (
+                        <span className={`ml-1 ${MUTED_SMALL}`}>(member)</span>
+                      )}
+                    </td>
+                    <td className={TABLE_CELL}>{formatCents(option.priceCents)}</td>
+                    <td className={`${TABLE_CELL} font-medium`}>
+                      {formatPerUnit(option.normalized)}
+                    </td>
+                    <td className={TABLE_CELL}>
+                      {option.quality === null
+                        ? '--'
+                        : `${Math.round(option.quality * 100)}% (${option.reviewCount})`}
+                    </td>
+                    <td className={`${TABLE_CELL} ${MUTED_SMALL}`}>
+                      {option.sourceLabel}, {formatAge(option.ageDays)}
+                      {isStale(option) && (
+                        <span className="ml-1 text-amber-700">stale</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
     </section>
@@ -189,10 +212,10 @@ function Recommendation({
 }) {
   if (!option) return null
   return (
-    <div className="border p-3 text-sm">
-      <div className="text-xs uppercase tracking-wide text-gray-500">{label}</div>
+    <div className={CARD}>
+      <div className={STAT_LABEL}>{label}</div>
       <div className="mt-1 font-medium">{option.pkg.displayName}</div>
-      <div className="text-gray-600">
+      <div className="text-ink/70">
         {formatCents(option.priceCents)} at {option.retailerName}
         {option.isMemberPrice && ' (member)'} -- {formatPerUnit(option.normalized)}
       </div>
