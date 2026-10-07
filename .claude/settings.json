@@ -1,0 +1,18 @@
+{
+  "extraKnownMarketplaces": {
+    "claude-code-workflows": { "source": { "source": "github", "repo": "wshobson/agents" } }
+  },
+  "enabledPlugins": {
+    "ui-design@claude-code-workflows": true,
+    "frontend-mobile-development@claude-code-workflows": true,
+    "javascript-typescript@claude-code-workflows": true,
+    "unit-testing@claude-code-workflows": true,
+    "accessibility-compliance@claude-code-workflows": true,
+    "avoid-ai-writing@claude-code-workflows": true
+  },
+  "hooks": {
+    "SessionStart": [{ "hooks": [{ "type": "command", "command": "[ ! -f \"${CLAUDE_PROJECT_DIR}/.claude/skills/impeccable/scripts/impeccable\" ] || \"${CLAUDE_PROJECT_DIR}/.claude/skills/impeccable/scripts/impeccable\" hook", "timeout": 5 }] }],
+    "PostToolUse": [{ "matcher": "Edit|Write", "hooks": [{ "type": "command", "command": "[ ! -f \"${CLAUDE_PROJECT_DIR}/.claude/skills/impeccable/scripts/impeccable\" ] || \"${CLAUDE_PROJECT_DIR}/.claude/skills/impeccable/scripts/impeccable\" hook", "timeout": 5 }] }],
+    "Stop": [{ "hooks": [{ "type": "command", "command": "[ ! -f \"${CLAUDE_PROJECT_DIR}/.claude/skills/impeccable/scripts/impeccable\" ] || \"${CLAUDE_PROJECT_DIR}/.claude/skills/impeccable/scripts/impeccable\" hook", "timeout": 30 }] }]
+  }
+}
