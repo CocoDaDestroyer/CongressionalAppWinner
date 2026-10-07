@@ -1,9 +1,11 @@
-import { useMemo, useState, type FormEvent } from 'react'
-import { ScanBarcode } from 'lucide-react'
+import { useCallback, useMemo, useState, type FormEvent } from 'react'
+import { Camera, ScanBarcode } from 'lucide-react'
 import { toGtin14 } from '../../lib/gtin'
 import type { CatalogRepository } from '../../lib/repository'
 import { Button } from '../ui/Button'
 import { Field, inputClass } from '../ui/Field'
+import { canUseCamera } from '../../lib/camera'
+import { CameraScanner } from './CameraScanner'
 
 interface ProductFinderProps {
   repo: CatalogRepository
@@ -20,6 +22,7 @@ interface ProductFinderProps {
 export function ProductFinder({ repo, packageId, onSelect, onUnknown }: ProductFinderProps) {
   const [code, setCode] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [scanning, setScanning] = useState(false)
 
   const groups = useMemo(
     () =>
@@ -33,21 +36,31 @@ export function ProductFinder({ repo, packageId, onSelect, onUnknown }: ProductF
     [repo],
   )
 
+  // The camera and the typed field resolve a code through the same path.
+  const resolve = useCallback(
+    (raw: string) => {
+      setScanning(false)
+      const gtin = toGtin14(raw)
+      if (!gtin) {
+        setCode(raw)
+        setError('Barcodes are 8, 12, 13 or 14 digits.')
+        return
+      }
+      setError(null)
+      const found = repo.getPackageByGtin(gtin)
+      if (found) {
+        onSelect(found.id)
+        setCode('')
+      } else {
+        onUnknown(gtin)
+      }
+    },
+    [repo, onSelect, onUnknown],
+  )
+
   function lookUp(event: FormEvent) {
     event.preventDefault()
-    const gtin = toGtin14(code)
-    if (!gtin) {
-      setError('Barcodes are 8, 12, 13 or 14 digits.')
-      return
-    }
-    setError(null)
-    const found = repo.getPackageByGtin(gtin)
-    if (found) {
-      onSelect(found.id)
-      setCode('')
-    } else {
-      onUnknown(gtin)
-    }
+    resolve(code)
   }
 
   return (
@@ -95,7 +108,20 @@ export function ProductFinder({ repo, packageId, onSelect, onUnknown }: ProductF
           <Button type="submit" variant="secondary">
             Look up
           </Button>
+          {canUseCamera() && (
+            <Button
+              variant="secondary"
+              aria-label="Scan with camera"
+              icon={<Camera className="size-5" aria-hidden="true" />}
+              onClick={() => setScanning(true)}
+            />
+          )}
         </div>
+        {scanning && (
+          <div className="mt-3">
+            <CameraScanner onCode={resolve} onClose={() => setScanning(false)} />
+          </div>
+        )}
         {error && (
           <p id="barcode-error" className="mt-1.5 text-sm text-danger-ink">
             {error}

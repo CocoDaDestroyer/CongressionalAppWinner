@@ -146,3 +146,12 @@ describe('Compare screen', () => {
     expect(screen.getByRole('alert').textContent).toMatch(/shelf price/)
   })
 })
+
+describe('camera scanning', () => {
+  it('only offers the camera where the browser has one', () => {
+    // jsdom has no mediaDevices, so only the typed fallback shows.
+    renderCompare()
+    expect(screen.queryByRole('button', { name: 'Scan with camera' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Look up' })).toBeTruthy()
+  })
+})

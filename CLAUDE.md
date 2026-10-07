@@ -8,7 +8,8 @@ Demo-ready. Every screen in the nav works end to end against the local catalog s
 (with the unknown-barcode "add a product" flow), Trip, Receipts, Spending and Profile (store cards,
 theme, reset demo data). Community and the other stubs were cut. There is no Supabase project, no
 hosting, and no paid service anywhere in the loop -- keep it that way unless the user says otherwise.
-Stretch goals not started: camera barcode scanning, receipt OCR, a static deploy.
+Camera barcode scanning works (`@zxing/browser`, lazy-loaded, hidden where the browser has no
+camera; typing stays as the fallback). Not started: receipt OCR, a static deploy.
 
 ## Purpose: a presentation app, not a production app
 
@@ -148,6 +149,7 @@ src/lib/useCatalog.ts  React bindings: useCatalog, useReceipts, useLinkedRetaile
 src/lib/spending.ts    receipts by month, year and store (pure)
 src/lib/savings.ts     saved vs. the typical per-unit price (pure)
 src/lib/gtin.ts        typed/scanned barcode -> GTIN-14
+src/lib/camera.ts      whether the browser can offer a camera
 src/lib/labels.ts      shared display names ("Ralphs Westwood")
 src/lib/theme.ts       light/dark/system, applied as <html data-theme>
 src/lib/supabase.ts    the single Supabase client (unused -- nothing is hosted)

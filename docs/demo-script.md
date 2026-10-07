@@ -19,6 +19,12 @@ the shot stays on screen.
 | 1:20 | Tap **Spending**. | "And every receipt adds up to a picture of where your money goes." |
 | 1:26 | Back to Home. | "CartWise: the real price, the right store, and prices kept honest by the people who shop there." |
 
+## Optional: a real scan
+
+On a phone served over https (or localhost), tap the camera button next to **Look up** and point it
+at a Heinz 64 oz bottle (UPC 013000006415). Compare switches to it. Practice once before recording:
+it needs good light.
+
 ## Shots to avoid
 
 - Don't open the barcode field on camera unless you're showing the add-a-product flow. A typo shows

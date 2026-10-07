@@ -18,7 +18,7 @@ Built for the 2026 Congressional App Challenge.
 
 ## Features
 
-- **Compare.** Pick a product or type its barcode. CartWise lists every brand, size and nearby store
+- **Compare.** Scan a barcode with the phone camera, type it, or pick a product. CartWise lists every brand, size and nearby store
   that sells it, ranked by price per ounce, and picks a best value with a one-line reason. A slider
   trades price against reviews.
 - **Trip.** Give it a shopping list. It decides which stores to visit and what to buy at each,
