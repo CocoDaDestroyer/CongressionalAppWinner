@@ -53,12 +53,11 @@ export function Spending() {
       {header}
 
       <section aria-label="Saved this month">
-        <p className="font-mono text-sm text-ink-muted">Saved in {monthName}</p>
-        <div className="relative mt-2 inline-block">
+        <div className="relative mt-6 inline-block">
           <PriceNumeral value={formatCents(saved)} className="hero-numeral" />
           {/* The money wears the tag, hung off the numeral's corner. */}
           <SaleTag tilt={5} className="absolute top-0 left-full ml-3 whitespace-nowrap">
-            {formatCents(saved)} saved
+            Saved in {monthName}
           </SaleTag>
         </div>
         <p className="mt-3 text-sm text-ink-muted">

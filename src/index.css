@@ -225,6 +225,11 @@
   mask: radial-gradient(circle at 50% 16px, #0000 6px, #000 6.5px);
 }
 
+/* The tag's shadow layer sits 4px down-right, so its hole sits 4px up-left to line up. */
+@utility die-cut-top-shadow {
+  mask: radial-gradient(circle at calc(50% - 4px) 12px, #0000 6px, #000 6.5px);
+}
+
 @utility die-cut-left {
   mask: radial-gradient(circle at 11px 50%, #0000 3.5px, #000 4px);
 }

@@ -32,8 +32,8 @@ export function PriceTag({ repo, comparison }: PriceTagProps) {
   return (
     <section aria-label="Best value" className="relative pt-3 pr-3">
       <div key={pick.key} className="relative animate-tag-print">
-        {/* The offset shadow is its own layer, cut with the same hole, so it shows through it. */}
-        <span aria-hidden="true" className="absolute inset-0 translate-1 rounded-tag bg-ink die-cut-top" />
+        {/* The offset shadow is its own layer with a hole aligned to the body's, so the page shows through. */}
+        <span aria-hidden="true" className="absolute inset-0 translate-1 rounded-tag bg-ink die-cut-top-shadow" />
         <div className="relative rounded-tag border-[1.5px] border-ink bg-paper-raised px-5 pt-10 pb-5 die-cut-top sm:px-6">
           <h2 className="font-display text-xl leading-tight font-bold tracking-[-0.02em]">
             {pick.pkg.displayName}

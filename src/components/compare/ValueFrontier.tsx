@@ -47,6 +47,12 @@ export default function ValueFrontier({ comparison }: { comparison: Comparison }
   const points = comparison.options.filter((o) => o.quality !== null && !o.memberLocked).map(toPoint)
   if (points.length < 3) return null
   const pickKey = comparison.bestValue?.key
+  // Whole-cent ticks at a fixed 2¢ step, padded past the data so no point sits on an axis.
+  const prices = points.map((p) => p.price)
+  const start = Math.floor(Math.min(...prices)) - 1
+  const xTicks: number[] = []
+  for (let t = start; t <= Math.ceil(Math.max(...prices)) + 1; t += 2) xTicks.push(t)
+  if (xTicks[xTicks.length - 1] < Math.max(...prices) + 1) xTicks.push(xTicks[xTicks.length - 1] + 2)
   const pick = points.filter((p) => p.key === pickKey)
   const rest = points.filter((p) => p.key !== pickKey)
 
@@ -63,7 +69,8 @@ export default function ValueFrontier({ comparison }: { comparison: Comparison }
               dataKey="price"
               name="Price"
               unit="¢"
-              domain={[(min: number) => Math.floor(min) - 1, (max: number) => Math.ceil(max) + 1]}
+              domain={[xTicks[0], xTicks[xTicks.length - 1]]}
+              ticks={xTicks}
               tickLine={false}
               axisLine={{ className: 'stroke-ink' }}
               tick={{ className: 'fill-ink-muted font-mono text-[11px]' }}
