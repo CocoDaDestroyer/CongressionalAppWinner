@@ -26,7 +26,7 @@ export function QualitySlider({ value, onChange }: QualitySliderProps) {
         style={{ '--fill': `${percent}%` } as CSSProperties}
         className="range mt-2 w-full"
       />
-      <div className="flex justify-between font-mono text-xs text-ink-faint">
+      <div className="flex justify-between text-xs text-ink-faint">
         <span>lowest price</span>
         <span>best reviews</span>
       </div>

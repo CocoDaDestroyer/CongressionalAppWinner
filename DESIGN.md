@@ -170,7 +170,8 @@ Named rules: yellow is a tag, never a font color. One teal. No purple, no gradie
 - **DM Mono** (500, tabular): all data: units, distances, timestamps, receipt lines, stamps.
 
 Hero numeral `clamp(4rem, 3rem + 6vw, 7.5rem)`, one per screen. Numerals: dollars large, cents as a
-superscript at 40%, unit in mono. Dotted leaders join names to prices in itemized lists. Sentence
+superscript at 42% with no decimal point and an ink underline (as on real shelf tags), unit in mono
+tucked under the cents. The full value is announced once for screen readers. Dotted leaders join names to prices in itemized lists. Sentence
 case everywhere; uppercase only on provenance stamps.
 
 ## Layout
@@ -189,7 +190,9 @@ savings tag and (on hover) buttons only. Cards use a 1px `rule` border and never
 
 ## Shapes
 
-Tags and cards 4-6px with a die-cut hole (CSS mask). Buttons and inputs 8px. Receipt blocks get a
+Tags and cards 4-6px with a die-cut hole cut by a CSS mask (`die-cut-top`, `die-cut-left`); the price tag's offset
+shadow is its own layer with the same cut, so it shows through the hole. The logo is an ink tag with a
+die-cut hole. Buttons and inputs 8px. Receipt blocks get a
 zig-zag bottom edge (a mask shape, not a color gradient). Full pills only for the switch and tracks.
 
 ## Motion

@@ -9,7 +9,6 @@ import type { CatalogRepository } from '../../lib/repository'
 import { formatMiles, type TripComparison } from '../../lib/trip'
 import { Leader } from '../print/Leader'
 import { ReceiptBlock, ReceiptTotal } from '../print/ReceiptBlock'
-import { SaleTag } from '../print/SaleTag'
 
 interface TripReceiptProps {
   repo: CatalogRepository
@@ -23,7 +22,7 @@ export function TripReceipt({ repo, result, savedVsOneStore }: TripReceiptProps)
 
   return (
     <ReceiptBlock aria-label="Trip receipt">
-      <p className="text-center text-xs tracking-[0.2em] text-ink-muted uppercase">CartWise trip plan</p>
+      <p className="text-center font-sans section-title">CartWise trip plan</p>
       <div className="my-4 border-t border-dashed border-ink" />
 
       <ol className="flex flex-col gap-4">
@@ -64,12 +63,14 @@ export function TripReceipt({ repo, result, savedVsOneStore }: TripReceiptProps)
       <ReceiptTotal label="Total">{formatCents(best.totalCents)}</ReceiptTotal>
 
       {savedVsOneStore >= 1 && (
-        <div className="mt-5 flex justify-center">
-          <SaleTag tilt={-2}>Net of fuel: {formatCents(savedVsOneStore)} saved</SaleTag>
-        </div>
+        <Leader
+          className="mt-3 text-sm"
+          label="Saved vs. one store, net of fuel"
+          value={formatCents(savedVsOneStore)}
+        />
       )}
       {ignoringTravel && (
-        <p className="mt-5 text-center text-sm text-ink-muted">
+        <p className="mt-5 text-center font-sans text-sm text-ink-muted">
           Worth the drive? Chasing every lowest price costs{' '}
           {chaseDelta > 0.5 ? `${formatCents(chaseDelta)} more` : 'the same'}.
         </p>

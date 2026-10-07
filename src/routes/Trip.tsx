@@ -146,7 +146,7 @@ export function Trip() {
             <RouteMap repo={repo} home={SEED_HOME} route={best.routeOrder} />
             <PlanComparison repo={repo} result={result} />
           </Panel>
-          <p className="font-mono text-xs text-ink-faint">
+          <p className="text-xs text-ink-faint">
             Fuel at {formatCents(DEFAULT_DRIVING_COST.gasPriceCentsPerGallon)}/gal, {DEFAULT_DRIVING_COST.milesPerGallon} mpg.
             Each item is the best balance of per-unit price and reviews among the stores on the route.
           </p>

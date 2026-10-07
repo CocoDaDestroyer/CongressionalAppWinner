@@ -52,14 +52,18 @@ export function Spending() {
     <>
       {header}
 
-      <section aria-label="Saved this month" className="flex flex-wrap items-end gap-x-8 gap-y-4">
-        <div>
-          <p className="font-mono text-sm text-ink-muted">Saved in {monthName}</p>
-          <PriceNumeral value={formatCents(saved)} className="mt-2 hero-numeral" />
+      <section aria-label="Saved this month">
+        <p className="font-mono text-sm text-ink-muted">Saved in {monthName}</p>
+        <div className="relative mt-2 inline-block">
+          <PriceNumeral value={formatCents(saved)} className="hero-numeral" />
+          {/* The money wears the tag, hung off the numeral's corner. */}
+          <SaleTag tilt={5} className="absolute top-0 left-full ml-3 whitespace-nowrap">
+            {formatCents(saved)} saved
+          </SaleTag>
         </div>
-        <SaleTag tilt={-3} className="mb-3">
-          vs. typical per-oz prices
-        </SaleTag>
+        <p className="mt-3 text-sm text-ink-muted">
+          Against the typical per-ounce price of everything on your {monthName} receipts.
+        </p>
       </section>
 
       <Ledger
@@ -85,7 +89,7 @@ export function Spending() {
         </section>
 
         <ReceiptBlock aria-labelledby="by-store">
-          <h2 id="by-store" className="text-center font-mono text-xs font-medium tracking-[0.2em] text-ink-muted uppercase">
+          <h2 id="by-store" className="text-center section-title">
             Where it went, {year}
           </h2>
           <div className="my-4 border-t border-dashed border-ink" />

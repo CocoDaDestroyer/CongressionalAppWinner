@@ -25,7 +25,7 @@ export function ShelfRow({ repo, option, isPick, share, index }: ShelfRowProps) 
   return (
     <li
       style={{ animationDelay: `${index * 40}ms` } as CSSProperties}
-      className={`animate-fade-up border-b border-dotted border-b-rule border-l-[3px] [border-left-style:solid] px-4 py-3.5 sm:px-5 ${isPick ? 'border-l-teal bg-teal-wash' : 'border-l-transparent'}`}
+      className={`animate-fade-up border-b border-dotted border-rule px-4 py-3.5 sm:px-5 ${isPick ? 'bg-teal-wash' : ''}`}
     >
       <div className="flex items-baseline gap-2">
         <p className={`min-w-0 flex-1 font-semibold leading-snug sm:flex-none ${option.memberLocked ? 'text-ink-muted' : ''}`}>

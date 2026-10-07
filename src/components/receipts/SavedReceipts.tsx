@@ -39,7 +39,7 @@ export function SavedReceipts({ repo, receipts, highlightId }: SavedReceiptsProp
             {shown.map((receipt) => (
               <li key={receipt.id} className="relative overflow-hidden">
                 {receipt.id === highlightId && (
-                  <span aria-hidden="true" className="pointer-events-none absolute inset-0 animate-sweep bg-tag/40" />
+                  <span aria-hidden="true" className="pointer-events-none absolute inset-0 animate-sweep bg-teal/20" />
                 )}
                 <details className="group">
                   <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3 hover:bg-paper-sunken/60 [&::-webkit-details-marker]:hidden">

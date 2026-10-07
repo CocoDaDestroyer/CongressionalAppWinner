@@ -63,7 +63,7 @@ export default function ValueFrontier({ comparison }: { comparison: Comparison }
               dataKey="price"
               name="Price"
               unit="¢"
-              domain={['auto', 'auto']}
+              domain={[(min: number) => Math.floor(min) - 1, (max: number) => Math.ceil(max) + 1]}
               tickLine={false}
               axisLine={{ className: 'stroke-ink' }}
               tick={{ className: 'fill-ink-muted font-mono text-[11px]' }}
@@ -73,6 +73,7 @@ export default function ValueFrontier({ comparison }: { comparison: Comparison }
               dataKey="stars"
               name="Reviews"
               domain={[2.5, 5]}
+              ticks={[2.5, 3, 3.5, 4, 4.5, 5]}
               tickLine={false}
               axisLine={{ className: 'stroke-ink' }}
               tick={{ className: 'fill-ink-muted font-mono text-[11px]' }}
@@ -106,7 +107,7 @@ function PointTooltip({ active, payload }: Partial<TooltipContentProps<number, s
     <div className="rounded-tag border-[1.5px] border-ink bg-paper-raised px-3 py-2 text-sm">
       <p className="font-semibold">{point.name}</p>
       <p className="font-mono text-xs text-ink-muted">
-        {point.label} · {point.stars.toFixed(1)}★
+        {point.label} · {point.stars.toFixed(1)} of 5
       </p>
     </div>
   )

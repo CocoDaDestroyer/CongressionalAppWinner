@@ -10,6 +10,7 @@ import { plural } from '../lib/labels'
 import { savingsInMonth } from '../lib/savings'
 import { longMonthName, monthOf, summarizeSpending } from '../lib/spending'
 import { useCatalog, useLinkedRetailers, useReceipts } from '../lib/useCatalog'
+import { useMediaQuery } from '../lib/useMediaQuery'
 import { SEED_NOW } from '../data/seed'
 import { PriceTag } from '../components/compare/PriceTag'
 import { Ledger } from '../components/print/Ledger'
@@ -30,35 +31,46 @@ export function Home() {
     [repo, linked],
   )
   const monthReceipts = receipts.filter((r) => monthOf(r.purchasedAt) === month).length
+  // On a laptop the proof hangs in the band itself; on a phone it follows it.
+  const wide = useMediaQuery('(min-width: 1024px)')
+
+  const proof = demo && (
+    <Link to={`/compare?product=${DEMO_PRODUCT}`} viewTransition aria-label="Open the ketchup comparison" className="block text-ink">
+      <PriceTag repo={repo} comparison={demo} />
+    </Link>
+  )
 
   return (
     <>
       <section
         aria-labelledby="home-title"
-        className="-mx-4 -mt-3 bg-teal px-4 pt-10 pb-12 text-on-teal sm:-mx-6 sm:px-6 lg:-mx-14 lg:-mt-12 lg:px-14 lg:pt-16 lg:pb-20"
+        className="-mx-4 -mt-3 bg-teal px-4 pt-10 pb-12 text-on-teal sm:-mx-6 sm:px-6 lg:-mx-14 lg:-mt-12 lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-center lg:gap-12 lg:px-14 lg:pt-16 lg:pb-20 dark:bg-card-1 dark:text-ink"
       >
-        <h1
-          id="home-title"
-          className="max-w-[14ch] animate-fade-up font-display text-[clamp(2.75rem,1.6rem+5vw,5.25rem)] leading-[0.92] font-extrabold tracking-[-0.04em]"
-        >
-          The sticker price lies.
-        </h1>
-        <p className="mt-5 max-w-[46ch] animate-fade-up text-lg opacity-90 [animation-delay:80ms]">
-          CartWise shows what groceries really cost per ounce, across every brand and nearby store, and
-          whether the cheap store is worth the drive.
-        </p>
-        <Link
-          to={`/compare?product=${DEMO_PRODUCT}`}
-          viewTransition
-          className="mt-8 inline-flex h-12 animate-fade-up items-center gap-2 rounded-control border-[1.5px] border-ink bg-paper-raised px-5 font-semibold text-ink tag-shadow transition-[translate,box-shadow] [animation-delay:160ms] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_var(--color-ink)]"
-        >
-          <ScanBarcode className="size-5" aria-hidden="true" />
-          Scan or look up a product
-        </Link>
+        <div>
+          <h1
+            id="home-title"
+            className="max-w-[14ch] animate-fade-up font-display text-[clamp(2.75rem,1.6rem+5vw,5.25rem)] leading-[0.92] font-extrabold tracking-[-0.04em]"
+          >
+            The sticker price lies.
+          </h1>
+          <p className="mt-5 max-w-[46ch] animate-fade-up text-lg opacity-90 [animation-delay:80ms]">
+            CartWise shows what groceries really cost per ounce, across every brand and nearby store, and
+            whether the cheap store is worth the drive.
+          </p>
+          <Link
+            to={`/compare?product=${DEMO_PRODUCT}`}
+            viewTransition
+            className="mt-8 inline-flex h-12 animate-fade-up items-center gap-2 rounded-control border-[1.5px] border-ink bg-paper-raised px-5 font-semibold text-ink transition-[translate,box-shadow] [animation-delay:160ms] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[2px_2px_0_var(--color-ink)]"
+          >
+            <ScanBarcode className="size-5" aria-hidden="true" />
+            Scan or look up a product
+          </Link>
+        </div>
+        {wide && <div className="animate-fade-up [animation-delay:240ms]">{proof}</div>}
       </section>
 
-      <div className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
-        {demo && (
+      <div className="mt-10 grid gap-10 lg:mt-14">
+        {!wide && demo && (
           <section aria-labelledby="demo-title">
             <h2 id="demo-title" className="section-title">
               On the shelf today
@@ -66,13 +78,11 @@ export function Home() {
             <p className="mt-1 mb-4 text-sm text-ink-muted">
               The 64 oz bottle costs more and wins per ounce.
             </p>
-            <Link to={`/compare?product=${DEMO_PRODUCT}`} viewTransition className="block">
-              <PriceTag repo={repo} comparison={demo} />
-            </Link>
+            {proof}
           </section>
         )}
 
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:items-start lg:gap-12">
           <section aria-labelledby="ledger-title">
             <h2 id="ledger-title" className="section-title mb-4">
               Your {monthName}
@@ -99,7 +109,7 @@ export function Home() {
         </div>
       </div>
 
-      <p className="mt-12 font-mono text-xs text-ink-faint">
+      <p className="mt-12 text-xs text-ink-faint">
         Demo build: stores, prices and receipts are sample data for Westwood, Los Angeles.
       </p>
     </>

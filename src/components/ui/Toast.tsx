@@ -18,7 +18,7 @@ export function Toast({ children, onClose, duration = 7000 }: ToastProps) {
   return (
     <div
       role="status"
-      className="fixed inset-x-4 bottom-22 z-30 mx-auto flex max-w-md animate-tag-print items-center gap-3 rounded-tag border-[1.5px] border-ink bg-paper-raised px-4 py-3 tag-shadow lg:bottom-8 lg:left-[calc(248px+3.5rem)] lg:mx-0"
+      className="fixed inset-x-4 bottom-22 z-30 mx-auto flex max-w-md animate-tag-print items-center gap-3 rounded-tag border-[1.5px] border-ink bg-paper-raised px-4 py-3 lg:bottom-8 lg:left-[calc(248px+3.5rem)] lg:mx-0"
     >
       <div className="min-w-0 flex-1 text-sm">{children}</div>
       <button

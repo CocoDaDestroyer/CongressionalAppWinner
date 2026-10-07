@@ -73,7 +73,7 @@ export function Profile() {
                 aria-checked={theme === value}
                 onClick={() => themeStore.setPreference(value)}
                 className={`flex flex-col gap-2 rounded-control border-[1.5px] p-2 text-left text-sm font-semibold transition-[border-color,box-shadow] ${
-                  theme === value ? 'border-ink tag-shadow' : 'border-rule hover:border-ink'
+                  theme === value ? 'border-ink bg-teal-wash' : 'border-rule hover:border-ink'
                 }`}
               >
                 <ThemePreview value={value} />

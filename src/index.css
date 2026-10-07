@@ -220,6 +220,15 @@
   box-shadow: 4px 4px 0 var(--color-ink);
 }
 
+/* Die-cut holes, cut through the tag with a mask so the page shows through. */
+@utility die-cut-top {
+  mask: radial-gradient(circle at 50% 16px, #0000 6px, #000 6.5px);
+}
+
+@utility die-cut-left {
+  mask: radial-gradient(circle at 11px 50%, #0000 3.5px, #000 4px);
+}
+
 /* Zig-zag bottom edge for receipt blocks: a mask shape, not a colour gradient. */
 @utility receipt-edge {
   --tooth: 12px;
@@ -271,7 +280,6 @@
     border-radius: 3px;
     background: var(--color-paper-raised);
     border: 2px solid var(--color-ink);
-    box-shadow: 2px 2px 0 var(--color-ink);
   }
   &::-moz-range-thumb {
     width: 18px;

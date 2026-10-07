@@ -83,7 +83,7 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
         aria-label="New receipt"
         className="receipt-edge bg-paper-raised px-5 pt-6 sm:px-7"
       >
-        <p className="mb-5 text-center font-mono text-xs tracking-[0.2em] text-ink-muted uppercase">New receipt</p>
+        <p className="mb-5 text-center section-title">New receipt</p>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
             <span className="mb-1.5 block text-sm font-semibold">Store</span>

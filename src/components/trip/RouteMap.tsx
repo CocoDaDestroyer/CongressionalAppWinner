@@ -106,11 +106,11 @@ export function RouteMap({ repo, home, route }: RouteMapProps) {
         <House x={LEFT - 9} y={TOP - 9} width="18" height="18" className="text-paper" aria-hidden="true" />
       </svg>
 
-      <figcaption className="mt-1 font-mono text-sm text-ink-muted">
+      <figcaption className="mt-1 text-sm text-ink-muted">
         Route: {names.join(' → ')}
       </figcaption>
       {skipped.length > 0 && (
-        <p className="mt-2 font-mono text-xs text-ink-faint">
+        <p className="mt-2 text-xs text-ink-faint">
           Skipped:{' '}
           {skipped.map(({ store, miles }) => `${storeLabel(repo, store)} (${formatMiles(miles)} away)`).join(', ')}
           . Miles are straight-line estimates padded for city streets.
