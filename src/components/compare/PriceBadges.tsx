@@ -47,11 +47,11 @@ export function PriceBadges({ option }: { option: CompareOption }) {
           )
         }
       >
-        {stale ? `Stale · ${formatAge(option.ageDays)}` : formatAge(option.ageDays)}
+        {stale ? `Stale · ${option.ageDays}d old` : formatAge(option.ageDays)}
       </Badge>
       {option.pkg.verifiedAt === null && (
         <Badge tone="warn" icon={<BadgeCheck className={iconClass} aria-hidden="true" />}>
-          Unverified product
+          Unverified
         </Badge>
       )}
     </>

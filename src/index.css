@@ -82,8 +82,9 @@
   --color-leaf-ink: oklch(0.82 0.12 154);
   --color-on-leaf: oklch(0.18 0.03 160);
 
-  --color-shell: oklch(0.17 0.04 160);
-  --color-shell-raised: oklch(0.25 0.05 160);
+  /* Lighter than the ground, so the band reads as green, not as a hole. */
+  --color-shell: oklch(0.24 0.045 160);
+  --color-shell-raised: oklch(0.31 0.055 160);
   --color-on-shell: oklch(0.95 0.015 150);
   --color-on-shell-muted: oklch(0.74 0.04 154);
 
