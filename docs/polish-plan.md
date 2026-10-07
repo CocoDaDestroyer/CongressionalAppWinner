@@ -1,108 +1,117 @@
-# CartWise: polish plan
+# CartWise: product plan for the Congressional App Challenge
+
+**Deadline: Monday, October 26, 2026, 12:00 PM ET.** That leaves about 2.5 weeks from 2026-10-07. Submission
+needs a public YouTube demo video (1-3 minutes) and the code.
+
+## What wins
+
+Judges score three things: the **idea** (creativity, originality, a real need), the **implementation**
+(UX and design), and **coding skill**. In practice they watch a 2-minute video and maybe click through.
+So the goal is not more features. The goal is **one clear story, told by a few screens that each look
+finished**. Every feature shown has to work perfectly on the first try, and every feature not shown
+has to stay out of the way.
+
+## The story (decide this first; everything else serves it)
+
+> Groceries cost more every month, and the sticker price lies. CartWise shows the real price per ounce
+> across nearby stores and brands. It tells you whether the cheap store is worth the drive, and your
+> receipts keep the prices honest for everyone.
+
+That is a cost-of-living story with a community angle, which fits a congressional audience well.
+Lead the video with that framing, then show the app proving it.
 
 ## Where things stand (as of 2026-10-07)
 
-- **Working end to end:** Scan/compare (`src/routes/Scan.tsx`), trip planner (`src/routes/ShoppingList.tsx`)
-  and receipt entry (`src/routes/Receipts.tsx`), all reading the local `catalogStore` through `useCatalog()`.
-  Receipts feed price observations, which change what Scan and List recommend right away.
-- **Stubs:** Spending, Community, Contribute, Memberships (a heading and one sentence each, in
-  `src/routes/index.tsx`).
-- **Design:** none. Plain Tailwind, a text nav bar across the top, bordered `<select>`s and raw tables. No
-  design tokens, no components folder, no icons, no fonts, no favicon beyond the Vite default.
-- **Health:** 70 tests pass, typecheck and lint are clean. No backend, nothing hosted.
-- **Tests rely on markup:** `getByRole('table')`, `getByRole('slider')`, button names like "Save receipt",
-  labels like "Item 1" and "Purchased". A redesign will break these selectors, so update them on purpose
-  and keep every behavioral assertion.
+| Feature | State | Demo value |
+|---|---|---|
+| Compare (Scan) | Works: per-unit ranking, quality vs. price slider, provenance | **Core.** The "aha": the 64 oz wins while costing more |
+| Trip planner (List) | Works: store-subset optimizer with fuel cost | **Core.** The algorithmic flex: "the cheap store isn't worth the drive" |
+| Receipts | Works: entry feeds live prices into Compare and Trip | **Core.** Closes the loop and shows data freshness |
+| Spending | Stub | High value, low cost: derived from receipts, makes a great chart |
+| Memberships | Stub | Medium: member pricing already exists in the logic, it just needs a switch |
+| Contribute | Stub | Low as its own tab; useful as the unknown-barcode fallback |
+| Community | Stub | Lowest: expensive to make convincing, off the core story |
+| Design | None | **The biggest gap.** Nothing is styled yet |
 
-## What the judges score
+The logic is strong and tested (70 tests). The gap is almost entirely presentation.
 
-The Congressional App Challenge scores three things: the **quality of the idea**, the **implementation**
-(including user experience and design), and **coding skill**. Judges mostly see the app through a public
-**1-3 minute YouTube video** that shows what the app does, what it was built with, and how it works. So
-two things matter most: how the app looks in that video, and how cleanly each feature works on screen.
+## Feature decisions (tasteful scope)
 
-## How to make an AI-built app look good (research summary)
+**Keep and polish: the core loop.**
+1. **Compare.** Rename the "Scan" tab to "Compare" until real scanning exists (see the stretch goals).
+   Use a hero card with the "Best value" pick and a one-line *why* ("38% cheaper per oz than the 20 oz,
+   4.6 stars"). Show the ranked rows with per-unit price as the biggest number on each row. Sticker
+   price and the source/freshness badge stay small, as supporting detail.
+2. **Trip.** A headline total and "You save $X vs. shopping at one store", the stops as cards, and a
+   simple SVG route diagram. The comparison against "cheapest everywhere, ignoring the drive" is the
+   punchline, so give it a clear visual.
+3. **Receipts.** A receipt-styled entry form. On save, show the payoff: "Updated 3 prices. Compare
+   now reflects this receipt."
 
-1. **Choose a visual direction before writing any code.** Asking an AI to "make it look nice" gets you the
-   statistically average app. Pick one or two real reference apps and write their look down as tokens.
-2. **Avoid the obvious AI look:** purple-to-blue gradients, glassmorphism on everything, emoji used as
-   icons, a soft gray shadow on every card, and Inter with no type hierarchy.
-3. **Put a design system in place before touching screens.** Tokens for color, type scale, spacing,
-   radius and shadow, plus a small set of shared components. Every screen then uses only those.
-4. **Use a solid component and icon base:** shadcn/ui (Radix underneath, you own the code, works with
-   Tailwind v4 and Vite), `lucide-react` icons, `sonner` toasts, `tw-animate-css` or `motion` for
-   restrained animation.
-5. **Design every state:** loading, empty, error and success. Most vibe-coded apps fall apart here.
-6. **Use realistic content:** real-sounding products, stores, prices, names and dates. No lorem ipsum, no
-   "test", no `--` placeholders.
-7. **Spend motion and color on the money moments.** Accent color and animation go on the 2-3 numbers
-   that tell the story ("You save $4.12", "Best value"). Everything else stays calm.
-8. **QA it like a reviewer:** check at 390px and 1280px, in light and dark mode, with keyboard focus
-   rings and visible contrast, and with no console errors.
-9. **Build the app around the demo script.** Decide the 90-second story first, then make every screen in
-   that story flawless.
+**Add, because it is cheap and visual.**
+4. **Spending.** This month and this year, a bar chart by month, and top stores. It is pure
+   aggregation over receipts, so it needs about 6 months of seeded history.
+5. **Home/Overview** (optional, small): "Saved $X this month" plus three quick actions (Compare,
+   Plan a trip, Add receipt). It gives the video a strong opening frame.
 
-## Plan
+**Fold in rather than build out.**
+6. **Memberships becomes a "Store cards" section in a Profile screen.** Wallet-style cards with a
+   Link toggle. Linking must visibly change prices in Compare and Trip, which reuses existing logic.
+   Move the trip screen's "has Ralphs card" checkbox here.
+7. **Contribute becomes the unknown-barcode flow.** Not a tab. When a barcode isn't found, offer
+   "Add this product." The submission shows up with a "Community" badge and still loses to a fresher
+   scraped price, which demonstrates the provenance rules.
 
-### Phase 0: Direction (short)
-- Brand: CartWise, "smart grocery savings." Fresh, trustworthy, a little playful. A green/teal primary,
-  a warm accent saved for savings callouts, neutral slate surfaces. A characterful sans for headings
-  (e.g. "Plus Jakarta Sans" or "Outfit") and a clean sans for body text.
-- Reference apps to borrow from: Apple Wallet / Revolut (card hierarchy), Instacart (product rows),
-  Copilot Money (spend charts).
-- Write it down as `docs/design.md`: palette, type scale, radius, shadow, spacing, motion rules, do/don't.
+**Cut from the navigation.**
+8. **Community.** Remove the tab. If there is time after everything else is finished, add a small
+   read-mostly "Local tips" list on Home. A thin chat screen hurts more than no chat screen.
 
-### Phase 1: Foundation
-- Tailwind v4 `@theme` tokens in `src/index.css`, with light and dark modes.
-- Install shadcn/ui (Vite + Tailwind v4 path), `lucide-react`, `sonner`, and `recharts` (for Spending).
-- `src/components/`: AppShell, PageHeader, Card, StatTile, Badge (source/trust, stale, member),
-  PriceTag, EmptyState, Skeleton, plus the shadcn primitives the screens need.
-- App shell: a mobile bottom tab bar with 5 tabs (Scan, List, Receipts, Spending, Community) plus a
-  "More" sheet for Contribute and Memberships. A sidebar layout on desktop.
-- Real logo and favicon (simple SVG cart plus checkmark), proper `<title>` and meta tags.
+**Navigation result:** 4 bottom tabs (Home or Compare, Trip, Receipts, Spending) plus a Profile icon.
+On desktop, a sidebar.
 
-### Phase 2: Redesign the three working screens
-- **Scan:** a hero "scanner" panel (camera-style frame with an animated scan line, a product picker and
-  barcode entry), a big "Best value" card and a "Cheapest per unit" card, then the ranked options as
-  rows (product, store, sticker price, per-unit price, quality stars, source/freshness badge). Turn the
-  quality-versus-price slider into a labeled segmented control or a styled slider.
-- **List:** a list builder with quantity steppers, and a plan summary card with the headline total and
-  the savings versus a single store and versus the naive plan. Per-store stop cards, and a simple
-  route visual (stylized SVG stops, no Maps API needed).
-- **Receipts:** a receipt-shaped entry form, a toast when a receipt is saved, a history list, and a clear
-  "this updated N prices" callout that links to Scan.
+## Stretch goals (only after the core is finished; each is a big "wow" in the video)
 
-### Phase 3: Turn the stubs into real features (local data, real logic)
-- **Spending:** monthly/annual totals derived from receipts. A bar chart by month, breakdown by store and
-  category, and a "saved with CartWise" stat. Seed enough historical receipts for the chart to look full.
-- **Memberships:** link/unlink loyalty cards (a simulated connect flow with a short loading state). Linked
-  status feeds the existing member-price logic, so linking Ralphs visibly changes Scan and List results.
-  Move the List screen's "has Ralphs card" toggle here.
-- **Contribute:** an "add a product / price" form that writes a `user_report` observation through the
-  store, shows up in Scan with an "unverified / community" badge, and loses to fresh scraped prices as
-  the provenance rules require. The unknown-barcode error on Scan should link here.
-- **Community:** locality threads with seeded posts, authors, timestamps, replies and upvotes; new
-  posts and replies persisted locally. Mention products and stores as chips that link to Scan.
+- **Real barcode scanning** with the phone camera (`@zxing/browser`, or the native `BarcodeDetector`
+  where supported), feeding the existing `getPackageByGtin`. Free, no backend. Seeing a real scan in
+  the video is very persuasive. Keep manual entry as a fallback.
+- **Real receipt OCR** with `tesseract.js` (runs in the browser, free) that pre-fills the receipt form
+  for the user to confirm. Only worth it if it reliably reads one clean demo receipt.
+- **Free static deploy** (GitHub Pages, Netlify or Vercel) so judges can click a link. It costs
+  nothing and runs no backend, so it fits the project rules.
 
-### Phase 4: Delight and consistency pass
-- Page transitions and number count-ups on the savings figures. Skeletons on first render (fake a short
-  delay only where it helps the video).
-- An onboarding/landing screen ("Save on every grocery run") with 3 value props and a "Try the demo"
-  button.
-- Remove every "stub", "placeholder" and "design comes later" string and comment.
-- Accessibility basics: labels, focus rings, AA contrast, `prefers-reduced-motion`.
+## Design approach
 
-### Phase 5: Demo readiness
-- A "Reset demo data" action in settings.
-- A scripted demo path that works on the first click every time: scan ketchup, see that the 64 oz wins
-  per unit, enter a receipt, watch the ranking change, plan a trip, link a membership, see the savings,
-  look at Spending.
-- Screenshot every screen at 390px and 1280px with Playwright (Chromium is preinstalled) and fix
-  anything off.
-- `npm run build` passes. Optional: deploy free to GitHub Pages or Vercel (static site, no backend).
-- README with screenshots, the tech stack, and how the ranking and trip math work. This supports the
-  "coding skill" criterion.
+Use the **Impeccable** skill, which is installed in `.claude/skills/impeccable`, as the design
+workflow:
+1. `/impeccable init`: writes `PRODUCT.md` (audience, purpose, voice) from this plan.
+2. `/impeccable shape`, then `/impeccable craft` on the app shell and Compare first. That sets the
+   visual world. Record it in `DESIGN.md` (`/impeccable document`).
+3. Apply the same system to Trip, Receipts, Spending and Profile.
+4. `/impeccable critique` and `/impeccable audit` per screen. Then `polish`, `harden` (empty and
+   error states), and `adapt` (390px phone and 1280px desktop).
+5. Run `impeccable detect src` before each commit to catch the obvious AI-design tells.
+
+Direction to start from (Impeccable may refine it): fresh and trustworthy, with green/teal as the
+primary color. One warm accent used only for savings. Neutral surfaces. A characterful heading font.
+Mobile-first. Restraint everywhere except the savings numbers.
+
+The wshobson/agents plugins (`ui-design`, `frontend-mobile-development`, `javascript-typescript`,
+`unit-testing`) cover component architecture, Tailwind design systems and testing.
+`avoid-ai-writing` is for the README and video script.
+
+## Timeline (19 days)
+
+| Days | Work |
+|---|---|
+| 1-2 | Design direction, tokens, app shell and navigation, logo. Compare fully redesigned |
+| 3-5 | Trip and Receipts redesigned. Store cards in Profile; fold Contribute into the barcode flow |
+| 6-8 | Spending with seeded history. Home screen. Empty, loading and error states everywhere |
+| 9-10 | Critique and audit passes, mobile and desktop screenshots, fixes. **Feature freeze** |
+| 11-13 | Stretch: camera scanning, then a static deploy |
+| 14-15 | README with screenshots and "how it works"; demo script; record and edit the video |
+| 16-19 | Buffer: re-record, fix bugs found on camera, submit early (by Oct 23) |
 
 ## Out of scope (per CLAUDE.md)
-Supabase hosting, auth, RLS, scale, security hardening, real OCR, real Maps API calls, real loyalty
-integrations. Fake the data source when needed, but never the logic.
+
+Hosting a backend, auth, security, scale, real loyalty integrations, real Maps API calls, and paid
+services of any kind.

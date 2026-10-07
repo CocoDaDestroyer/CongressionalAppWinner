@@ -63,6 +63,15 @@ Tailwind v4 `@theme`, shared components under `src/components/`), apply it to ev
 remaining stub routes into convincing, working features backed by the local catalog store. Mobile-first:
 the app should look like a phone app in the demo, and also look intentional on a laptop.
 
+`docs/polish-plan.md` is the product plan. It sets the demo story, which features to polish, fold in
+or cut (Community is cut; Contribute becomes the unknown-barcode flow; Memberships moves into
+Profile), and the timeline to the Oct 26, 2026 deadline. Stay inside that scope.
+
+Design tooling: the Impeccable skill is vendored at `.claude/skills/impeccable` (Apache-2.0, from
+pbakaus/impeccable). Use `/impeccable` for design work (`init`, `shape`, `craft`, `critique`, `audit`,
+`polish`), and run `.claude/skills/impeccable/scripts/impeccable detect src` before committing UI
+changes. Its engine binary downloads to `~/.impeccable/` on first run.
+
 ## Feature domains
 
 Each is a separate slice; they share the product/price/store tables.
