@@ -11,7 +11,7 @@ export function Stars({ quality, reviewCount }: { quality: number | null; review
       className="inline-flex items-center gap-1 text-sm font-semibold text-ink tabular"
       aria-label={`Rated ${stars} out of 5${reviewCount ? ` from ${reviewCount.toLocaleString('en-US')} reviews` : ''}`}
     >
-      <Star className="size-3.5 fill-savings text-savings" aria-hidden="true" />
+      <Star className="size-3.5 fill-rating text-rating" aria-hidden="true" />
       {stars}
     </span>
   )

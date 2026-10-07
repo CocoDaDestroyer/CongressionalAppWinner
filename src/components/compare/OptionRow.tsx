@@ -33,9 +33,9 @@ export function OptionRow({ repo, option, isPick, isCheapest }: OptionRowProps) 
           </div>
           <Stars quality={option.quality} reviewCount={option.reviewCount} />
         </div>
-        <div className="mt-2 flex flex-wrap gap-1.5">
+        <div className="mt-2 flex flex-wrap items-center gap-1">
           {isPick && <Badge tone="leaf">Top pick</Badge>}
-          {isCheapest && !isPick && <Badge tone="savings">Lowest per unit</Badge>}
+          {isCheapest && !isPick && <Badge tone="neutral">Lowest per unit</Badge>}
           <PriceBadges option={option} />
         </div>
       </div>

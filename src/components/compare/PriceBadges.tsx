@@ -22,7 +22,7 @@ export function PriceBadges({ option }: { option: CompareOption }) {
   const stale = isStale(option)
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
+    <>
       {option.memberLocked ? (
         <Link to="/profile" className="rounded-full">
           <Badge tone="neutral" icon={<Lock className={iconClass} aria-hidden="true" />}>
@@ -54,6 +54,6 @@ export function PriceBadges({ option }: { option: CompareOption }) {
           Unverified product
         </Badge>
       )}
-    </div>
+    </>
   )
 }

@@ -23,14 +23,15 @@ interface StickerProps {
   price: NormalizedPrice
   variant?: Variant
   size?: keyof typeof SIZES
+  className?: string
 }
 
-export function Sticker({ price, variant = 'plain', size = 'md' }: StickerProps) {
+export function Sticker({ price, variant = 'plain', size = 'md', className = '' }: StickerProps) {
   const { amount, unit } = shelfUnitPrice(price)
   const s = SIZES[size]
   return (
     <span
-      className={`inline-flex shrink-0 flex-col items-center justify-center rounded-[50%] ${s.box} ${VARIANTS[variant]}`}
+      className={`inline-flex shrink-0 flex-col items-center justify-center rounded-[50%] ${s.box} ${VARIANTS[variant]} ${className}`}
     >
       {/* The canonical per-unit value rides along for anything that sorts or tests it. */}
       <data

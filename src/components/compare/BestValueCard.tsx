@@ -28,14 +28,12 @@ export function BestValueCard({ repo, comparison }: BestValueCardProps) {
       className="rounded-card border border-leaf/25 bg-leaf-soft p-5 sm:p-6"
     >
       <div className="flex items-center gap-5">
-        <Sticker price={pick.normalized} variant="winner" size="lg" />
+        {/* Re-keyed on the pick, so a new winner visibly gets stuck on. */}
+        <Sticker key={pick.key} price={pick.normalized} variant="winner" size="lg" className="animate-stick" />
         <div className="min-w-0">
-          <h2 id="best-value" className="text-sm font-bold text-leaf-ink">
-            Best value
+          <h2 id="best-value" className="font-display text-xl leading-snug font-bold text-ink">
+            Best value: <span className="text-leaf-ink">{pick.pkg.displayName}</span>
           </h2>
-          <p className="mt-1 font-display text-xl leading-snug font-bold text-ink">
-            {pick.pkg.displayName}
-          </p>
           <p className="mt-1 text-sm text-ink-muted">
             {storeLabel(repo, pick.store)} · {formatCents(pick.priceCents)}
             {pick.isMemberPrice && ' member price'}
@@ -51,7 +49,7 @@ export function BestValueCard({ repo, comparison }: BestValueCardProps) {
           </span>
           {reason.stars !== null && (
             <span className="inline-flex items-center gap-1 tabular">
-              <Star className="size-4 fill-savings text-savings" aria-hidden="true" />
+              <Star className="size-4 fill-rating text-rating" aria-hidden="true" />
               {reason.stars.toFixed(1)} of 5 from {pick.reviewCount.toLocaleString('en-US')} reviews
             </span>
           )}

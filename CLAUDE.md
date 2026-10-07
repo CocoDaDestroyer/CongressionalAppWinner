@@ -4,9 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository status
 
-Skeleton stage. Comparison, trip planning and receipt entry work end to end against a local catalog
-store; every other feature is a route stub. There is no Supabase project, no hosting, and no paid service anywhere in the
-loop -- keep it that way unless the user says otherwise.
+Demo-ready. Every screen in the nav works end to end against the local catalog store: Home, Compare
+(with the unknown-barcode "add a product" flow), Trip, Receipts, Spending and Profile (store cards,
+theme, reset demo data). Community and the other stubs were cut. There is no Supabase project, no
+hosting, and no paid service anywhere in the loop -- keep it that way unless the user says otherwise.
+Stretch goals not started: camera barcode scanning, receipt OCR, a static deploy.
 
 ## Purpose: a presentation app, not a production app
 
@@ -138,18 +140,29 @@ Supabase vars are missing.
 src/lib/units.ts       per-unit normalization and ranking
 src/lib/catalog.ts     types mirroring the schema, by hand until `supabase gen types`
 src/lib/repository.ts  the data boundary + the in-memory implementation
-src/lib/compare.ts     scanned package -> ranked options across brands, sizes, stores
+src/lib/compare.ts     scanned package -> ranked options; best value, its reason, shelf-tag display
 src/lib/geo.ts         straight-line distance, round-trip routing, driving cost
 src/lib/trip.ts        shopping list -> which stores to visit and what to buy at each
-src/lib/store.ts       the live catalog: seed + entered receipts, persisted, observable
-src/lib/useCatalog.ts  React binding for the above
-src/lib/supabase.ts    the single Supabase client (unused so far -- nothing is hosted)
-src/data/seed.ts       fabricated catalog and prices, shaped like the real tables
-src/routes/Scan.tsx    the comparison screen
-src/routes/ShoppingList.tsx  the trip planner
-src/routes/Receipts.tsx      receipt entry; the rest of src/routes/ is stubs
+src/lib/store.ts       the live catalog: seed + receipts + linked cards + community reports
+src/lib/useCatalog.ts  React bindings: useCatalog, useReceipts, useLinkedRetailers
+src/lib/spending.ts    receipts by month, year and store (pure)
+src/lib/savings.ts     saved vs. the typical per-unit price (pure)
+src/lib/gtin.ts        typed/scanned barcode -> GTIN-14
+src/lib/labels.ts      shared display names ("Ralphs Westwood")
+src/lib/theme.ts       light/dark/system, applied as <html data-theme>
+src/lib/supabase.ts    the single Supabase client (unused -- nothing is hosted)
+src/data/seed.ts       sample catalog, prices and six months of generated receipt history
+src/index.css          design tokens (Tailwind v4 @theme), light and dark
+src/components/        AppShell, Logo, Sticker (the per-unit oval), ui/ primitives, one folder per screen
+src/routes/            one file per screen; Spending is lazy-loaded (recharts)
 supabase/migrations/   schema, applied in filename order -- never applied anywhere yet
+PRODUCT.md, DESIGN.md  product truth and the design system, for the Impeccable skill
+docs/                  polish plan, demo script, screenshots
 ```
+
+Design rules that are easy to break: colors only through tokens (no hex in components), tangerine
+(`savings`) only for money saved, panels never nest, and the filled leaf sticker marks the one
+recommended option on a screen.
 
 ## Working without a backend
 
@@ -158,6 +171,13 @@ Screens must read the catalog through `useCatalog()`, never by constructing thei
 `useSyncExternalStore` sees the change; a screen holding its own repository silently goes stale the
 moment a receipt is saved. Whatever a `useMemo` derives from the repository has to list it as a
 dependency for the same reason.
+
+Linked store cards are not baked into the repository: screens pass `useLinkedRetailers()` to
+`compareByPackage` / `optimizeTrip` as `memberRetailerIds`. Without a linked card a member price is
+listed but locked (`memberLocked`) and never recommended.
+
+Seeded receipt history is dated older than every seeded price for the same package and store, so it
+feeds Spending without overriding anything Compare or Trip show. A test enforces that.
 
 Receipts are stored; price observations are derived from them on every rebuild, never stored
 alongside. That direction is what lets a corrected or deleted receipt correct the prices it produced.

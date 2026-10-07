@@ -42,6 +42,9 @@
   --color-savings-ink: oklch(0.53 0.15 45);
   --color-savings-soft: oklch(0.95 0.045 65);
 
+  /* Review stars: gold, kept apart from the savings tangerine. */
+  --color-rating: oklch(0.74 0.15 82);
+
   /* State. */
   --color-warn-ink: oklch(0.5 0.11 70);
   --color-warn-soft: oklch(0.95 0.05 88);
@@ -79,8 +82,8 @@
   --color-leaf-ink: oklch(0.82 0.12 154);
   --color-on-leaf: oklch(0.18 0.03 160);
 
-  --color-shell: oklch(0.13 0.02 162);
-  --color-shell-raised: oklch(0.22 0.03 162);
+  --color-shell: oklch(0.17 0.04 160);
+  --color-shell-raised: oklch(0.25 0.05 160);
   --color-on-shell: oklch(0.95 0.015 150);
   --color-on-shell-muted: oklch(0.74 0.04 154);
 
@@ -88,6 +91,7 @@
   --color-savings-ink: oklch(0.82 0.13 62);
   --color-savings-soft: oklch(0.3 0.06 55);
 
+  --color-rating: oklch(0.83 0.14 85);
   --color-warn-ink: oklch(0.83 0.12 85);
   --color-warn-soft: oklch(0.3 0.05 80);
   --color-danger-ink: oklch(0.75 0.14 25);
@@ -175,6 +179,19 @@
     opacity: 0;
     transform: translateY(12px);
   }
+}
+
+/* The signature moment: a new best value gets stuck on like a produce sticker. */
+@keyframes stick-on {
+  from {
+    opacity: 0;
+    scale: 1.25;
+    rotate: 10deg;
+  }
+}
+
+@utility animate-stick {
+  animation: stick-on 520ms var(--ease-out-expo) both;
 }
 
 @utility animate-rise {

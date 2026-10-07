@@ -130,10 +130,13 @@ export function Trip() {
             </div>
             <p className="mt-3 text-sm text-ink-muted tabular">
               {formatCents(best.groceryCents)} groceries + {formatCents(best.drivingCents)} fuel ·{' '}
-              {plural(best.stores.length, 'stop')} · {formatMiles(best.miles)} round trip ·{' '}
-              <a href="#list" className="font-semibold text-leaf-ink underline lg:hidden">
-                Edit list
-              </a>
+              {plural(best.stores.length, 'stop')} · {formatMiles(best.miles)} round trip
+              <span className="lg:hidden">
+                {' · '}
+                <a href="#list" className="font-semibold text-leaf-ink underline">
+                  Edit list
+                </a>
+              </span>
             </p>
 
             {cardSavings >= 1 && cardsToLink.length > 0 && (
