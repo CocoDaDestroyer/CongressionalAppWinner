@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { compareByPackage, formatPerUnit, isStale } from './compare'
+import {
+  compareByPackage,
+  explainPick,
+  formatPerUnit,
+  formatShelfUnit,
+  isStale,
+  packageSize,
+} from './compare'
 import { createInMemoryRepository, toCurrentPrices } from './repository'
 import type { PriceObservation } from './catalog'
 import * as seed from '../data/seed'
@@ -117,5 +124,84 @@ describe('formatPerUnit', () => {
   it('shows mass and volume per 100 canonical units, not per gram', () => {
     const result = compareByPackage(repo, 'p-heinz-20', at())!
     expect(formatPerUnit(result.options[0].normalized)).toMatch(/^\$\d+\.\d\d \/ 100 g$/)
+  })
+})
+
+describe('member pricing with linked cards', () => {
+  const heinz20AtRalphs = (members: string[]) =>
+    compareByPackage(repo, 'p-heinz-20', { ...at(), memberRetailerIds: members })!.options.find(
+      (o) => o.pkg.id === 'p-heinz-20' && o.store.id === 's-ralphs-westwood' && o.isMemberPrice,
+    )!
+
+  it('lists a member price without a card, but locked', () => {
+    expect(heinz20AtRalphs([]).memberLocked).toBe(true)
+    expect(heinz20AtRalphs(['r-ralphs']).memberLocked).toBe(false)
+  })
+
+  it('never recommends a locked member price', () => {
+    const result = compareByPackage(repo, 'p-heinz-20', {
+      ...at(),
+      qualityWeight: 1,
+      memberRetailerIds: [],
+    })!
+    expect(result.bestValue!.isMemberPrice).toBe(false)
+  })
+
+  it('recommends the member price once the card is linked', () => {
+    const result = compareByPackage(repo, 'p-heinz-20', {
+      ...at(),
+      qualityWeight: 1,
+      memberRetailerIds: ['r-ralphs'],
+    })!
+    expect(result.bestValue).toMatchObject({ isMemberPrice: true, priceCents: 349 })
+  })
+
+  it('treats every member price as usable when no shopper is given', () => {
+    const result = compareByPackage(repo, 'p-heinz-20', at())!
+    expect(result.options.some((o) => o.memberLocked)).toBe(false)
+  })
+})
+
+describe('explainPick', () => {
+  it('measures a different package against the one scanned', () => {
+    // No card linked, so the yardstick is the best public price for the 20 oz.
+    const result = compareByPackage(repo, 'p-heinz-20', {
+      ...at(),
+      qualityWeight: 0.5,
+      memberRetailerIds: [],
+    })!
+    const reason = explainPick(result)!
+    expect(result.bestValue!.pkg.id).toBe('p-heinz-64')
+    expect(reason.versus.kind).toBe('scanned')
+    // 64 oz at Ralphs is ~14.0c/oz against ~19.9c/oz for the 20 oz at Target.
+    expect(reason.percentLess).toBe(30)
+    expect(reason.stars).toBe(4.5)
+  })
+
+  it('measures the scanned package against the typical price when it wins', () => {
+    const result = compareByPackage(repo, 'p-heinz-20', { ...at(), qualityWeight: 1 })!
+    const reason = explainPick(result)!
+    expect(result.bestValue!.pkg.id).toBe('p-heinz-20')
+    expect(reason.versus.kind).toBe('typical')
+    expect(reason.percentLess).toBeGreaterThanOrEqual(0)
+  })
+})
+
+describe('shelf-tag formatting', () => {
+  it('quotes mass per ounce and small amounts in cents', () => {
+    const result = compareByPackage(repo, 'p-heinz-64', at())!
+    const heinz64 = result.options.find((o) => o.pkg.id === 'p-heinz-64')!
+    expect(formatShelfUnit(heinz64.normalized)).toBe('14.0¢/oz')
+  })
+
+  it('quotes volume per fluid ounce and count per item', () => {
+    const oil = compareByPackage(repo, 'p-365-1l', at())!.options[0]
+    expect(formatShelfUnit(oil.normalized)).toMatch(/\/fl oz$/)
+    const eggs = compareByPackage(repo, 'p-lucerne-12', at())!.options[0]
+    expect(formatShelfUnit(eggs.normalized)).toMatch(/ each$/)
+  })
+
+  it('names a package by its size', () => {
+    expect(packageSize(seed.packages.find((p) => p.id === 'p-heinz-64')!)).toBe('64 oz')
   })
 })

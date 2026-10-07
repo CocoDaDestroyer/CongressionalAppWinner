@@ -28,13 +28,16 @@ export interface CurrentPrice {
 
 export interface CatalogRepository {
   getConcepts(): ProductConcept[]
+  getPackages(): Package[]
   getPackage(packageId: string): Package | undefined
   /** Resolve a scanned barcode. Undefined when the GTIN is not in the catalog. */
   getPackageByGtin(gtin: string): Package | undefined
   /** Every package of the same concept -- the sibling brands and sizes. */
   getSiblingPackages(conceptId: string): Package[]
   getBrand(brandId: string | null): Brand | undefined
+  getStores(): Store[]
   getStore(storeId: string): Store | undefined
+  getRetailers(): Retailer[]
   getRetailer(retailerId: string): Retailer | undefined
   getQuality(packageId: string): QualityScore | undefined
   /** Current price per (package, store, member/public) for the given packages. */
@@ -102,12 +105,15 @@ export function createInMemoryRepository(data: InMemoryData): CatalogRepository 
 
   return {
     getConcepts: () => [...data.concepts],
+    getPackages: () => [...data.packages],
     getPackage: (id) => packages.get(id),
     getPackageByGtin: (gtin) => byGtin.get(gtin),
     getSiblingPackages: (conceptId) =>
       data.packages.filter((p) => p.conceptId === conceptId),
     getBrand: (id) => (id ? brands.get(id) : undefined),
+    getStores: () => [...data.stores],
     getStore: (id) => stores.get(id),
+    getRetailers: () => [...data.retailers],
     getRetailer: (id) => retailers.get(id),
     getQuality: (id) => quality.get(id),
     getCurrentPrices: (packageIds) => {

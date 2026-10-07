@@ -176,3 +176,147 @@ describe('CatalogStore', () => {
     expect(new CatalogStore(seed).getReceipts()).toHaveLength(0)
   })
 })
+
+describe('linked store cards', () => {
+  it('records a linked card and forgets it when unlinked', () => {
+    const store = newStore()
+    store.setCardLinked('r-ralphs', true)
+    expect(store.getLinkedRetailerIds()).toEqual(['r-ralphs'])
+    store.setCardLinked('r-ralphs', false)
+    expect(store.getLinkedRetailerIds()).toEqual([])
+  })
+
+  it('notifies subscribers only on a real change', () => {
+    const store = newStore()
+    let calls = 0
+    store.subscribe(() => calls++)
+    store.setCardLinked('r-target', true)
+    store.setCardLinked('r-target', true)
+    expect(calls).toBe(1)
+  })
+
+  it('survives a reload', () => {
+    newStore().setCardLinked('r-target', true)
+    expect(new CatalogStore(seed).getLinkedRetailerIds()).toEqual(['r-target'])
+  })
+})
+
+describe('community contributions', () => {
+  const tenDaysAgo = new Date(seed.SEED_NOW.getTime() - 10 * 86_400_000)
+
+  function storeAt(now: Date) {
+    localStorage.clear()
+    return new CatalogStore(seed, { clock: () => now })
+  }
+
+  const targetHeinz20 = (store: CatalogStore) =>
+    compareByPackage(store.getRepository(), 'p-heinz-20', { now: seed.SEED_NOW })!.options.find(
+      (o) => o.pkg.id === 'p-heinz-20' && o.store.id === 's-target-westwood' && !o.isMemberPrice,
+    )!
+
+  it('records a report as a user_report observation', () => {
+    const store = storeAt(seed.SEED_NOW)
+    const observation = store.reportPrice({
+      packageId: 'p-heinz-20', storeId: 's-target-westwood', priceCents: 359,
+    })
+    expect(observation.source).toBe('user_report')
+    expect(targetHeinz20(store)).toMatchObject({ priceCents: 359, source: 'user_report' })
+  })
+
+  it('loses to a fresher scrape', () => {
+    // The seeded Target scrape is one day old; this report is ten.
+    const store = storeAt(tenDaysAgo)
+    store.reportPrice({ packageId: 'p-heinz-20', storeId: 's-target-westwood', priceCents: 199 })
+    expect(targetHeinz20(store)).toMatchObject({ priceCents: 399, source: 'scrape' })
+  })
+
+  it('loses to a scrape seen at the same instant', () => {
+    const scrapedAt = new Date(seed.priceObservations.find(
+      (o) => o.packageId === 'p-heinz-20' && o.storeId === 's-target-westwood',
+    )!.observedAt)
+    const store = storeAt(scrapedAt)
+    store.reportPrice({ packageId: 'p-heinz-20', storeId: 's-target-westwood', priceCents: 199 })
+    expect(targetHeinz20(store)).toMatchObject({ priceCents: 399, source: 'scrape' })
+  })
+
+  it('rejects a price that is not a positive number of cents', () => {
+    const store = storeAt(seed.SEED_NOW)
+    expect(() =>
+      store.reportPrice({ packageId: 'p-heinz-20', storeId: 's-target-westwood', priceCents: 0 }),
+    ).toThrow(RangeError)
+  })
+
+  it('adds an unknown barcode as an unverified package with a community price', () => {
+    const store = storeAt(seed.SEED_NOW)
+    const pkg = store.contributeProduct({
+      gtin: '00012345678905',
+      displayName: 'Sir Kensington Ketchup, 20 oz',
+      conceptId: 'c-ketchup',
+      size: 20,
+      unit: 'oz',
+      storeId: 's-wf-westwood',
+      priceCents: 549,
+    })
+    const repo = store.getRepository()
+    expect(repo.getPackageByGtin('00012345678905')).toEqual(pkg)
+    expect(pkg.verifiedAt).toBeNull()
+
+    // It joins the comparison as a sibling of the other ketchups.
+    const option = compareByPackage(repo, 'p-heinz-64', { now: seed.SEED_NOW })!.options.find(
+      (o) => o.pkg.id === pkg.id,
+    )!
+    expect(option).toMatchObject({ priceCents: 549, source: 'user_report', ageDays: 0 })
+  })
+
+  it('refuses a barcode the catalog already knows', () => {
+    const store = storeAt(seed.SEED_NOW)
+    expect(() =>
+      store.contributeProduct({
+        gtin: '00013000006200', displayName: 'Dupe', conceptId: 'c-ketchup',
+        size: 20, unit: 'oz', storeId: 's-wf-westwood', priceCents: 100,
+      }),
+    ).toThrow(RangeError)
+  })
+
+  it('survives a reload', () => {
+    storeAt(seed.SEED_NOW).reportPrice({
+      packageId: 'p-heinz-20', storeId: 's-target-westwood', priceCents: 359,
+    })
+    expect(targetHeinz20(new CatalogStore(seed))).toMatchObject({ priceCents: 359 })
+  })
+})
+
+describe('resetDemoData', () => {
+  it('restores seeded history and clears cards and contributions', () => {
+    localStorage.clear()
+    const store = new CatalogStore(seed, {
+      initialReceipts: seed.receiptHistory,
+      clock: () => seed.SEED_NOW,
+    })
+    expect(store.getReceipts()).toHaveLength(seed.receiptHistory.length)
+
+    store.deleteReceipt(seed.receiptHistory[0].id)
+    store.setCardLinked('r-ralphs', true)
+    store.reportPrice({ packageId: 'p-heinz-20', storeId: 's-target-westwood', priceCents: 359 })
+
+    store.resetDemoData()
+    expect(store.getReceipts()).toHaveLength(seed.receiptHistory.length)
+    expect(store.getLinkedRetailerIds()).toEqual([])
+    const target = compareByPackage(store.getRepository(), 'p-heinz-20', {
+      now: seed.SEED_NOW,
+    })!.options.find((o) => o.pkg.id === 'p-heinz-20' && o.store.id === 's-target-westwood')!
+    expect(target.priceCents).toBe(399)
+  })
+
+  it('never lets seeded history override a seeded price', () => {
+    localStorage.clear()
+    const withHistory = new CatalogStore(seed, { initialReceipts: seed.receiptHistory })
+    const without = newStore()
+    for (const concept of seed.concepts) {
+      const ids = seed.packages.filter((p) => p.conceptId === concept.id).map((p) => p.id)
+      expect(withHistory.getRepository().getCurrentPrices(ids)).toEqual(
+        without.getRepository().getCurrentPrices(ids),
+      )
+    }
+  })
+})

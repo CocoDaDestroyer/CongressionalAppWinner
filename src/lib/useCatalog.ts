@@ -17,3 +17,8 @@ export function useCatalog(): CatalogRepository {
 export function useReceipts(): readonly Receipt[] {
   return useSyncExternalStore(catalogStore.subscribe, catalogStore.getReceipts)
 }
+
+/** Retailers whose store card is linked, so their member prices apply. */
+export function useLinkedRetailers(): readonly string[] {
+  return useSyncExternalStore(catalogStore.subscribe, catalogStore.getLinkedRetailerIds)
+}

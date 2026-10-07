@@ -8,7 +8,13 @@
  */
 import type { CatalogRepository, CurrentPrice } from './repository'
 import { SOURCE_LABEL, type Package, type PriceSource, type Store } from './catalog'
-import { cheapestFirst, normalize, type Dimension, type NormalizedPrice } from './units'
+import {
+  cheapestFirst,
+  normalize,
+  toCanonical,
+  type Dimension,
+  type NormalizedPrice,
+} from './units'
 
 export interface CompareOption {
   key: string
@@ -26,6 +32,12 @@ export interface CompareOption {
   /** Review sentiment 0..1, or null when nothing has reviewed this package. */
   quality: number | null
   reviewCount: number
+  /**
+   * A member price at a retailer whose card the shopper has not linked. Still
+   * listed, so the shopper can see what linking would unlock, but never
+   * recommended.
+   */
+  memberLocked: boolean
 }
 
 export interface Comparison {
@@ -34,7 +46,7 @@ export interface Comparison {
   dimension: Dimension
   /** Every option, cheapest per unit first. */
   options: CompareOption[]
-  /** Cheapest per unit. Null only when nothing has a price. */
+  /** Cheapest usable option per unit. Null only when nothing usable has a price. */
   cheapest: CompareOption | null
   /** Best cost-versus-quality balance; often not the cheapest. */
   bestValue: CompareOption | null
@@ -52,12 +64,17 @@ export interface CompareOptions {
   qualityWeight?: number
   /** Injected so tests and the seed UI can pin "today". */
   now?: Date
+  /**
+   * Retailers whose member pricing the shopper can use. Omitted means every
+   * member price counts, which is how the catalog looks with no shopper.
+   */
+  memberRetailerIds?: readonly string[]
 }
 
 export function compareByPackage(
   repo: CatalogRepository,
   packageId: string,
-  { qualityWeight = 0.5, now = new Date() }: CompareOptions = {},
+  { qualityWeight = 0.5, now = new Date(), memberRetailerIds }: CompareOptions = {},
 ): Comparison | null {
   const scanned = repo.getPackage(packageId)
   if (!scanned) return null
@@ -68,6 +85,7 @@ export function compareByPackage(
   const siblings = repo.getSiblingPackages(concept.id)
   const prices = repo.getCurrentPrices(siblings.map((p) => p.id))
   const byPackage = new Map(siblings.map((p) => [p.id, p]))
+  const members = memberRetailerIds ? new Set(memberRetailerIds) : null
 
   const options: CompareOption[] = []
   for (const price of prices) {
@@ -94,18 +112,20 @@ export function compareByPackage(
       ),
       quality: quality?.score ?? null,
       reviewCount: quality?.reviewCount ?? 0,
+      memberLocked: price.isMemberPrice && members !== null && !members.has(store.retailerId),
     })
   }
 
   const ranked = cheapestFirst(options, (o) => o.normalized)
+  const usable = ranked.filter((o) => !o.memberLocked)
 
   return {
     scanned,
     conceptName: concept.name,
     dimension: concept.dimension,
     options: ranked,
-    cheapest: ranked[0] ?? null,
-    bestValue: bestByValue(ranked, qualityWeight),
+    cheapest: usable[0] ?? null,
+    bestValue: bestByValue(usable, qualityWeight),
   }
 }
 
@@ -185,6 +205,78 @@ export function formatPerUnit(price: NormalizedPrice): string {
     return `${formatCents(price.perUnit)} each`
   }
   return `${formatCents(price.perUnit * 100)} / 100 ${price.unit}`
+}
+
+/** The unit a US shelf tag quotes, per dimension. */
+const SHELF_UNIT: Record<Dimension, { label: string; canonicalAmount: number }> = {
+  mass: { label: 'oz', canonicalAmount: toCanonical(1, 'oz') },
+  volume: { label: 'fl oz', canonicalAmount: toCanonical(1, 'floz') },
+  count: { label: 'each', canonicalAmount: 1 },
+}
+
+/**
+ * Per-unit price the way a US shelf tag prints it: "14.0¢" per oz, "$1.08"
+ * per fl oz. Display only; ranking always uses the canonical `perUnit`.
+ */
+export function shelfUnitPrice(price: NormalizedPrice): { amount: string; unit: string } {
+  const { label, canonicalAmount } = SHELF_UNIT[price.dimension]
+  const cents = price.perUnit * canonicalAmount
+  const amount = cents < 100 ? `${cents.toFixed(1)}¢` : formatCents(cents)
+  return { amount, unit: label }
+}
+
+export function formatShelfUnit(price: NormalizedPrice): string {
+  const { amount, unit } = shelfUnitPrice(price)
+  return unit === 'each' ? `${amount} each` : `${amount}/${unit}`
+}
+
+/** "Heinz Tomato Ketchup, 64 oz" -> "64 oz". */
+export function packageSize(pkg: Package): string {
+  const unit = pkg.unit === 'floz' ? 'fl oz' : pkg.unit
+  return `${pkg.size} ${unit}`
+}
+
+/** The facts behind a recommendation, for a one-line "why". */
+export interface PickReason {
+  /** How much less per unit the pick costs than the yardstick, 0..100. */
+  percentLess: number
+  /** What the pick is measured against. */
+  versus: { kind: 'scanned'; option: CompareOption } | { kind: 'typical' }
+  /** Review sentiment as stars out of five, or null when unreviewed. */
+  stars: number | null
+}
+
+/**
+ * Why the best-value pick won. When it is a different package from the one
+ * scanned, it is measured against the scanned package's best usable price --
+ * the decision the shopper was about to make. Otherwise against the median
+ * usable price per unit.
+ */
+export function explainPick(comparison: Comparison): PickReason | null {
+  const pick = comparison.bestValue
+  if (!pick) return null
+  const usable = comparison.options.filter((o) => !o.memberLocked)
+
+  const scannedBest = usable.find((o) => o.pkg.id === comparison.scanned.id)
+  let yardstick: number
+  let versus: PickReason['versus']
+  if (pick.pkg.id !== comparison.scanned.id && scannedBest) {
+    yardstick = scannedBest.normalized.perUnit
+    versus = { kind: 'scanned', option: scannedBest }
+  } else {
+    const sorted = usable.map((o) => o.normalized.perUnit).sort((a, b) => a - b)
+    yardstick = sorted[Math.floor((sorted.length - 1) / 2)]
+    versus = { kind: 'typical' }
+  }
+
+  const percentLess =
+    yardstick > 0 ? Math.max(0, Math.round((1 - pick.normalized.perUnit / yardstick) * 100)) : 0
+
+  return {
+    percentLess,
+    versus,
+    stars: pick.quality === null ? null : Math.round(pick.quality * 50) / 10,
+  }
 }
 
 export function isStale(option: CompareOption): boolean {

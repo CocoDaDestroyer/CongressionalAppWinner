@@ -12,11 +12,16 @@
  *   - member pricing that beats public pricing at the same store
  *   - a stale user report sitting alongside a fresh scrape
  *   - a cheap store far enough away that the drive can cancel the savings
+ *   - member prices at two chains, so linking a store card visibly changes plans
+ *   - six months of receipt history, all older than every seeded price for the
+ *     same package and store, so history feeds Spending without overriding
+ *     anything Compare or Trip shows
  *
  * Tests assert on these properties. Preserve them when editing.
  */
 import type {
   Brand,
+  Receipt,
   Package,
   PriceObservation,
   ProductConcept,
@@ -43,6 +48,12 @@ export const brands: Brand[] = [
   { id: 'b-lucerne', name: 'Lucerne' },
   { id: 'b-horizon', name: 'Horizon Organic' },
   { id: 'b-nishiki', name: 'Nishiki' },
+  { id: 'b-daves', name: "Dave's Killer Bread" },
+  { id: 'b-fosterfarms', name: 'Foster Farms' },
+  { id: 'b-barilla', name: 'Barilla' },
+  { id: 'b-goodgather', name: 'Good & Gather' },
+  { id: 'b-peets', name: "Peet's Coffee" },
+  { id: 'b-chobani', name: 'Chobani' },
 ]
 
 export const concepts: ProductConcept[] = [
@@ -51,6 +62,12 @@ export const concepts: ProductConcept[] = [
   { id: 'c-eggs', name: 'Eggs', category: 'dairy', dimension: 'count' },
   { id: 'c-milk', name: 'Milk', category: 'dairy', dimension: 'volume' },
   { id: 'c-rice', name: 'Rice', category: 'pantry', dimension: 'mass' },
+  { id: 'c-bread', name: 'Bread', category: 'bakery', dimension: 'mass' },
+  { id: 'c-bananas', name: 'Bananas', category: 'produce', dimension: 'mass' },
+  { id: 'c-chicken', name: 'Chicken breast', category: 'meat', dimension: 'mass' },
+  { id: 'c-pasta', name: 'Pasta', category: 'pantry', dimension: 'mass' },
+  { id: 'c-coffee', name: 'Ground coffee', category: 'pantry', dimension: 'mass' },
+  { id: 'c-yogurt', name: 'Greek yogurt', category: 'dairy', dimension: 'mass' },
 ]
 
 export const packages: Package[] = [
@@ -196,6 +213,108 @@ export const packages: Package[] = [
     packCount: null,
     verifiedAt: daysAgo(25),
   },
+
+  // Everyday staples, so receipts and spending look like a real weekly shop.
+  {
+    id: 'p-daves-27',
+    conceptId: 'c-bread',
+    brandId: 'b-daves',
+    gtin: '00013764027206',
+    displayName: "Dave's Killer Bread 21 Whole Grains, 27 oz",
+    size: 27,
+    unit: 'oz',
+    packCount: null,
+    verifiedAt: daysAgo(30),
+  },
+  {
+    id: 'p-kroger-bread-20',
+    conceptId: 'c-bread',
+    brandId: 'b-kroger',
+    gtin: '00011110857842',
+    displayName: 'Kroger Whole Wheat Bread, 20 oz',
+    size: 20,
+    unit: 'oz',
+    packCount: null,
+    verifiedAt: daysAgo(30),
+  },
+  {
+    id: 'p-bananas-lb',
+    conceptId: 'c-bananas',
+    brandId: null,
+    // Loose produce carries no barcode.
+    gtin: null,
+    displayName: 'Bananas, per lb',
+    size: 1,
+    unit: 'lb',
+    packCount: null,
+    verifiedAt: daysAgo(30),
+  },
+  {
+    id: 'p-fosterfarms-chicken',
+    conceptId: 'c-chicken',
+    brandId: 'b-fosterfarms',
+    gtin: '00075221061525',
+    displayName: 'Foster Farms Chicken Breast, 2.5 lb',
+    size: 2.5,
+    unit: 'lb',
+    packCount: null,
+    verifiedAt: daysAgo(30),
+  },
+  {
+    id: 'p-365-chicken',
+    conceptId: 'c-chicken',
+    brandId: 'b-365',
+    gtin: '00099482467203',
+    displayName: '365 Organic Chicken Breast, 1.5 lb',
+    size: 1.5,
+    unit: 'lb',
+    packCount: null,
+    verifiedAt: daysAgo(30),
+  },
+  {
+    id: 'p-barilla-16',
+    conceptId: 'c-pasta',
+    brandId: 'b-barilla',
+    gtin: '00076808280739',
+    displayName: 'Barilla Spaghetti, 16 oz',
+    size: 16,
+    unit: 'oz',
+    packCount: null,
+    verifiedAt: daysAgo(30),
+  },
+  {
+    id: 'p-goodgather-pasta-16',
+    conceptId: 'c-pasta',
+    brandId: 'b-goodgather',
+    gtin: '00085239017746',
+    displayName: 'Good & Gather Spaghetti, 16 oz',
+    size: 16,
+    unit: 'oz',
+    packCount: null,
+    verifiedAt: daysAgo(30),
+  },
+  {
+    id: 'p-peets-10',
+    conceptId: 'c-coffee',
+    brandId: 'b-peets',
+    gtin: '00078804001052',
+    displayName: "Peet's Major Dickason's Ground Coffee, 10.5 oz",
+    size: 10.5,
+    unit: 'oz',
+    packCount: null,
+    verifiedAt: daysAgo(30),
+  },
+  {
+    id: 'p-chobani-32',
+    conceptId: 'c-yogurt',
+    brandId: 'b-chobani',
+    gtin: '00818290012111',
+    displayName: 'Chobani Plain Greek Yogurt, 32 oz',
+    size: 32,
+    unit: 'oz',
+    packCount: null,
+    verifiedAt: daysAgo(30),
+  },
 ]
 
 export const retailers: Retailer[] = [
@@ -251,6 +370,15 @@ export const qualityScores: QualityScore[] = [
   { packageId: 'p-horizon-half-gal', score: 0.88, reviewCount: 2310 },
   { packageId: 'p-kroger-milk-gal', score: 0.7, reviewCount: 1120 },
   { packageId: 'p-nishiki-5lb', score: 0.92, reviewCount: 3400 },
+  { packageId: 'p-daves-27', score: 0.93, reviewCount: 5120 },
+  { packageId: 'p-kroger-bread-20', score: 0.66, reviewCount: 410 },
+  { packageId: 'p-bananas-lb', score: 0.8, reviewCount: 760 },
+  { packageId: 'p-fosterfarms-chicken', score: 0.77, reviewCount: 1330 },
+  { packageId: 'p-365-chicken', score: 0.87, reviewCount: 940 },
+  { packageId: 'p-barilla-16', score: 0.89, reviewCount: 6210 },
+  { packageId: 'p-goodgather-pasta-16', score: 0.74, reviewCount: 520 },
+  { packageId: 'p-peets-10', score: 0.88, reviewCount: 3870 },
+  { packageId: 'p-chobani-32', score: 0.9, reviewCount: 2650 },
   // Deliberately unreviewed, to check that "no reviews" scores as neutral
   // rather than as bad.
   // p-kroger-rice-2lb has no entry.
@@ -320,4 +448,130 @@ export const priceObservations: PriceObservation[] = [
   obs('p-nishiki-5lb', 's-ralphs-santa-monica', 749, 'scrape', 2),
   obs('p-kroger-rice-2lb', 's-ralphs-westwood', 429, 'scrape', 3),
   obs('p-kroger-rice-2lb', 's-ralphs-santa-monica', 379, 'scrape', 2),
+
+  // -- Member prices. Ralphs and Target both discount for card holders, so
+  //    linking either card changes what Compare and Trip recommend.
+  obs('p-lucerne-12', 's-ralphs-westwood', 449, 'loyalty_sync', 2, true),
+  obs('p-horizon-half-gal', 's-ralphs-westwood', 529, 'loyalty_sync', 2, true),
+  obs('p-kroger-milk-gal', 's-ralphs-westwood', 399, 'loyalty_sync', 2, true),
+  obs('p-nishiki-5lb', 's-target-westwood', 829, 'loyalty_sync', 1, true),
+
+  // -- Staples.
+  obs('p-daves-27', 's-ralphs-westwood', 649, 'scrape', 2),
+  obs('p-daves-27', 's-ralphs-westwood', 549, 'loyalty_sync', 2, true),
+  obs('p-daves-27', 's-target-westwood', 629, 'scrape', 1),
+  obs('p-daves-27', 's-ralphs-santa-monica', 599, 'scrape', 2),
+  obs('p-kroger-bread-20', 's-ralphs-westwood', 249, 'scrape', 2),
+  obs('p-kroger-bread-20', 's-ralphs-santa-monica', 229, 'scrape', 2),
+  obs('p-bananas-lb', 's-ralphs-westwood', 69, 'scrape', 2),
+  obs('p-bananas-lb', 's-target-westwood', 75, 'scrape', 1),
+  obs('p-bananas-lb', 's-wf-westwood', 79, 'scrape', 2),
+  obs('p-bananas-lb', 's-ralphs-santa-monica', 59, 'scrape', 2),
+  obs('p-fosterfarms-chicken', 's-ralphs-westwood', 1249, 'scrape', 3),
+  obs('p-fosterfarms-chicken', 's-ralphs-santa-monica', 1149, 'scrape', 2),
+  obs('p-365-chicken', 's-wf-westwood', 1349, 'scrape', 2),
+  obs('p-barilla-16', 's-ralphs-westwood', 229, 'scrape', 2),
+  obs('p-barilla-16', 's-target-westwood', 199, 'scrape', 1),
+  obs('p-barilla-16', 's-ralphs-santa-monica', 209, 'scrape', 2),
+  obs('p-goodgather-pasta-16', 's-target-westwood', 119, 'scrape', 1),
+  obs('p-goodgather-pasta-16', 's-target-westwood', 99, 'loyalty_sync', 1, true),
+  obs('p-peets-10', 's-ralphs-westwood', 1099, 'scrape', 3),
+  obs('p-peets-10', 's-target-westwood', 999, 'scrape', 1),
+  obs('p-peets-10', 's-wf-westwood', 1149, 'scrape', 2),
+  obs('p-chobani-32', 's-ralphs-westwood', 649, 'scrape', 2),
+  obs('p-chobani-32', 's-target-westwood', 599, 'scrape', 1),
+  obs('p-chobani-32', 's-wf-westwood', 629, 'scrape', 2),
 ]
+
+/**
+ * Six months of one household's grocery runs, ending a week before `SEED_NOW`.
+ *
+ * Generated rather than typed out, but deterministically, so Spending shows the
+ * same history on every load and the tests can rely on it. Every line is priced
+ * from the seeded shelf price at that store, drifted down for inflation and
+ * jittered a little, the way real receipts wander.
+ *
+ * Each receipt is older than every seeded observation for its package and store,
+ * so history feeds Spending without superseding anything Compare or Trip show.
+ * The Kroger ketchup at Ralphs Westwood is left out on purpose: its only
+ * evidence is the stale user report, and a receipt would quietly replace it.
+ */
+export const receiptHistory: Receipt[] = buildReceiptHistory()
+
+function buildReceiptHistory(): Receipt[] {
+  const random = mulberry32(20_260_821)
+  const shelf = newestPublicPrices(priceObservations)
+  shelf.delete('p-kroger-20 s-ralphs-westwood')
+
+  const stocked = (storeId: string) =>
+    [...shelf.keys()].filter((key) => key.endsWith(` ${storeId}`)).map((key) => key.split(' ')[0])
+
+  const receipts: Receipt[] = []
+  const trip = (storeId: string, daysBack: number, minLines: number, maxLines: number) => {
+    const available = shuffle(stocked(storeId), random)
+    const count = Math.min(available.length, minLines + Math.floor(random() * (maxLines - minLines + 1)))
+    const monthsBack = daysBack / 30
+    const id = `h-${receipts.length + 1}`
+    const purchasedAt = daysAgo(daysBack)
+
+    receipts.push({
+      id,
+      storeId,
+      purchasedAt,
+      createdAt: purchasedAt,
+      lines: available.slice(0, count).map((packageId, index) => {
+        const base = shelf.get(`${packageId} ${storeId}`)!
+        const drifted = base * (1 - 0.006 * monthsBack) * (1 + (random() - 0.5) * 0.06)
+        return {
+          id: `${id}-${index}`,
+          packageId,
+          quantity: packageId === 'p-bananas-lb' ? 2 + Math.floor(random() * 2) : random() < 0.25 ? 2 : 1,
+          // Shelf prices end in 9; receipts should too.
+          unitPriceCents: Math.max(9, Math.round(drifted / 10) * 10 - 1),
+          isMemberPrice: false,
+        }
+      }),
+    })
+  }
+
+  for (let week = 26; week >= 1; week--) {
+    const daysBack = week * 7
+    trip(week % 2 === 0 ? 's-target-westwood' : 's-ralphs-westwood', daysBack, 6, 10)
+    if (week % 3 === 0) trip('s-wf-westwood', daysBack + 2, 3, 5)
+    if (week % 4 === 1) trip('s-ralphs-santa-monica', daysBack + 3, 7, 11)
+  }
+
+  return receipts.sort((a, b) => b.purchasedAt.localeCompare(a.purchasedAt))
+}
+
+/** Newest public price per `${packageId} ${storeId}`. */
+function newestPublicPrices(observations: readonly PriceObservation[]): Map<string, number> {
+  const newest = new Map<string, PriceObservation>()
+  for (const o of observations) {
+    if (o.isMemberPrice) continue
+    const key = `${o.packageId} ${o.storeId}`
+    const incumbent = newest.get(key)
+    if (!incumbent || o.observedAt > incumbent.observedAt) newest.set(key, o)
+  }
+  return new Map([...newest].map(([key, o]) => [key, o.priceCents]))
+}
+
+/** Small seeded PRNG, so generated history is identical on every load. */
+function mulberry32(seed: number): () => number {
+  let state = seed
+  return () => {
+    state = (state + 0x6d2b79f5) | 0
+    let t = Math.imul(state ^ (state >>> 15), 1 | state)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4_294_967_296
+  }
+}
+
+function shuffle<T>(items: T[], random: () => number): T[] {
+  const copy = [...items]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1))
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy
+}
