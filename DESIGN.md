@@ -1,236 +1,230 @@
 ---
 name: CartWise
-description: Grocery prices per ounce, with the drive counted.
+description: Grocery prices per ounce, printed like a shelf tag, with the drive counted.
 colors:
-  ground: "#f4f6f3"
-  surface: "#ffffff"
-  sunken: "#eef1ed"
-  line: "#e4e8e3"
-  line-strong: "#cdd3cc"
-  ink: "#17201b"
-  ink-muted: "#5d6962"
-  ink-faint: "#8a948d"
-  leaf: "#13804a"
-  leaf-hover: "#0f6b3d"
-  leaf-soft: "#e9f4ec"
-  leaf-ink: "#0f6b3d"
-  on-leaf: "#ffffff"
-  savings: "#c24e14"
-  savings-soft: "#fdf0e7"
-  rating: "#d99a0b"
-  warn: "#a15c07"
-  danger: "#c03221"
-  danger-soft: "#fcebe8"
-  community: "#3d5fa8"
-  card-1: "#1d4d36"
-  card-2: "#24385e"
-  card-3: "#3b3330"
+  paper: "#f5f0e6"
+  paper-raised: "#fbf8f1"
+  paper-sunken: "#ece5d6"
+  rule: "#d9d0bd"
+  rule-strong: "#14201b"
+  ink: "#14201b"
+  ink-muted: "#4f5b54"
+  ink-faint: "#606b64"
+  teal: "#0b5d4b"
+  teal-hover: "#084a3b"
+  teal-wash: "#dcebe3"
+  on-teal: "#ffffff"
+  tag: "#ffd23f"
+  on-tag: "#14201b"
+  brick: "#a13a22"
+  amber: "#7a4a00"
+  community: "#2f4f9a"
+  rating: "#b8800a"
+  card-1: "#1d4a3c"
+  card-2: "#26365a"
+  card-3: "#4a2f26"
+  dark-paper: "#0f1512"
+  dark-paper-raised: "#161f1a"
+  dark-rule: "#2a352e"
+  dark-ink: "#f1ecdf"
+  dark-ink-muted: "#a9b3ac"
+  dark-ink-faint: "#8d978f"
+  dark-teal: "#5fd3a8"
+  dark-brick: "#ff8a6b"
+  dark-community: "#8fa8f0"
+  dark-amber: "#e8b04a"
 typography:
-  hero-number:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "44px"
+  display:
+    fontFamily: "Bricolage Grotesque Variable, system-ui, sans-serif"
+    fontSize: "clamp(2rem, 1.4rem + 2.6vw, 3.25rem)"
+    fontWeight: 800
+    letterSpacing: "-0.035em"
+    lineHeight: 0.95
+  hero-numeral:
+    fontFamily: "Bricolage Grotesque Variable, system-ui, sans-serif"
+    fontSize: "clamp(4rem, 3rem + 6vw, 7.5rem)"
+    fontWeight: 800
+    letterSpacing: "-0.05em"
+    lineHeight: 0.85
+  page-title:
+    fontFamily: "Bricolage Grotesque Variable, system-ui, sans-serif"
+    fontSize: "clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem)"
     fontWeight: 700
     letterSpacing: "-0.03em"
-  page-title:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "26px"
-    fontWeight: 600
-    letterSpacing: "-0.015em"
-  home-title:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "34px"
-    fontWeight: 600
-  stat:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "26px"
-    fontWeight: 700
   section-title:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "16px"
-    fontWeight: 600
-  page-title-desktop:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "30px"
-    fontWeight: 600
-  receipt-total:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "28px"
+    fontFamily: "Bricolage Grotesque Variable, system-ui, sans-serif"
+    fontSize: "1.25rem"
     fontWeight: 700
-  card-title:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "18px"
-    fontWeight: 600
+    letterSpacing: "-0.02em"
   body:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "15px"
+    fontFamily: "Hanken Grotesk Variable, system-ui, sans-serif"
+    fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.5
-  row-number:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "17px"
-    fontWeight: 700
-  small:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "14px"
-  caption:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
-    fontSize: "12px"
+  label:
+    fontFamily: "Hanken Grotesk Variable, system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 600
+  data:
+    fontFamily: "DM Mono, ui-monospace, monospace"
+    fontSize: "0.9375rem"
     fontWeight: 500
-  micro:
-    fontFamily: "Figtree Variable, system-ui, sans-serif"
+  data-small:
+    fontFamily: "DM Mono, ui-monospace, monospace"
+    fontSize: "0.75rem"
+    fontWeight: 500
+  stamp:
+    fontFamily: "DM Mono, ui-monospace, monospace"
     fontSize: "11px"
     fontWeight: 500
+  row-price:
+    fontFamily: "DM Mono, ui-monospace, monospace"
+    fontSize: "17px"
+    fontWeight: 500
+  logo:
+    fontFamily: "Bricolage Grotesque Variable, system-ui, sans-serif"
+    fontSize: "19px"
+    fontWeight: 800
+  receipt-total:
+    fontFamily: "Bricolage Grotesque Variable, system-ui, sans-serif"
+    fontSize: "34px"
+    fontWeight: 800
 rounded:
-  card: "16px"
-  control: "10px"
-  segment: "8px"
+  track: "2px"
+  thumb: "3px"
+  tag: "4px"
+  control: "8px"
+  card: "6px"
   pill: "9999px"
 spacing:
   gutter-mobile: "16px"
-  gutter-desktop: "48px"
-  stack: "24px"
+  gutter-desktop: "56px"
+  stack: "28px"
 components:
   button-primary:
-    backgroundColor: "{colors.leaf}"
-    textColor: "{colors.on-leaf}"
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.paper}"
     rounded: "{rounded.control}"
-    height: "44px"
-    padding: "0 16px"
+    height: "48px"
+    padding: "0 20px"
   button-primary-hover:
-    backgroundColor: "{colors.leaf-hover}"
+    backgroundColor: "{colors.teal}"
   button-secondary:
-    backgroundColor: "{colors.surface}"
+    backgroundColor: "transparent"
     textColor: "{colors.ink}"
     rounded: "{rounded.control}"
-    height: "44px"
-  input:
-    backgroundColor: "{colors.surface}"
+    height: "48px"
+  price-tag:
+    backgroundColor: "{colors.paper-raised}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.control}"
-    height: "44px"
-  card:
-    backgroundColor: "{colors.surface}"
-    rounded: "{rounded.card}"
-  nav-active:
-    backgroundColor: "{colors.leaf-soft}"
-    textColor: "{colors.leaf-ink}"
-    rounded: "{rounded.control}"
+    rounded: "{rounded.tag}"
+  savings-tag:
+    backgroundColor: "{colors.tag}"
+    textColor: "{colors.on-tag}"
+    rounded: "{rounded.tag}"
 ---
 
 # Design System: CartWise
 
+> Source: the owner's "shelf-tag print" brief (2026-10). It replaces the earlier quiet white-card
+> system; `docs/design-plan.md` records why that one read as generic.
+
 ## Overview
 
-**The price tag, not the poster.** CartWise is a utility people trust with money, so it should look
-calm and exact: white surfaces on a faintly green-grey ground, one typeface, one brand green, and
-numbers that do the talking. The one memorable element is the big per-unit price at the top of
-Compare. Everything around it stays quiet.
+**Shelf-tag print.** Every grocery aisle already has a visual language for the one thing CartWise
+cares about: the little label under the product that says what it costs per ounce. CartWise takes
+that label, the thermal receipt and the chalkboard sign, and treats them with editorial confidence.
+The page is warm paper. Prices are printed ink. The single loud thing is a shelf-tag yellow that
+appears only where money is saved.
 
-The reasoning and the v1 post-mortem are in `docs/design-plan.md`.
+1. **The per-unit price is a poster.** Enormous and condensed, with real typographic structure:
+   large dollars-and-cents numeral, small superscript fraction, mono unit.
+2. **Ink that ages.** Provenance and freshness are drawn into the price itself, so staleness is
+   felt before it is read.
+3. **Savings wear the tag.** Yellow is a physical object (a sale tag), never a text color.
 
 ## Colors
 
-Tokens live in `src/index.css` (`@theme` for light, `:root[data-theme="dark"]` for dark) and are
-used only through Tailwind utilities. No component contains a hex value.
+Tokens live in `src/index.css` (`@theme`, plus `:root[data-theme="dark"]`) and are used only through
+Tailwind utilities. No component contains a hex value.
 
-### Primary
-- **Leaf** (`leaf`): the only brand color. It means "the one to buy" (the winning per-unit price,
-  the best-value row) or "you are here" (active nav, the route line, primary buttons).
-- **Leaf soft**: background of the selected row and the active nav item.
+- **Paper and ink.** `paper` ground, `paper-raised` cards/tags/sidebar, `paper-sunken` wells and
+  hover. `ink` (14.8:1) for headlines and prices, `ink-muted` 6.3:1, `ink-faint` 5:1+. Hairlines are
+  `rule`; structural rules (under page titles, above totals, tag outlines) are full `ink` at 1-2px.
+  The paper carries a barely-there SVG grain on `body` only.
+- **Teal** (6.9:1): "the one to buy" and "you are here" only: best-value row wash (`teal-wash`),
+  route line, active nav marker, focus ring. Primary buttons are ink and turn teal on hover.
+- **Shelf-tag yellow** (`tag`, ink text 11.6:1): always a filled shape with ink text, never text on
+  paper. It means money saved and the "Best per oz" tag, nothing else.
+- **Status** (text and small marks only): `brick` stale/danger, `amber` unverified, `community`
+  community-sourced, `rating` stars (decorative).
+- **Dark, "after hours":** warm near-black, retuned rather than inverted. Tag yellow is unchanged
+  and glows against it.
 
-### Secondary
-- **Savings orange** (`savings`): money saved, as text, and nothing else.
-
-### Neutral
-- `ground` (page), `surface` (cards, sidebar, tab bar), `sunken` (hover, segmented controls),
-  `line` (hairlines and borders), and `ink` / `ink-muted` / `ink-faint` for text.
-
-### Status
-- `warn`, `community`, `danger`, `rating` show up only as **text and icon color**, never as filled
-  pills. A fresh store-site price gets no label at all.
-- `card-1..3`: wallet card fills on Profile. They are deliberately generic and never a real
-  retailer's livery.
-
-### Named Rules
-- **One green.** If it isn't the recommended option or the current location, it isn't leaf.
-- **Orange is money saved.** Not fuel, not warnings, not ratings.
+Named rules: yellow is a tag, never a font color. One teal. No purple, no gradients as color.
 
 ## Typography
 
-**One family: Figtree** (variable, self-hosted). Weights: 400 body, 500 labels and controls, 600
-titles, 700 numbers. All numbers use tabular figures (`tabular`), and big numbers use the `numeral`
-utility (700, -0.03em tracking). Sentence case everywhere: no uppercase labels and no eyebrows above
-headings.
+- **Bricolage Grotesque** (800/700): display, page titles, every large price numeral.
+- **Hanken Grotesk** (400/600): body, labels, buttons.
+- **DM Mono** (500, tabular): all data: units, distances, timestamps, receipt lines, stamps.
 
-### Hierarchy
-- Hero number: 44px / 700, leaf.
-- Page title: 26px (30px desktop) / 600, with one muted 15px line under it at most.
-- Card title: 16-18px / 600.
-- Row title: 15-16px / 500. Secondary line: 14px `ink-muted`, at most one middle-dot separator
-  chain per row.
-- Labels and captions: 12px / 500.
+Hero numeral `clamp(4rem, 3rem + 6vw, 7.5rem)`, one per screen. Numerals: dollars large, cents as a
+superscript at 40%, unit in mono. Dotted leaders join names to prices in itemized lists. Sentence
+case everywhere; uppercase only on provenance stamps.
 
 ## Layout
 
-- Mobile first. 16px gutters at 390px, 48px on desktop, content max 1152px.
-- Phones: a quiet top bar on the ground color (logo, profile button), and a white bottom tab bar
-  with a hairline. The active tab is a green icon and label.
-- Desktop (≥1024px): a white 232px sidebar with a hairline right edge. The active item gets a
-  leaf-soft background.
-- Two-column screens put the decision (hero, slider, totals) in one column and the detail (ranked
-  list, list editor) in the other.
+Mobile first: 16px gutters at 390px, 56px on desktop, max 1200px. Desktop screens use a 5/7 split
+with a full-width 2px ink rule starting each page. Stat strips are a ledger (one row, vertical rules),
+not four boxes. Phones: quiet top bar on paper; bottom tab bar on `paper-raised` with a 2px ink top
+rule and a 3px teal bar over the active tab. Desktop: 248px `paper-raised` sidebar with a 2px ink
+right rule, logo on a tag, active item teal-wash with a 3px teal left edge. Home opens on a
+full-bleed teal band.
 
 ## Elevation & Depth
 
-Flat. Cards have a 1px `line` border and `shadow-card` (1px at 4%), just enough to lift them off
-the ground. `shadow-float` is only for the toast and the chart tooltip.
+Flat paper with one shadow: the offset tag shadow `4px 4px 0 ink`, no blur, on price tags, the
+savings tag and (on hover) buttons only. Cards use a 1px `rule` border and never nest.
 
 ## Shapes
 
-- Cards: 16px. Buttons and inputs: 10px. Segmented-control segments: 8px.
-- Full pills are only for the "Best value" chip, the switch, and progress bars.
+Tags and cards 4-6px with a die-cut hole (CSS mask). Buttons and inputs 8px. Receipt blocks get a
+zig-zag bottom edge (a mask shape, not a color gradient). Full pills only for the switch and tracks.
 
 ## Motion
 
-When the best value changes (slider, receipt, linked card), the hero's content re-keys and plays
-`settle`: a 360ms fade-and-rise on `ease-out-expo`. The toast and the Home title rise in once.
-Everything else is instant. `prefers-reduced-motion` disables all of it.
+All motion respects `prefers-reduced-motion`.
+- **Numeral tick:** prices and totals roll like an odometer (450ms, ease-out-expo, 30ms stagger).
+- **Tag print:** a new lookup result slides out of a slot (520ms, slight overshoot); rows fade up in
+  a 40ms stagger.
+- **Stamp thunk:** stamps scale 1.15 to 1 with a fixed 2-3° rotation.
+- **Route draw:** the route stroke draws in over 700ms; stops pop as it reaches them.
+- **Receipt sweep:** a highlight bar sweeps a newly saved receipt line.
+- **Page changes:** View Transitions crossfade (200ms) where supported.
 
-## Components
+## Signature Components
 
-### Buttons
-`Button` / `ButtonLink`: primary (leaf), secondary (outlined), ghost, danger (outlined, red text).
-44px tall (36px small), 10px radius.
-
-### Labels
-`Badge`: a 12px colored text label with an optional 14px icon. It has no fill, so a row never
-turns into a wall of pills.
-
-### Cards
-`Panel` and the `card` utility: the one container surface. Cards never nest. Rows inside are split
-by hairlines.
-
-### Inputs
-`Field` wraps a visible label around its control. `inputClass` gives 44px fields with a leaf focus
-ring. The quality slider uses the `range` utility: a 4px track filled with leaf up to a white
-thumb.
-
-### Unit price (signature)
-`UnitPrice`: a per-unit price as a big tabular numeral plus a small muted unit ("14.0¢ /oz"). The
-`hero` size is 44px and leaf; the `row` size is 17px and right-aligned. It wraps the canonical value
-in `<data>` so sorting and tests read the real number.
+- **PriceTag:** the hero per-unit price as a shelf tag: `paper-raised` body, 1.5px ink outline,
+  die-cut hole, hero numeral, mono unit, store and size in small print with a dotted leader to the
+  sticker price, and a yellow "Best per oz" tag on its corner.
+- **InkPrice:** ink that ages. Fresh (≤3 days) full ink; aging (4-14) `ink-muted`; stale (>14)
+  `ink-faint` with a `brick` underline and an age stamp. Source stamps: MEMBER, RECEIPT, COMMUNITY,
+  UNVERIFIED (store site gets none).
+- **Shelf:** Compare's ranked list as rows with a per-unit bar proportional to cents per oz.
+- **Value frontier:** a small scatter of cents/oz against review score on desktop Compare.
+- **Receipt blocks:** mono type, dotted leaders, zig-zag edge, a heavy TOTAL line.
+- **Trip route:** numbered ink stops, teal route stroke, mono distances, skipped stores in faint ink.
+- **Buttons:** ink fill, paper text, 48px; hover turns teal and lifts 2px with a `2px 2px 0 ink`
+  shadow. Inputs: `paper-raised`, 1.5px `rule-strong`, teal focus ring. Slider: 6px ink track, teal
+  fill, square thumb.
 
 ## Do's and Don'ts
 
-### Do:
-- Lead with the per-unit price and right-align it in lists.
-- Label only what's unusual (member, community, receipt, stale, unverified).
-- Use lucide icons at 16-22px, never emoji.
-- Give every screen a designed empty state.
+Do: make the per-unit price the largest thing; print provenance into the price; yellow only as a
+filled tag; teal only for "buy this"/"you are here"; Bricolage for numerals, mono for data, dotted
+leaders for itemized rows; one motion per moment.
 
-### Don't:
-- Don't use gradients, glass, ornament, tilted elements or uppercase labels.
-- Don't nest cards or add shadows beyond `shadow-card`.
-- Don't use leaf or orange for anything outside their jobs.
-- Don't hard-code colors in components; add a token.
-- Don't show the value score as a rating.
+Don't: gradients as color, gradient text, glass, purple or emoji; nested cards or blur shadows;
+yellow text on paper; three identical cards; showing the value score as a rating; invented savings,
+users or partnerships; uppercase eyebrows over headings.

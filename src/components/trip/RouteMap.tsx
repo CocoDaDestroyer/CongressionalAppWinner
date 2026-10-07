@@ -7,6 +7,7 @@
  * Schematic on purpose: the Westwood stores are a few blocks apart and the
  * outlier is miles off, so a scaled map would pile every label on one dot.
  */
+import type { CSSProperties } from 'react'
 import { House } from 'lucide-react'
 import type { Store } from '../../lib/catalog'
 import { drivingMiles, type LatLng } from '../../lib/geo'
@@ -40,6 +41,9 @@ export function RouteMap({ repo, home, route }: RouteMapProps) {
   const back = route.length > 0 ? drivingMiles(route[route.length - 1], home) : 0
   const lastX = xs[xs.length - 1] ?? LEFT
   const names = ['Home', ...route.map((s) => storeLabel(repo, s)), 'Home']
+  // Re-keyed on the route, so a new plan draws itself in again.
+  const routeKey = route.map((s) => s.id).join('>')
+  const drawMs = 700
 
   return (
     <figure className="m-0">
@@ -48,10 +52,14 @@ export function RouteMap({ repo, home, route }: RouteMapProps) {
 
         {/* Out along the top, back along the bottom. */}
         <path
+          key={routeKey}
+          pathLength={1}
+          strokeDasharray="1"
+          style={{ '--length': 1, animation: `route-draw ${drawMs}ms var(--ease-out-expo) both` } as CSSProperties}
           d={`M${LEFT},${TOP} H${lastX} Q${lastX + 22},${TOP} ${lastX + 22},${TOP + 22} V${BOTTOM - 22} Q${lastX + 22},${BOTTOM} ${lastX},${BOTTOM} H${LEFT + 18} Q${LEFT},${BOTTOM} ${LEFT},${BOTTOM - 18} V${TOP}`}
           fill="none"
-          className="stroke-leaf"
-          strokeWidth="2.5"
+          className="stroke-teal"
+          strokeWidth="3"
           strokeLinejoin="round"
         />
 
@@ -61,21 +69,28 @@ export function RouteMap({ repo, home, route }: RouteMapProps) {
             x={(xs[i] + (i === 0 ? LEFT : xs[i - 1])) / 2}
             y={TOP - 10}
             textAnchor="middle"
-            className="fill-ink-muted text-[11px] font-semibold"
+            className="fill-ink-muted font-mono text-[11px]"
           >
             {formatMiles(miles)}
           </text>
         ))}
         {route.length > 0 && (
-          <text x={(LEFT + lastX) / 2} y={BOTTOM + 20} textAnchor="middle" className="fill-ink-muted text-[11px] font-semibold">
+          <text x={(LEFT + lastX) / 2} y={BOTTOM + 20} textAnchor="middle" className="fill-ink-muted font-mono text-[11px]">
             {`${formatMiles(back)} home`}
           </text>
         )}
 
         {route.map((store, i) => (
-          <g key={store.id}>
-            <circle cx={xs[i]} cy={TOP} r="11" className="fill-leaf stroke-surface" strokeWidth="3" />
-            <text x={xs[i]} y={TOP} dy="0.35em" textAnchor="middle" className="fill-on-leaf text-[12px] font-bold">
+          <g
+            key={`${routeKey}-${store.id}`}
+            style={{
+              transformOrigin: `${xs[i]}px ${TOP}px`,
+              animation: `pop 320ms var(--ease-overshoot) ${((i + 1) / (route.length + 1)) * drawMs * 0.5}ms both`,
+            }}
+          >
+            {/* The first stop is "next": teal. The rest print in ink. */}
+            <circle cx={xs[i]} cy={TOP} r="11" className={`${i === 0 ? 'fill-teal' : 'fill-ink'} stroke-paper-raised`} strokeWidth="3" />
+            <text x={xs[i]} y={TOP} dy="0.35em" textAnchor="middle" className="fill-paper font-mono text-[12px] font-medium">
               {i + 1}
             </text>
             <StopName
@@ -87,15 +102,15 @@ export function RouteMap({ repo, home, route }: RouteMapProps) {
           </g>
         ))}
 
-        <rect x={LEFT - 15} y={TOP - 15} width="30" height="30" rx="9" className="fill-ink" />
-        <House x={LEFT - 9} y={TOP - 9} width="18" height="18" className="text-surface" aria-hidden="true" />
+        <rect x={LEFT - 15} y={TOP - 15} width="30" height="30" rx="4" className="fill-ink" />
+        <House x={LEFT - 9} y={TOP - 9} width="18" height="18" className="text-paper" aria-hidden="true" />
       </svg>
 
-      <figcaption className="mt-1 text-sm text-ink-muted">
+      <figcaption className="mt-1 font-mono text-sm text-ink-muted">
         Route: {names.join(' → ')}
       </figcaption>
       {skipped.length > 0 && (
-        <p className="mt-2 text-xs text-ink-faint">
+        <p className="mt-2 font-mono text-xs text-ink-faint">
           Skipped:{' '}
           {skipped.map(({ store, miles }) => `${storeLabel(repo, store)} (${formatMiles(miles)} away)`).join(', ')}
           . Miles are straight-line estimates padded for city streets.

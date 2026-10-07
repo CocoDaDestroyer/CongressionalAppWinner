@@ -1,26 +1,14 @@
-/** The CartWise mark (a cart in a rounded green tile) and the wordmark. */
-interface LogoProps {
-  showWordmark?: boolean
-  className?: string
-}
-
-export function Logo({ showWordmark = true, className = '' }: LogoProps) {
+/** The CartWise mark: the wordmark printed on a hanging shelf tag. */
+export function Logo({ className = '' }: { className?: string }) {
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <svg viewBox="0 0 32 32" className="size-8 shrink-0" aria-hidden="true">
-        <rect width="32" height="32" rx="9" className="fill-leaf" />
-        <path
-          d="M8.5 10h2.4l2.1 8.6h8.6l2-6.3H11.9"
-          fill="none"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="stroke-on-leaf"
-        />
-        <circle cx="14" cy="22.6" r="1.5" className="fill-on-leaf" />
-        <circle cx="20.6" cy="22.6" r="1.5" className="fill-on-leaf" />
-      </svg>
-      {showWordmark && <span className="text-[17px] font-semibold tracking-tight text-ink">CartWise</span>}
+    <span
+      className={`relative inline-flex items-center rounded-tag border-[1.5px] border-ink bg-paper-raised py-1 pr-3 pl-7 ${className}`}
+    >
+      {/* The die-cut hole the tag hangs from. */}
+      <span aria-hidden="true" className="absolute left-2.5 size-2.5 rounded-full border-[1.5px] border-ink bg-paper" />
+      <span className="font-display text-[19px] leading-none font-extrabold tracking-[-0.03em] text-ink">
+        CartWise
+      </span>
     </span>
   )
 }

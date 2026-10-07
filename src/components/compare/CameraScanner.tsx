@@ -49,9 +49,9 @@ export function CameraScanner({ onCode, onClose }: CameraScannerProps) {
   }, [])
 
   return (
-    <section aria-label="Barcode camera" className="overflow-hidden rounded-card bg-ink">
+    <section aria-label="Barcode camera" className="overflow-hidden rounded-tag border-[1.5px] border-ink bg-ink">
       {error ? (
-        <p role="alert" className="flex items-center gap-2 p-4 text-sm text-ground">
+        <p role="alert" className="flex items-center gap-2 p-4 text-sm text-paper">
           <CameraOff className="size-5 shrink-0" aria-hidden="true" />
           {error}
         </p>
@@ -61,15 +61,15 @@ export function CameraScanner({ onCode, onClose }: CameraScannerProps) {
           {/* A sticker-shaped target, so the shopper knows where to aim. */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-[15%] top-1/2 h-1/3 -translate-y-1/2 rounded-[50%] border-2 border-on-leaf/80"
+            className="pointer-events-none absolute inset-x-[15%] top-1/2 h-1/3 -translate-y-1/2 rounded-[50%] border-2 border-tag"
           />
-          <p className="absolute inset-x-0 bottom-0 p-3 text-center text-sm font-semibold text-ground">
+          <p className="absolute inset-x-0 bottom-0 p-3 text-center text-sm font-semibold text-paper">
             Point the camera at the barcode
           </p>
         </div>
       )}
-      <div className="flex justify-end border-t border-ground/15 p-2">
-        <Button variant="ghost" size="sm" className="text-ground hover:bg-ground/10 hover:text-ground" icon={<X className="size-4" aria-hidden="true" />} onClick={onClose}>
+      <div className="flex justify-end border-t border-paper/15 p-2">
+        <Button variant="ghost" size="sm" className="text-paper hover:bg-paper/10 hover:text-paper" icon={<X className="size-4" aria-hidden="true" />} onClick={onClose}>
           Close camera
         </Button>
       </div>

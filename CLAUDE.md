@@ -152,20 +152,23 @@ src/lib/gtin.ts        typed/scanned barcode -> GTIN-14
 src/lib/camera.ts      whether the browser can offer a camera
 src/lib/labels.ts      shared display names ("Ralphs Westwood")
 src/lib/theme.ts       light/dark/system, applied as <html data-theme>
+src/lib/useMediaQuery.ts  live media-query match (the desktop-only value chart)
 src/lib/supabase.ts    the single Supabase client (unused -- nothing is hosted)
 src/data/seed.ts       sample catalog, prices and six months of generated receipt history
 src/index.css          design tokens (Tailwind v4 @theme), light and dark
-src/components/        AppShell, Logo, UnitPrice (the big per-unit number), ui/ primitives, one folder per screen
+src/components/        AppShell, Logo, print/ (Numeral, PriceNumeral, Stamp, SaleTag, Leader, ReceiptBlock,
+                       Ledger, InkPrice), ui/ primitives, one folder per screen
 src/routes/            one file per screen; Spending is lazy-loaded (recharts)
 supabase/migrations/   schema, applied in filename order -- never applied anywhere yet
 PRODUCT.md, DESIGN.md  product truth and the design system, for the Impeccable skill
 docs/                  polish plan, design plan, demo script, screenshots
 ```
 
-Design rules that are easy to break (see `docs/design-plan.md`): one typeface (Figtree), colors only
-through tokens (no hex in components), leaf green only for "the one to buy" or "you are here",
-orange (`savings`) only for money saved, status shown as small text labels rather than filled pills,
-no uppercase labels, and cards never nest.
+Design rules that are easy to break (the system is "shelf-tag print", see DESIGN.md): colors only
+through tokens (no hex in components); yellow (`tag`) only as a filled tag with ink text, for money
+saved; teal only for "the one to buy" or "you are here"; Bricolage for big numerals and titles,
+Hanken Grotesk for UI, DM Mono for data; uppercase only on provenance stamps; the offset tag shadow
+only on tags and buttons; cards never nest. Primitives live in `src/components/print/`.
 
 ## Working without a backend
 

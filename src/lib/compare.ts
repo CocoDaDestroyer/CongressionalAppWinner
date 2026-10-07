@@ -221,10 +221,15 @@ const SHELF_UNIT: Record<Dimension, { label: string; canonicalAmount: number }> 
  * per fl oz. Display only; ranking always uses the canonical `perUnit`.
  */
 export function shelfUnitPrice(price: NormalizedPrice): { amount: string; unit: string } {
-  const { label, canonicalAmount } = SHELF_UNIT[price.dimension]
-  const cents = price.perUnit * canonicalAmount
+  const { label } = SHELF_UNIT[price.dimension]
+  const cents = shelfUnitCents(price)
   const amount = cents < 100 ? `${cents.toFixed(1)}¢` : formatCents(cents)
   return { amount, unit: label }
+}
+
+/** Cents per shelf unit (oz, fl oz or each), unrounded. */
+export function shelfUnitCents(price: NormalizedPrice): number {
+  return price.perUnit * SHELF_UNIT[price.dimension].canonicalAmount
 }
 
 export function formatShelfUnit(price: NormalizedPrice): string {
@@ -279,6 +284,15 @@ export function explainPick(comparison: Comparison): PickReason | null {
     versus,
     stars: pick.quality === null ? null : Math.round(pick.quality * 50) / 10,
   }
+}
+
+export type Freshness = 'fresh' | 'aging' | 'stale'
+
+/** How old a price's evidence is: fresh within 3 days, aging up to the stale cut-off. */
+export function freshnessOf(ageDays: number): Freshness {
+  if (ageDays <= 3) return 'fresh'
+  if (ageDays <= STALE_AFTER_DAYS) return 'aging'
+  return 'stale'
 }
 
 export function isStale(option: CompareOption): boolean {

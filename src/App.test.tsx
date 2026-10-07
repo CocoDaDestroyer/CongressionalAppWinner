@@ -29,9 +29,11 @@ describe('App shell', () => {
     }
   })
 
-  it('opens on Home with the month savings', () => {
+  it('opens on Home with the story and the month savings', () => {
     renderAt('/')
-    expect(screen.getByRole('heading', { level: 1, name: /^Saved \$\d+\.\d\d this month$/ })).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 1, name: 'The sticker price lies.' })).toBeTruthy()
+    const saved = screen.getByText('Saved this month').parentElement!
+    expect(saved.textContent).toMatch(/\$\d+\.\d\d/)
   })
 
   it('loads Spending, which is split into its own chunk', async () => {

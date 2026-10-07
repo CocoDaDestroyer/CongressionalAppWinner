@@ -25,20 +25,20 @@ export function MonthlyChart({ months }: MonthlyChartProps) {
             <XAxis
               dataKey="label"
               tickLine={false}
-              axisLine={{ className: 'stroke-line' }}
-              tick={{ className: 'fill-ink-muted text-xs font-semibold' }}
+              axisLine={{ className: 'stroke-ink', strokeWidth: 2 }}
+              tick={{ className: 'fill-ink-muted font-mono text-xs' }}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
               width={52}
               tickFormatter={(v: number) => `$${v}`}
-              tick={{ className: 'fill-ink-faint text-xs' }}
+              tick={{ className: 'fill-ink-faint font-mono text-xs' }}
             />
-            <Tooltip cursor={{ className: 'fill-sunken' }} content={<MonthTooltip />} />
-            <Bar dataKey="dollars" radius={[4, 4, 0, 0]} isAnimationActive={false}>
+            <Tooltip cursor={{ className: 'fill-paper-sunken' }} content={<MonthTooltip />} />
+            <Bar dataKey="dollars" radius={[2, 2, 0, 0]} isAnimationActive={false}>
               {data.map((m, i) => (
-                <Cell key={m.period} className={i === last ? 'fill-leaf' : 'fill-leaf/45'} />
+                <Cell key={m.period} className={`stroke-ink ${i === last ? 'fill-teal' : 'fill-teal-wash'}`} strokeWidth={1.5} />
               ))}
             </Bar>
           </BarChart>
@@ -71,9 +71,9 @@ function MonthTooltip({ active, payload }: Partial<TooltipContentProps<number, s
   const month = payload?.[0]?.payload as (PeriodTotal & { label: string }) | undefined
   if (!active || !month) return null
   return (
-    <div className="rounded-xl border border-line bg-surface px-3 py-2 text-sm shadow-float">
+    <div className="rounded-tag border-[1.5px] border-ink bg-paper-raised px-3 py-2 text-sm">
       <p className="font-semibold">{longMonthName(month.period)}</p>
-      <p className="tabular">
+      <p className="font-mono text-xs">
         {formatCents(month.cents)} · {plural(month.receiptCount, 'receipt')}
       </p>
     </div>

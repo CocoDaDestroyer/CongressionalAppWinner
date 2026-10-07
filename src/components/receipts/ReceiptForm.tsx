@@ -81,11 +81,12 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
         onSubmit={save}
         noValidate
         aria-label="New receipt"
-        className="card px-5 py-5 sm:px-6 sm:py-6"
+        className="receipt-edge bg-paper-raised px-5 pt-6 sm:px-7"
       >
+        <p className="mb-5 text-center font-mono text-xs tracking-[0.2em] text-ink-muted uppercase">New receipt</p>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-ink-muted">Store</span>
+            <span className="mb-1.5 block text-sm font-semibold">Store</span>
             <select className={`${inputClass} font-semibold`} value={storeId} onChange={(e) => setStoreId(e.target.value)}>
               {stores.map((store) => (
                 <option key={store.id} value={store.id}>
@@ -95,9 +96,9 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
             </select>
           </label>
           <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-ink-muted">Purchased</span>
+            <span className="mb-1.5 block text-sm font-semibold">Purchased</span>
             <input
-              className={`${inputClass} tabular`}
+              className={`${inputClass} font-mono`}
               type="date"
               value={purchasedOn}
               onChange={(e) => setPurchasedOn(e.target.value)}
@@ -105,7 +106,7 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
           </label>
         </div>
 
-        <hr className="my-5 border-t border-dashed border-line-strong" />
+        <hr className="my-5 border-t border-dashed border-ink" />
 
         <ol className="flex flex-col gap-4">
           {lines.map((line, index) => {
@@ -125,7 +126,7 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
                   ))}
                 </select>
                 <input
-                  className={`${inputClass} text-center tabular`}
+                  className={`${inputClass} text-center font-mono`}
                   aria-label={`Quantity ${n}`}
                   type="number"
                   min={1}
@@ -133,9 +134,9 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
                   onChange={(e) => updateLine(index, { quantity: Math.max(1, Number(e.target.value)) })}
                 />
                 <div className="relative">
-                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-ink-faint">$</span>
+                  <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 font-mono text-ink-faint">$</span>
                   <input
-                    className={`${inputClass} pl-7 tabular`}
+                    className={`${inputClass} pl-7 font-mono`}
                     aria-label={`Price ${n}`}
                     inputMode="decimal"
                     placeholder="4.29"
@@ -143,8 +144,8 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
                     onChange={(e) => updateLine(index, { price: e.target.value })}
                   />
                 </div>
-                <div className="flex h-11 items-center gap-1">
-                  <span className="w-16 text-right font-semibold tabular">
+                <div className="flex h-12 items-center gap-1">
+                  <span className="w-16 text-right font-mono font-medium">
                     {formatCents(cents(line.price) * line.quantity)}
                   </span>
                   <button
@@ -152,7 +153,7 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
                     aria-label={`Remove line ${n}`}
                     disabled={lines.length === 1}
                     onClick={() => setLines((current) => current.filter((_, i) => i !== index))}
-                    className="grid size-8 place-items-center rounded-full text-ink-faint hover:bg-sunken hover:text-ink disabled:invisible"
+                    className="grid size-8 place-items-center rounded-full text-ink-faint hover:bg-paper-sunken hover:text-ink disabled:invisible"
                   >
                     <X className="size-4" aria-hidden="true" />
                   </button>
@@ -172,17 +173,17 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
           Add line
         </Button>
 
-        <hr className="my-5 border-t border-dashed border-line-strong" />
+        <hr className="my-5 border-t border-dashed border-ink" />
 
-        <div className="flex items-baseline justify-between">
-          <span className="font-medium text-ink-muted">Total</span>
-          <output aria-label="Receipt total" className="numeral text-[28px]">
+        <div className="flex items-baseline justify-between border-t-4 border-double border-ink pt-3">
+          <span className="font-mono font-medium tracking-wide uppercase">Total</span>
+          <output aria-label="Receipt total" className="font-display text-[34px] leading-none font-extrabold tracking-[-0.03em] tabular">
             {formatCents(total)}
           </output>
         </div>
 
         {error && (
-          <p role="alert" className="mt-3 text-sm font-medium text-danger">
+          <p role="alert" className="mt-3 text-sm font-semibold text-brick">
             {error}
           </p>
         )}

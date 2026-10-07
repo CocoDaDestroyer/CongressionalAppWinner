@@ -28,7 +28,7 @@ export function PlanComparison({ repo, result }: PlanComparisonProps) {
 
   return (
     <section aria-labelledby="plan-comparison">
-      <h2 id="plan-comparison" className="font-semibold">
+      <h2 id="plan-comparison" className="section-title">
         Why this plan
       </h2>
       <p className="mt-1 text-sm text-ink-muted">
@@ -49,26 +49,26 @@ export function PlanComparison({ repo, result }: PlanComparisonProps) {
                       {delta > 0.5 ? `+${formatCents(delta)}` : 'same'}
                     </span>
                   )}
-                  <data value={Math.round(plan.totalCents)} className="numeral text-[17px]">
+                  <data value={Math.round(plan.totalCents)} className="font-mono text-[17px] font-medium tabular">
                     {formatCents(plan.totalCents)}
                   </data>
                 </span>
               </div>
               <div
-                className="mt-1.5 flex h-2 overflow-hidden rounded-full bg-sunken"
+                className="mt-1.5 flex h-2.5 overflow-hidden rounded-[1px] bg-paper-sunken"
                 role="img"
                 aria-label={`${formatCents(plan.groceryCents)} groceries and ${formatCents(plan.drivingCents)} fuel`}
               >
                 <span
-                  className={isBest ? 'bg-leaf' : 'bg-line-strong'}
+                  className={isBest ? 'bg-teal' : 'bg-ink'}
                   style={{ width: `${(plan.groceryCents / max) * 100}%` }}
                 />
                 <span
-                  className="border-l-2 border-surface bg-warn"
+                  className="border-l-2 border-paper-raised bg-amber"
                   style={{ width: `${Math.max((plan.drivingCents / max) * 100, 1)}%` }}
                 />
               </div>
-              <p className="mt-1 text-xs text-ink-muted tabular">
+              <p className="mt-1 font-mono text-xs text-ink-muted">
                 {formatCents(plan.groceryCents)} groceries + {formatCents(plan.drivingCents)} fuel ·{' '}
                 {plural(plan.stores.length, 'stop')} · {formatMiles(plan.miles)}
               </p>
@@ -77,8 +77,8 @@ export function PlanComparison({ repo, result }: PlanComparisonProps) {
         })}
       </ul>
       <p className="mt-4 flex items-center gap-2 text-xs text-ink-faint">
-        <span className="inline-block h-2 w-4 rounded-full bg-leaf" aria-hidden="true" /> Groceries
-        <span className="ml-2 inline-block h-2 w-4 rounded-full bg-warn" aria-hidden="true" /> Fuel
+        <span className="inline-block h-2 w-4 rounded-[1px] bg-teal" aria-hidden="true" /> Groceries
+        <span className="ml-2 inline-block h-2 w-4 rounded-[1px] bg-amber" aria-hidden="true" /> Fuel
       </p>
     </section>
   )

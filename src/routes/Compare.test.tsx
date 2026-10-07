@@ -54,10 +54,10 @@ describe('Compare screen', () => {
   it('locks a member price until the store card is linked', () => {
     renderCompare()
     const memberRow = () => rows().find((r) => r.textContent?.includes('Member price'))!
-    expect(memberRow().textContent).toContain('link Ralphs card')
+    expect(memberRow().textContent).toMatch(/link Ralphs card/i)
 
     act(() => catalogStore.setCardLinked('r-ralphs', true))
-    expect(memberRow().textContent).not.toContain('link Ralphs card')
+    expect(memberRow().textContent).not.toMatch(/link Ralphs card/i)
   })
 
   it('leads with the 64 oz, which costs more on the shelf and wins per unit', () => {

@@ -11,10 +11,12 @@ import { useCatalog, useReceipts } from '../lib/useCatalog'
 import { SEED_NOW } from '../data/seed'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Toast } from '../components/ui/Toast'
+import { Stamp } from '../components/print/Stamp'
 import { ReceiptForm } from '../components/receipts/ReceiptForm'
 import { SavedReceipts } from '../components/receipts/SavedReceipts'
 
 interface SavedNotice {
+  receiptId: string
   updated: number
   packageId: string
 }
@@ -27,6 +29,7 @@ export function Receipts() {
 
   function saved(receipt: Receipt) {
     setNotice({
+      receiptId: receipt.id,
       updated: pricesUpdatedBy(catalogStore.getRepository(), receipt),
       packageId: receipt.lines[0].packageId,
     })
@@ -39,14 +42,19 @@ export function Receipts() {
         description="Each receipt updates prices for everyone and counts toward your spending."
       />
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-8">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-12">
         <ReceiptForm repo={repo} defaultDate={SEED_NOW.toISOString().slice(0, 10)} onSaved={saved} />
-        <SavedReceipts repo={repo} receipts={receipts} />
+        <SavedReceipts repo={repo} receipts={receipts} highlightId={notice?.receiptId} />
       </div>
 
       {notice && (
         <Toast onClose={dismiss}>
-          <p className="font-semibold">
+          {notice.updated > 0 && (
+            <Stamp tone="teal" tilt={-3}>
+              Prices updated
+            </Stamp>
+          )}
+          <p className="mt-2 font-semibold">
             Receipt saved.{' '}
             {notice.updated > 0
               ? `Updated ${plural(notice.updated, 'price')}.`
@@ -55,7 +63,8 @@ export function Receipts() {
           {notice.updated > 0 && (
             <Link
               to={`/compare?product=${notice.packageId}`}
-              className="font-semibold text-leaf-soft underline"
+              viewTransition
+              className="font-semibold text-teal underline"
             >
               See it in Compare
             </Link>

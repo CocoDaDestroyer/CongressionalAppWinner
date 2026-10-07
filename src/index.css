@@ -1,92 +1,97 @@
 @import "tailwindcss";
-@import "@fontsource-variable/figtree";
+@import "@fontsource-variable/bricolage-grotesque/standard.css";
+@import "@fontsource-variable/hanken-grotesk";
+@import "@fontsource/dm-mono/400.css";
+@import "@fontsource/dm-mono/500.css";
 
 /*
- * CartWise design tokens (see DESIGN.md and docs/design-plan.md).
- * Components use these through Tailwind utilities (bg-surface, text-ink,
- * border-line, text-leaf ...) and never hard-code a colour. Light values live
- * in @theme; dark mode overrides the same variables, so no component needs a
- * dark: variant.
+ * CartWise tokens: "shelf-tag print" (see DESIGN.md).
+ * Components use these through Tailwind utilities (bg-paper, text-ink, bg-tag,
+ * border-rule ...) and never hard-code a colour. Light values live in @theme;
+ * dark mode overrides the same variables.
  */
 @theme {
-  --font-sans: "Figtree Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", system-ui, sans-serif;
+  --font-sans: "Hanken Grotesk Variable", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
 
-  /* Surfaces. */
-  --color-ground: #f4f6f3;
-  --color-surface: #ffffff;
-  --color-sunken: #eef1ed;
-  --color-line: #e4e8e3;
-  --color-line-strong: #cdd3cc;
+  /* Paper and ink. */
+  --color-paper: #f5f0e6;
+  --color-paper-raised: #fbf8f1;
+  --color-paper-sunken: #ece5d6;
+  --color-rule: #d9d0bd;
+  --color-rule-strong: #14201b;
+  --color-ink: #14201b;
+  --color-ink-muted: #4f5b54;
+  --color-ink-faint: #606b64;
 
-  /* Text. */
-  --color-ink: #17201b;
-  --color-ink-muted: #5d6962;
-  --color-ink-faint: #8a948d;
+  /* Teal: "the one to buy" and "you are here". */
+  --color-teal: #0b5d4b;
+  --color-teal-hover: #084a3b;
+  --color-teal-wash: #dcebe3;
+  --color-on-teal: #ffffff;
 
-  /* Leaf: the one brand colour, meaning "the one to buy" or "you are here". */
-  --color-leaf: #13804a;
-  --color-leaf-hover: #0f6b3d;
-  --color-leaf-soft: #e9f4ec;
-  --color-leaf-ink: #0f6b3d;
-  --color-on-leaf: #ffffff;
+  /* Shelf-tag yellow: a filled shape for money saved, never a text colour. */
+  --color-tag: #ffd23f;
+  --color-on-tag: #14201b;
 
-  /* Money saved, as text only. */
-  --color-savings: #c24e14;
-  --color-savings-soft: #fdf0e7;
+  /* Status: text and small marks only. */
+  --color-brick: #a13a22;
+  --color-amber: #7a4a00;
+  --color-community: #2f4f9a;
+  --color-rating: #b8800a;
 
-  /* Status, used as small text labels, never as filled pills. */
-  --color-rating: #d99a0b;
-  --color-warn: #a15c07;
-  --color-danger: #c03221;
-  --color-danger-soft: #fcebe8;
-  --color-community: #3d5fa8;
+  /* Wallet cards: deep generic fills, never a retailer's livery. */
+  --color-card-1: #1d4a3c;
+  --color-card-2: #26365a;
+  --color-card-3: #4a2f26;
+  --color-on-card: #fbf8f1;
 
-  /* Wallet cards: deep generic fills, never a real retailer's colours. */
-  --color-card-1: #1d4d36;
-  --color-card-2: #24385e;
-  --color-card-3: #3b3330;
-  --color-on-card: #ffffff;
+  /* Fixed swatches for the theme previews: deliberately not overridden in dark mode. */
+  --color-swatch-paper: #f5f0e6;
+  --color-swatch-night: #0f1512;
+  --color-swatch-tag: #ffd23f;
+  --color-swatch-ink: #14201b;
+  --color-swatch-teal: #0b5d4b;
 
-  --radius-card: 16px;
-  --radius-control: 10px;
-  --shadow-card: 0 1px 2px rgb(23 32 27 / 0.04);
-  --shadow-float: 0 12px 32px -12px rgb(23 32 27 / 0.3), 0 2px 6px rgb(23 32 27 / 0.08);
+  --radius-tag: 4px;
+  --radius-control: 8px;
+  --radius-card: 6px;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-overshoot: cubic-bezier(0.34, 1.2, 0.64, 1);
+
+  --animate-tag-print: tag-print 520ms var(--ease-overshoot) both;
+  --animate-fade-up: fade-up 420ms var(--ease-out-expo) both;
+  --animate-stamp: stamp-thunk 260ms var(--ease-out-expo) both;
+  --animate-sweep: sweep 900ms var(--ease-out-expo) both;
+  --animate-rise: fade-up 420ms var(--ease-out-expo) both;
 }
 
+/* After hours: warm near-black, retuned rather than inverted. */
 :root[data-theme="dark"] {
-  --color-ground: #0e1210;
-  --color-surface: #151a17;
-  --color-sunken: #1b211e;
-  --color-line: #262d29;
-  --color-line-strong: #39423d;
+  --color-paper: #0f1512;
+  --color-paper-raised: #161f1a;
+  --color-paper-sunken: #1d2721;
+  --color-rule: #2a352e;
+  --color-rule-strong: #f1ecdf;
+  --color-ink: #f1ecdf;
+  --color-ink-muted: #a9b3ac;
+  --color-ink-faint: #8d978f;
 
-  --color-ink: #ecf1ed;
-  --color-ink-muted: #a3ada6;
-  --color-ink-faint: #75807a;
+  --color-teal: #5fd3a8;
+  --color-teal-hover: #82e0bd;
+  --color-teal-wash: #173329;
+  --color-on-teal: #0f1512;
 
-  --color-leaf: #4fc384;
-  --color-leaf-hover: #6fd39c;
-  --color-leaf-soft: #16301f;
-  --color-leaf-ink: #6fd39c;
-  --color-on-leaf: #07140d;
+  --color-brick: #ff8a6b;
+  --color-amber: #e8b04a;
+  --color-community: #8fa8f0;
+  --color-rating: #e8b04a;
 
-  --color-savings: #f08a4b;
-  --color-savings-soft: #33200f;
-
-  --color-rating: #f0b73a;
-  --color-warn: #e0a24a;
-  --color-danger: #f07a68;
-  --color-danger-soft: #3a1a15;
-  --color-community: #8eabeb;
-
-  --color-card-1: #1f5139;
-  --color-card-2: #283f69;
-  --color-card-3: #3f3734;
-
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3);
-  --shadow-float: 0 12px 32px -12px rgb(0 0 0 / 0.7), 0 2px 6px rgb(0 0 0 / 0.4);
+  --color-card-1: #245a49;
+  --color-card-2: #2f4370;
+  --color-card-3: #5a3a2f;
 
   color-scheme: dark;
 }
@@ -96,43 +101,65 @@
 @layer base {
   :root {
     color-scheme: light;
-    accent-color: var(--color-leaf);
-    scrollbar-color: var(--color-line-strong) transparent;
+    accent-color: var(--color-teal);
+    scrollbar-color: var(--color-rule) transparent;
   }
 
   body {
-    background: var(--color-ground);
+    background: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
 
+  /* Paper grain: one barely-there noise layer over the whole page, never on cards alone. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  :root[data-theme="dark"] body::before {
+    opacity: 0.06;
+    mix-blend-mode: screen;
+  }
+
   h1,
   h2,
   h3 {
+    font-family: var(--font-display);
     text-wrap: balance;
-    letter-spacing: -0.015em;
   }
 
   ::selection {
-    background: var(--color-leaf-soft);
-    color: var(--color-ink);
+    background: var(--color-tag);
+    color: var(--color-on-tag);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-leaf);
+    outline: 2px solid var(--color-teal);
     outline-offset: 2px;
   }
 
   input,
   select,
   textarea {
-    caret-color: var(--color-leaf);
+    caret-color: var(--color-teal);
   }
 
   a {
     text-underline-offset: 3px;
+  }
+
+  /* Page changes crossfade where View Transitions exist. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 200ms;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -140,7 +167,13 @@
     *::before,
     *::after {
       animation-duration: 0.01ms !important;
+      animation-delay: 0ms !important;
       transition-duration: 0.01ms !important;
+    }
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
     }
   }
 }
@@ -149,84 +182,181 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Big numbers: tight, tabular, bold. */
-@utility numeral {
+/* The hero numeral: condensed, tight, one per screen. */
+@utility hero-numeral {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 3rem + 6vw, 7.5rem);
+  font-weight: 800;
+  font-stretch: 75%;
+  letter-spacing: -0.05em;
+  line-height: 0.85;
   font-variant-numeric: tabular-nums;
+}
+
+@utility page-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem);
   font-weight: 700;
   letter-spacing: -0.03em;
+  line-height: 1;
 }
 
-@utility card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-line);
+@utility section-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* A card: paper-raised with a hairline, no shadow. */
+@utility sheet {
+  background: var(--color-paper-raised);
+  border: 1px solid var(--color-rule);
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
 }
 
-/* The quality slider: a thin track filled with leaf up to the thumb. */
+/* The one shadow: an offset, unblurred tag shadow. */
+@utility tag-shadow {
+  box-shadow: 4px 4px 0 var(--color-ink);
+}
+
+/* Zig-zag bottom edge for receipt blocks: a mask shape, not a colour gradient. */
+@utility receipt-edge {
+  --tooth: 12px;
+  padding-bottom: calc(var(--tooth) + 1.25rem);
+  mask:
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--tooth) 100%;
+}
+
+/* A dotted leader between a name and its price. */
+@utility leader {
+  flex: 1 1 1.5rem;
+  min-width: 1.5rem;
+  align-self: baseline;
+  border-bottom: 2px dotted var(--color-rule);
+  translate: 0 -0.3em;
+}
+
+/* The quality slider: 6px ink track, teal fill, square thumb. */
 @utility range {
   appearance: none;
-  height: 24px;
+  height: 28px;
   background: transparent;
   cursor: pointer;
 
   &::-webkit-slider-runnable-track {
-    height: 4px;
-    border-radius: 9999px;
+    height: 6px;
+    border-radius: 2px;
     background: linear-gradient(
       to right,
-      var(--color-leaf) var(--fill, 50%),
-      var(--color-line) var(--fill, 50%)
+      var(--color-teal) var(--fill, 50%),
+      var(--color-ink) var(--fill, 50%)
     );
   }
   &::-moz-range-track {
-    height: 4px;
-    border-radius: 9999px;
-    background: var(--color-line);
+    height: 6px;
+    border-radius: 2px;
+    background: var(--color-ink);
   }
   &::-moz-range-progress {
-    height: 4px;
-    border-radius: 9999px;
-    background: var(--color-leaf);
+    height: 6px;
+    border-radius: 2px;
+    background: var(--color-teal);
   }
   &::-webkit-slider-thumb {
     appearance: none;
     margin-top: -8px;
-    width: 20px;
-    height: 20px;
-    border-radius: 9999px;
-    background: var(--color-surface);
-    border: 2px solid var(--color-leaf);
-    box-shadow: var(--shadow-card);
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    background: var(--color-paper-raised);
+    border: 2px solid var(--color-ink);
+    box-shadow: 2px 2px 0 var(--color-ink);
   }
   &::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border-radius: 9999px;
-    background: var(--color-surface);
-    border: 2px solid var(--color-leaf);
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    background: var(--color-paper-raised);
+    border: 2px solid var(--color-ink);
   }
 }
 
-/* One orchestrated moment: the best-value price settles in when the pick changes. */
-@keyframes settle {
+/* Odometer: each digit is a column of 0-9 that slides to its value. */
+@utility odometer-digit {
+  display: inline-block;
+  height: 1em;
+  line-height: 1;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+@keyframes tag-print {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(-22px) scaleY(0.96);
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    /* Room for whatever hangs off the tag (the sale tag, the offset shadow). */
+    clip-path: inset(-48px);
   }
 }
 
-@utility animate-settle {
-  animation: settle 360ms var(--ease-out-expo) both;
-}
-
-@keyframes rise-in {
+@keyframes fade-up {
   from {
     opacity: 0;
     transform: translateY(10px);
   }
 }
 
-@utility animate-rise {
-  animation: rise-in 420ms var(--ease-out-expo) both;
+@keyframes stamp-thunk {
+  from {
+    opacity: 0;
+    scale: 1.15;
+  }
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes route-draw {
+  from {
+    stroke-dashoffset: var(--length);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+
+/* Odometer digits: the strip of 0-9 is drawn by CSS, so the DOM text stays the real value. */
+.odometer-digit {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  vertical-align: baseline;
+  line-height: 1;
+}
+.odometer-digit::before {
+  content: "0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9";
+  display: block;
+  white-space: pre;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  transform: translateY(calc(var(--d, 0) * -1em));
+  transition: transform 450ms var(--ease-out-expo);
+  transition-delay: var(--delay, 0ms);
 }

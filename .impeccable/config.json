@@ -7,6 +7,11 @@
         "rule": "design-system-color",
         "value": "#000",
         "createdAt": "2026-10-07T18:44:25.602Z"
+      },
+      {
+        "rule": "bounce-easing",
+        "value": "cubic-bezier(0.34, 1.2, 0.64, 1)",
+        "createdAt": "2026-10-07T19:33:35.060Z"
       }
     ]
   }

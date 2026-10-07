@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ReceiptText, Trash2 } from 'lucide-react'
+import { ChevronDown, Trash2 } from 'lucide-react'
 import type { Receipt } from '../../lib/catalog'
 import { formatCents } from '../../lib/compare'
 import { plural, shortDate, storeLabel } from '../../lib/labels'
@@ -14,44 +14,49 @@ const FIRST_PAGE = 5
 interface SavedReceiptsProps {
   repo: CatalogRepository
   receipts: readonly Receipt[]
+  /** A receipt just saved: its row gets a highlight sweep. */
+  highlightId?: string | null
 }
 
-export function SavedReceipts({ repo, receipts }: SavedReceiptsProps) {
+export function SavedReceipts({ repo, receipts, highlightId }: SavedReceiptsProps) {
   const [showAll, setShowAll] = useState(false)
   const shown = showAll ? receipts : receipts.slice(0, FIRST_PAGE)
 
   return (
     <Panel aria-labelledby="saved-title">
-      <h2 id="saved-title" className="flex items-baseline justify-between border-b border-line px-4 py-3.5 font-semibold">
+      <h2 id="saved-title" className="flex items-baseline justify-between border-b-2 border-ink px-4 py-3 section-title">
         Saved receipts
-        {receipts.length > 0 && <span className="text-sm font-semibold text-ink-muted tabular">{receipts.length}</span>}
+        {receipts.length > 0 && <span className="font-mono text-sm font-medium text-ink-muted">{receipts.length}</span>}
       </h2>
 
       {receipts.length === 0 ? (
-        <EmptyState icon={<ReceiptText className="size-6" aria-hidden="true" />} title="Nothing yet">
+        <EmptyState title="Nothing yet">
           Nothing yet. Saved receipts stay in this browser and feed your spending history.
         </EmptyState>
       ) : (
         <>
-          <ul className="divide-y divide-line">
+          <ul className="divide-y divide-dotted divide-rule">
             {shown.map((receipt) => (
-              <li key={receipt.id}>
+              <li key={receipt.id} className="relative overflow-hidden">
+                {receipt.id === highlightId && (
+                  <span aria-hidden="true" className="pointer-events-none absolute inset-0 animate-sweep bg-tag/40" />
+                )}
                 <details className="group">
-                  <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3 hover:bg-sunken/60 [&::-webkit-details-marker]:hidden">
+                  <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-3 hover:bg-paper-sunken/60 [&::-webkit-details-marker]:hidden">
                     <span className="min-w-0 flex-1">
                       <span className="block font-semibold">{storeLabel(repo, receipt.storeId)}</span>
-                      <span className="text-sm text-ink-muted">
+                      <span className="font-mono text-xs text-ink-muted">
                         {shortDate(receipt.purchasedAt)} · {plural(receipt.lines.length, 'item')}
                       </span>
                     </span>
-                    <span className="numeral">{formatCents(receiptTotalCents(receipt))}</span>
+                    <span className="font-mono font-medium">{formatCents(receiptTotalCents(receipt))}</span>
                     <ChevronDown
                       className="size-4 text-ink-faint transition-transform group-open:rotate-180"
                       aria-hidden="true"
                     />
                   </summary>
-                  <div className="bg-sunken/50 px-4 pt-1 pb-3">
-                    <ul className="text-sm">
+                  <div className="bg-paper-sunken/50 px-4 pt-1 pb-3">
+                    <ul className="font-mono text-sm">
                       {receipt.lines.map((line) => (
                         <li key={line.id} className="flex justify-between gap-3 py-1">
                           <span>
@@ -77,7 +82,7 @@ export function SavedReceipts({ repo, receipts }: SavedReceiptsProps) {
             ))}
           </ul>
           {receipts.length > FIRST_PAGE && (
-            <div className="border-t border-line p-2">
+            <div className="border-t border-rule p-2">
               <Button variant="ghost" size="sm" className="w-full" onClick={() => setShowAll((v) => !v)}>
                 {showAll ? 'Show recent only' : `Show all ${receipts.length} receipts`}
               </Button>

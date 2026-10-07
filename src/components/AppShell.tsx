@@ -1,6 +1,7 @@
 /**
- * Navigation. Phones get a quiet top bar with the profile button and a bottom
- * tab bar; laptops get a white sidebar. Same five destinations either way.
+ * Navigation. Phones get a quiet top bar on paper and a tab bar under a 2px
+ * ink rule; laptops get a raised-paper sidebar. Same five destinations either
+ * way, and page changes crossfade through View Transitions where supported.
  */
 import type { ReactNode } from 'react'
 import { Link, NavLink } from 'react-router-dom'
@@ -33,10 +34,10 @@ const PROFILE: Destination = { to: '/profile', label: 'Profile', icon: CircleUse
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-dvh lg:grid lg:grid-cols-[232px_1fr]">
+    <div className="min-h-dvh lg:grid lg:grid-cols-[248px_1fr]">
       <Sidebar />
       <MobileHeader />
-      <main className="mx-auto w-full max-w-6xl px-4 pt-4 pb-28 sm:px-6 lg:px-12 lg:pt-12 lg:pb-16">
+      <main className="mx-auto w-full max-w-[1200px] px-4 pt-3 pb-28 sm:px-6 lg:px-14 lg:pt-12 lg:pb-16">
         {children}
       </main>
       <TabBar />
@@ -46,17 +47,17 @@ export function AppShell({ children }: { children: ReactNode }) {
 
 function Sidebar() {
   return (
-    <aside className="hidden border-r border-line bg-surface lg:block">
-      <div className="sticky top-0 flex h-dvh flex-col px-3 py-6">
-        <Link to="/" className="mb-8 px-3" aria-label="CartWise home">
+    <aside className="hidden border-r-2 border-ink bg-paper-raised lg:block">
+      <div className="sticky top-0 flex h-dvh flex-col py-7">
+        <Link to="/" viewTransition className="mb-10 px-6" aria-label="CartWise home">
           <Logo />
         </Link>
-        <nav aria-label="Main" className="flex flex-col gap-0.5">
+        <nav aria-label="Main" className="flex flex-col">
           {DESTINATIONS.map((d) => (
             <SideLink key={d.to} destination={d} />
           ))}
         </nav>
-        <div className="mt-auto">
+        <div className="mt-auto border-t border-rule pt-2">
           <SideLink destination={PROFILE} />
         </div>
       </div>
@@ -69,9 +70,12 @@ function SideLink({ destination: { to, label, icon: Icon } }: { destination: Des
     <NavLink
       to={to}
       end={to === '/'}
+      viewTransition
       className={({ isActive }) =>
-        `flex h-10 items-center gap-3 rounded-control px-3 text-[15px] font-medium transition-colors ${
-          isActive ? 'bg-leaf-soft text-leaf-ink' : 'text-ink-muted hover:bg-sunken hover:text-ink'
+        `flex h-11 items-center gap-3 border-l-[3px] px-6 text-[15px] font-semibold transition-colors ${
+          isActive
+            ? 'border-teal bg-teal-wash text-ink'
+            : 'border-transparent text-ink-muted hover:bg-paper-sunken hover:text-ink'
         }`
       }
     >
@@ -83,16 +87,17 @@ function SideLink({ destination: { to, label, icon: Icon } }: { destination: Des
 
 function MobileHeader() {
   return (
-    <header className="flex h-14 items-center justify-between px-4 lg:hidden">
-      <Link to="/" aria-label="CartWise home">
+    <header className="flex h-16 items-center justify-between px-4 lg:hidden">
+      <Link to="/" viewTransition aria-label="CartWise home">
         <Logo />
       </Link>
       <NavLink
         to={PROFILE.to}
+        viewTransition
         aria-label="Profile"
         className={({ isActive }) =>
           `grid size-10 place-items-center rounded-full transition-colors ${
-            isActive ? 'bg-leaf-soft text-leaf-ink' : 'text-ink-muted hover:text-ink'
+            isActive ? 'bg-teal-wash text-ink' : 'text-ink-muted hover:text-ink'
           }`
         }
       >
@@ -106,7 +111,7 @@ function TabBar() {
   return (
     <nav
       aria-label="Tabs"
-      className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-20 border-t-2 border-ink bg-paper-raised pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
       <ul className="mx-auto grid max-w-lg grid-cols-5">
         {DESTINATIONS.map(({ to, label, icon: Icon }) => (
@@ -114,14 +119,20 @@ function TabBar() {
             <NavLink
               to={to}
               end={to === '/'}
+              viewTransition
               className={({ isActive }) =>
-                `flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors ${
-                  isActive ? 'text-leaf' : 'text-ink-faint hover:text-ink'
+                `relative flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-colors ${
+                  isActive ? 'text-ink' : 'text-ink-faint hover:text-ink'
                 }`
               }
             >
-              <Icon className="size-[22px]" aria-hidden="true" />
-              {label}
+              {({ isActive }) => (
+                <>
+                  {isActive && <span className="absolute inset-x-5 top-0 h-[3px] bg-teal" aria-hidden="true" />}
+                  <Icon className="size-[22px]" aria-hidden="true" />
+                  {label}
+                </>
+              )}
             </NavLink>
           </li>
         ))}

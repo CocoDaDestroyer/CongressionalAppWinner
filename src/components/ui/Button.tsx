@@ -4,22 +4,26 @@ import { Link, type LinkProps } from 'react-router-dom'
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
 type Size = 'md' | 'sm'
 
+// Primary buttons are ink and turn teal on hover, lifting off an offset shadow like a stamped tag.
+const LIFT =
+  'hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[2px_2px_0_var(--color-ink)] active:translate-0 active:shadow-none'
+
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-leaf text-on-leaf hover:bg-leaf-hover',
-  secondary: 'border border-line-strong bg-surface text-ink hover:bg-sunken',
-  ghost: 'text-ink-muted hover:bg-sunken hover:text-ink',
-  danger: 'border border-line-strong bg-surface text-danger hover:bg-danger-soft',
+  primary: `border-[1.5px] border-ink bg-ink text-paper hover:border-teal hover:bg-teal hover:text-on-teal ${LIFT}`,
+  secondary: `border-[1.5px] border-ink bg-transparent text-ink hover:bg-paper-raised ${LIFT}`,
+  ghost: 'text-ink-muted hover:bg-paper-sunken hover:text-ink',
+  danger: `border-[1.5px] border-brick bg-transparent text-brick hover:bg-paper-raised ${LIFT}`,
 }
 
 const SIZES: Record<Size, string> = {
-  md: 'h-11 px-4 text-[15px] gap-2',
+  md: 'h-12 px-5 text-[15px] gap-2',
   sm: 'h-9 px-3 text-sm gap-1.5',
 }
 
 function buttonClass(variant: Variant, size: Size, extra: string): string {
   return [
-    'inline-flex shrink-0 items-center justify-center rounded-control font-medium',
-    'transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50',
+    'inline-flex shrink-0 items-center justify-center rounded-control font-semibold',
+    'transition-[background-color,color,translate,box-shadow] duration-150 disabled:pointer-events-none disabled:opacity-50',
     VARIANTS[variant],
     SIZES[size],
     extra,

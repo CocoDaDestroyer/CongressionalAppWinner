@@ -8,7 +8,7 @@
  */
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CreditCard, ListChecks, TriangleAlert } from 'lucide-react'
+import { CreditCard, TriangleAlert } from 'lucide-react'
 import { formatCents } from '../lib/compare'
 import { DEFAULT_DRIVING_COST } from '../lib/geo'
 import { plural, retailerName } from '../lib/labels'
@@ -21,7 +21,9 @@ import { EmptyState } from '../components/ui/EmptyState'
 import { ListEditor } from '../components/trip/ListEditor'
 import { PlanComparison } from '../components/trip/PlanComparison'
 import { RouteMap } from '../components/trip/RouteMap'
-import { StopCard } from '../components/trip/StopCard'
+import { TripReceipt } from '../components/trip/TripReceipt'
+import { PriceNumeral } from '../components/print/Numeral'
+import { SaleTag } from '../components/print/SaleTag'
 
 /** A weekly top-up: big enough that the planner has real choices to make. */
 const STARTER_LIST: Record<string, number> = {
@@ -76,12 +78,10 @@ export function Trip() {
   if (!result) {
     return (
       <>
-        <PageHeader title="Trip" description="Which stores to visit, and what to buy at each." />
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <PageHeader title="Trip" description="Where to shop and what to buy, with the drive counted." />
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
           <Panel>
-            <EmptyState icon={<ListChecks className="size-6" aria-hidden="true" />} title="Your list is empty">
-              Add something to the list.
-            </EmptyState>
+            <EmptyState title="The cart is empty">Add something to the list.</EmptyState>
           </Panel>
           {editor}
         </div>
@@ -106,71 +106,56 @@ export function Trip() {
     <>
       <PageHeader title="Trip" description="Where to shop and what to buy, with the drive counted." />
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-8">
-        <div className="flex flex-col gap-6">
-          <Panel aria-label="Trip total" className="p-5 sm:p-6">
-            <p className="text-sm text-ink-muted">Trip total for {plural(itemCount, 'item')}</p>
-            <p className="mt-1 numeral text-[44px] leading-none">{formatCents(best.totalCents)}</p>
-            {savedVsOneStore >= 1 ? (
-              <p className="mt-2 font-semibold text-savings">
-                You save {formatCents(savedVsOneStore)} vs. one store
-              </p>
-            ) : (
-              <p className="mt-2 font-semibold text-leaf-ink">One store is your best bet</p>
-            )}
-            <p className="mt-1 text-sm text-ink-muted tabular">
-              {formatCents(best.groceryCents)} groceries + {formatCents(best.drivingCents)} fuel,{' '}
-              {plural(best.stores.length, 'stop')}, {formatMiles(best.miles)} round trip
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-12">
+        <div className="flex flex-col gap-8">
+          <section aria-label="Trip total">
+            <p className="font-mono text-sm text-ink-muted">Trip total, {plural(itemCount, 'item')}</p>
+            <PriceNumeral value={formatCents(best.totalCents)} className="mt-2 hero-numeral" />
+            <div className="mt-5">
+              {savedVsOneStore >= 1 ? (
+                <SaleTag tilt={-2}>You save {formatCents(savedVsOneStore)} vs. one store</SaleTag>
+              ) : (
+                <p className="font-semibold text-teal">One store is your best bet</p>
+              )}
+            </div>
+            <p className="mt-4 font-mono text-sm text-ink-muted">
+              {formatCents(best.groceryCents)} groceries + {formatCents(best.drivingCents)} fuel ·{' '}
+              {plural(best.stores.length, 'stop')} · {formatMiles(best.miles)}
             </p>
-
             {cardSavings >= 1 && cardsToLink.length > 0 && (
               <Link
                 to="/profile"
-                className="mt-4 flex items-center gap-2.5 border-t border-line pt-4 text-sm font-medium text-leaf-ink hover:underline"
+                viewTransition
+                className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-teal underline-offset-4 hover:underline"
               >
                 <CreditCard className="size-4 shrink-0" aria-hidden="true" />
                 Link your {cardsToLink.join(' and ')} {cardsToLink.length > 1 ? 'cards' : 'card'} to save{' '}
-                {formatCents(cardSavings)} more on this trip
+                {formatCents(cardSavings)} more
               </Link>
             )}
-          </Panel>
+          </section>
 
           {best.unavailable.length > 0 && (
-            <p role="status" className="flex items-center gap-2 text-sm text-warn">
+            <p role="status" className="flex items-center gap-2 text-sm text-amber">
               <TriangleAlert className="size-4 shrink-0" aria-hidden="true" />
               No store nearby has a price on file for {best.unavailable.join(', ')}.
             </p>
           )}
 
-          <Panel className="grid gap-8 p-5 sm:p-6">
+          <Panel className="flex flex-col gap-8 p-5 sm:p-6">
             <RouteMap repo={repo} home={SEED_HOME} route={best.routeOrder} />
             <PlanComparison repo={repo} result={result} />
           </Panel>
-
-          <section aria-labelledby="stops-title" className="flex flex-col gap-3">
-            <h2 id="stops-title" className="font-semibold">
-              What to buy where
-            </h2>
-            <div className="grid gap-4 xl:grid-cols-2">
-              {best.routeOrder.map((store, index) => (
-                <StopCard
-                  key={store.id}
-                  repo={repo}
-                  stop={index + 1}
-                  store={store}
-                  purchases={best.purchases.filter((p) => p.option.store.id === store.id)}
-                />
-              ))}
-            </div>
-            <p className="text-xs text-ink-faint">
-              Fuel at {formatCents(DEFAULT_DRIVING_COST.gasPriceCentsPerGallon)}/gal and{' '}
-              {DEFAULT_DRIVING_COST.milesPerGallon} mpg. Each item is the best balance of per-unit
-              price and reviews among the stores on the route.
-            </p>
-          </section>
+          <p className="font-mono text-xs text-ink-faint">
+            Fuel at {formatCents(DEFAULT_DRIVING_COST.gasPriceCentsPerGallon)}/gal, {DEFAULT_DRIVING_COST.milesPerGallon} mpg.
+            Each item is the best balance of per-unit price and reviews among the stores on the route.
+          </p>
         </div>
 
-        <div className="lg:sticky lg:top-10">{editor}</div>
+        <div className="flex flex-col gap-8">
+          <TripReceipt repo={repo} result={result} savedVsOneStore={savedVsOneStore} />
+          {editor}
+        </div>
       </div>
     </>
   )

@@ -13,8 +13,8 @@ import { Panel } from '../components/ui/Panel'
 import { StoreCard } from '../components/profile/StoreCard'
 
 const THEMES: { value: ThemePreference; label: string; icon: typeof Sun }[] = [
-  { value: 'light', label: 'Light', icon: Sun },
-  { value: 'dark', label: 'Dark', icon: Moon },
+  { value: 'light', label: 'Paper', icon: Sun },
+  { value: 'dark', label: 'After hours', icon: Moon },
   { value: 'system', label: 'System', icon: Monitor },
 ]
 
@@ -39,7 +39,7 @@ export function Profile() {
       <PageHeader title="Profile" />
 
       <section aria-labelledby="cards-title">
-        <h2 id="cards-title" className="text-lg font-semibold">
+        <h2 id="cards-title" className="section-title">
           Store cards
         </h2>
         <p className="mt-1 max-w-[60ch] text-sm text-ink-muted">
@@ -61,10 +61,10 @@ export function Profile() {
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
         <Panel aria-labelledby="appearance-title" className="p-5">
-          <h2 id="appearance-title" className="font-semibold">
+          <h2 id="appearance-title" className="section-title">
             Appearance
           </h2>
-          <div role="radiogroup" aria-labelledby="appearance-title" className="mt-3 grid grid-cols-3 gap-1 rounded-control bg-sunken p-1">
+          <div role="radiogroup" aria-labelledby="appearance-title" className="mt-4 grid grid-cols-3 gap-3">
             {THEMES.map(({ value, label, icon: Icon }) => (
               <button
                 key={value}
@@ -72,19 +72,22 @@ export function Profile() {
                 role="radio"
                 aria-checked={theme === value}
                 onClick={() => themeStore.setPreference(value)}
-                className={`flex h-9 items-center justify-center gap-2 rounded-[8px] text-sm font-medium transition-colors ${
-                  theme === value ? 'bg-surface text-ink shadow-sm' : 'text-ink-muted hover:text-ink'
+                className={`flex flex-col gap-2 rounded-control border-[1.5px] p-2 text-left text-sm font-semibold transition-[border-color,box-shadow] ${
+                  theme === value ? 'border-ink tag-shadow' : 'border-rule hover:border-ink'
                 }`}
               >
-                <Icon className="size-4" aria-hidden="true" />
-                {label}
+                <ThemePreview value={value} />
+                <span className="flex items-center gap-1.5 px-1">
+                  <Icon className="size-4" aria-hidden="true" />
+                  {label}
+                </span>
               </button>
             ))}
           </div>
         </Panel>
 
         <Panel aria-labelledby="demo-title" className="p-5">
-          <h2 id="demo-title" className="font-semibold">
+          <h2 id="demo-title" className="section-title">
             Demo data
           </h2>
           <p className="mt-1 text-sm text-ink-muted">
@@ -119,5 +122,24 @@ export function Profile() {
         </Panel>
       </div>
     </>
+  )
+}
+
+/**
+ * A thumbnail of each theme, drawn from fixed swatches rather than the live
+ * tokens so both previews show at once whichever theme is active.
+ */
+function ThemePreview({ value }: { value: ThemePreference }) {
+  const paper = <span className="block h-full bg-swatch-paper" />
+  const night = <span className="block h-full bg-swatch-night" />
+  return (
+    <span aria-hidden="true" className="relative block h-14 overflow-hidden rounded-[4px] border border-rule">
+      <span className="grid h-full grid-cols-2">
+        {value === 'dark' ? night : paper}
+        {value === 'light' ? paper : night}
+      </span>
+      <span className="absolute top-2 left-2 h-3 w-8 rounded-[2px] bg-swatch-tag ring-1 ring-swatch-ink" />
+      <span className="absolute right-2 bottom-2 h-1.5 w-10 rounded-[1px] bg-swatch-teal" />
+    </span>
   )
 }

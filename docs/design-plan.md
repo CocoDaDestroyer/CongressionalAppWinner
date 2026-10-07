@@ -1,3 +1,6 @@
+> **Superseded.** This quiet white-card plan read as generic. The current system is "shelf-tag
+> print", specified in `DESIGN.md`. This file is kept as the record of why v1 and v2 were replaced.
+
 # CartWise design plan: clean and quiet
 
 ## What went wrong in v1

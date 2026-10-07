@@ -9,10 +9,10 @@ interface QualitySliderProps {
 export function QualitySlider({ value, onChange }: QualitySliderProps) {
   const percent = Math.round(value * 100)
   return (
-    <div className="card px-5 pt-4 pb-3">
-      <label htmlFor="quality-weight" className="flex items-baseline justify-between gap-3 text-sm">
-        <span className="font-medium">What matters more?</span>
-        <span className="text-ink-muted tabular">{percent}% quality</span>
+    <div className="sheet px-5 pt-4 pb-3">
+      <label htmlFor="quality-weight" className="flex items-baseline justify-between gap-3">
+        <span className="section-title text-base">What matters more?</span>
+        <span className="font-mono text-sm text-ink-muted tabular">{percent}% quality</span>
       </label>
       <input
         id="quality-weight"
@@ -26,9 +26,9 @@ export function QualitySlider({ value, onChange }: QualitySliderProps) {
         style={{ '--fill': `${percent}%` } as CSSProperties}
         className="range mt-2 w-full"
       />
-      <div className="flex justify-between text-xs text-ink-faint">
-        <span>Lowest price</span>
-        <span>Best reviews</span>
+      <div className="flex justify-between font-mono text-xs text-ink-faint">
+        <span>lowest price</span>
+        <span>best reviews</span>
       </div>
     </div>
   )

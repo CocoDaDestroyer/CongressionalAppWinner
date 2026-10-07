@@ -1,45 +1,47 @@
 /**
- * Provenance labels. A fresh store-site price needs none; only the facts a
- * shopper should notice get one: member pricing, community or receipt
- * evidence, staleness, and an unverified package.
+ * Provenance stamps. A fresh store-site price needs none; only what a shopper
+ * should notice gets one: member pricing, receipt or community evidence,
+ * staleness, and an unverified package.
  */
 import { Link } from 'react-router-dom'
-import { CircleAlert, CreditCard, Lock, ReceiptText, Users } from 'lucide-react'
+import { CreditCard, Lock } from 'lucide-react'
 import { isStale, type CompareOption } from '../../lib/compare'
-import { Badge } from '../ui/Badge'
+import { Stamp } from '../print/Stamp'
 
-const icon = 'size-3.5'
+const icon = 'size-3'
 
 export function PriceBadges({ option }: { option: CompareOption }) {
   return (
     <>
       {option.memberLocked ? (
-        <Link to="/profile" className="rounded-sm hover:underline">
-          <Badge icon={<Lock className={icon} aria-hidden="true" />}>
+        <Link to="/profile" viewTransition className="rounded-tag hover:opacity-80">
+          <Stamp icon={<Lock className={icon} aria-hidden="true" />} tilt={-1}>
             Member price · link {option.retailerName} card
-          </Badge>
+          </Stamp>
         </Link>
       ) : (
         option.isMemberPrice && (
-          <Badge tone="leaf" icon={<CreditCard className={icon} aria-hidden="true" />}>
+          <Stamp tone="teal" icon={<CreditCard className={icon} aria-hidden="true" />} tilt={-2}>
             Member price
-          </Badge>
+          </Stamp>
         )
       )}
-      {option.source === 'receipt' && (
-        <Badge icon={<ReceiptText className={icon} aria-hidden="true" />}>Receipt</Badge>
-      )}
+      {option.source === 'receipt' && <Stamp tilt={2}>Receipt</Stamp>}
       {option.source === 'user_report' && (
-        <Badge tone="community" icon={<Users className={icon} aria-hidden="true" />}>
+        <Stamp tone="community" tilt={-2}>
           Community
-        </Badge>
+        </Stamp>
       )}
       {isStale(option) && (
-        <Badge tone="warn" icon={<CircleAlert className={icon} aria-hidden="true" />}>
-          Stale
-        </Badge>
+        <Stamp tone="brick" tilt={2}>
+          Stale · {option.ageDays} days old
+        </Stamp>
       )}
-      {option.pkg.verifiedAt === null && <Badge tone="warn">Unverified</Badge>}
+      {option.pkg.verifiedAt === null && (
+        <Stamp tone="amber" tilt={-1}>
+          Unverified
+        </Stamp>
+      )}
     </>
   )
 }

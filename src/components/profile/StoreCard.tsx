@@ -23,12 +23,12 @@ export function StoreCard({ retailer, index, linked, memberPriceCount }: StoreCa
   return (
     <article
       aria-label={`${retailer.name} card`}
-      className={`relative flex h-36 flex-col justify-between overflow-hidden rounded-card p-5 text-on-card ${FILLS[index % FILLS.length]} ${retailer.supportsLoyalty ? '' : 'opacity-80'}`}
+      className={`relative flex h-36 flex-col justify-between overflow-hidden rounded-card border-[1.5px] border-ink p-5 text-on-card ${FILLS[index % FILLS.length]} ${retailer.supportsLoyalty ? '' : 'opacity-80'}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-xl font-semibold">{retailer.name}</h3>
-          <p className="text-sm text-on-card/75">
+          <h3 className="font-display text-2xl font-extrabold tracking-[-0.03em]">{retailer.name}</h3>
+          <p className="font-mono text-xs text-on-card/75">
             {retailer.supportsLoyalty ? 'Rewards card' : 'No member pricing'}
           </p>
         </div>
@@ -42,7 +42,7 @@ export function StoreCard({ retailer, index, linked, memberPriceCount }: StoreCa
         )}
       </div>
       <div className="flex items-end justify-between gap-3">
-        <span className="text-[15px] tracking-[0.15em] tabular opacity-90">•••• {lastFour}</span>
+        <span className="font-mono text-[15px] tracking-[0.15em] opacity-90">•••• {lastFour}</span>
         {retailer.supportsLoyalty && (
           <span className="flex items-center gap-1.5 text-sm font-semibold">
             <CreditCard className="size-4" aria-hidden="true" />

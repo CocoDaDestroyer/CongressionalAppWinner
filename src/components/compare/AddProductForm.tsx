@@ -78,14 +78,14 @@ export function AddProductForm({ repo, gtin, onAdded, onCancel }: AddProductForm
   return (
     <section
       aria-labelledby="add-product"
-      className="card p-5 sm:p-6"
+      className="animate-tag-print rounded-tag border-[1.5px] border-ink bg-paper-raised p-5 tag-shadow sm:p-6"
     >
       <div className="flex items-start gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sunken text-community">
+        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-paper-sunken text-community">
           <PackagePlus className="size-5" aria-hidden="true" />
         </span>
         <div>
-          <h2 id="add-product" className="text-base font-semibold">
+          <h2 id="add-product" className="section-title">
             Barcode {gtin} isn't in the catalog yet
           </h2>
           <p className="mt-1 text-sm text-ink-muted">
@@ -154,7 +154,7 @@ export function AddProductForm({ repo, gtin, onAdded, onCancel }: AddProductForm
         </Field>
 
         {error && (
-          <p role="alert" className="text-sm text-danger sm:col-span-2">
+          <p role="alert" className="text-sm text-brick sm:col-span-2">
             {error}
           </p>
         )}

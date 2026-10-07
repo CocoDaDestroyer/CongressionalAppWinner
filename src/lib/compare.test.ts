@@ -3,6 +3,7 @@ import {
   compareByPackage,
   explainPick,
   formatCents,
+  freshnessOf,
   formatPerUnit,
   formatShelfUnit,
   isStale,
@@ -211,5 +212,15 @@ describe('formatCents', () => {
   it('groups thousands', () => {
     expect(formatCents(429)).toBe('$4.29')
     expect(formatCents(226_047)).toBe('$2,260.47')
+  })
+})
+
+describe('freshnessOf', () => {
+  it('ages ink from fresh to stale at the stale cut-off', () => {
+    expect(freshnessOf(0)).toBe('fresh')
+    expect(freshnessOf(3)).toBe('fresh')
+    expect(freshnessOf(4)).toBe('aging')
+    expect(freshnessOf(14)).toBe('aging')
+    expect(freshnessOf(15)).toBe('stale')
   })
 })

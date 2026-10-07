@@ -1,101 +1,130 @@
 /**
- * Home: the month's savings, and the three things a shopper comes here to do.
+ * Home: the story in one band ("the sticker price lies"), the proof printed as
+ * a live shelf tag, and the shopper's own numbers as a ledger line.
  */
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, ReceiptText, Route, ScanBarcode, type LucideIcon } from 'lucide-react'
-import { formatCents } from '../lib/compare'
+import { ArrowRight, ReceiptText, Route, ScanBarcode } from 'lucide-react'
+import { compareByPackage, formatCents } from '../lib/compare'
 import { plural } from '../lib/labels'
 import { savingsInMonth } from '../lib/savings'
 import { longMonthName, monthOf, summarizeSpending } from '../lib/spending'
-import { useCatalog, useReceipts } from '../lib/useCatalog'
+import { useCatalog, useLinkedRetailers, useReceipts } from '../lib/useCatalog'
 import { SEED_NOW } from '../data/seed'
+import { PriceTag } from '../components/compare/PriceTag'
+import { Ledger } from '../components/print/Ledger'
 
-interface QuickAction {
-  to: string
-  title: string
-  body: string
-  icon: LucideIcon
-}
-
-const ACTIONS: QuickAction[] = [
-  {
-    to: '/compare?product=p-heinz-20',
-    title: 'Compare a product',
-    body: 'See the real price per ounce across brands, sizes and stores.',
-    icon: ScanBarcode,
-  },
-  {
-    to: '/trip',
-    title: 'Plan a trip',
-    body: 'Find out whether the cheaper store is worth the drive.',
-    icon: Route,
-  },
-  {
-    to: '/receipts',
-    title: 'Add a receipt',
-    body: 'Your receipt keeps prices current for everyone nearby.',
-    icon: ReceiptText,
-  },
-]
+const DEMO_PRODUCT = 'p-heinz-20'
 
 export function Home() {
   const repo = useCatalog()
   const receipts = useReceipts()
+  const linked = useLinkedRetailers()
   const month = monthOf(SEED_NOW.toISOString())
-
-  const saved = useMemo(() => savingsInMonth(repo, receipts, month), [repo, receipts, month])
-  const spent = useMemo(() => summarizeSpending(receipts, SEED_NOW).thisMonthCents, [receipts])
-  const monthReceipts = receipts.filter((r) => monthOf(r.purchasedAt) === month).length
   const monthName = longMonthName(month).split(' ')[0]
 
+  const saved = useMemo(() => savingsInMonth(repo, receipts, month), [repo, receipts, month])
+  const summary = useMemo(() => summarizeSpending(receipts, SEED_NOW), [receipts])
+  const demo = useMemo(
+    () => compareByPackage(repo, DEMO_PRODUCT, { now: SEED_NOW, memberRetailerIds: linked }),
+    [repo, linked],
+  )
+  const monthReceipts = receipts.filter((r) => monthOf(r.purchasedAt) === month).length
+
   return (
-    <div className="mx-auto max-w-3xl">
-      <section aria-labelledby="home-title" className="animate-rise pt-2 pb-8 lg:pt-6">
-        <h1 id="home-title" className="text-[34px] leading-tight font-semibold tabular lg:text-[44px]">
-          Saved {formatCents(saved)} this month
+    <>
+      <section
+        aria-labelledby="home-title"
+        className="-mx-4 -mt-3 bg-teal px-4 pt-10 pb-12 text-on-teal sm:-mx-6 sm:px-6 lg:-mx-14 lg:-mt-12 lg:px-14 lg:pt-16 lg:pb-20"
+      >
+        <h1
+          id="home-title"
+          className="max-w-[14ch] animate-fade-up font-display text-[clamp(2.75rem,1.6rem+5vw,5.25rem)] leading-[0.92] font-extrabold tracking-[-0.04em]"
+        >
+          The sticker price lies.
         </h1>
-        <p className="mt-2 max-w-[52ch] text-[17px] text-ink-muted">
-          {monthReceipts > 0 ? (
-            <>
-              By paying less per ounce than the typical price on {plural(monthReceipts, 'receipt')} in{' '}
-              {monthName}. You've spent <span className="font-semibold text-ink tabular">{formatCents(spent)}</span>{' '}
-              so far.{' '}
-              <Link to="/spending" className="font-semibold text-leaf-ink underline">
-                See spending
-              </Link>
-            </>
-          ) : (
-            <>No receipts in {monthName} yet. Add one and CartWise starts counting what you save.</>
-          )}
+        <p className="mt-5 max-w-[46ch] animate-fade-up text-lg opacity-90 [animation-delay:80ms]">
+          CartWise shows what groceries really cost per ounce, across every brand and nearby store, and
+          whether the cheap store is worth the drive.
         </p>
+        <Link
+          to={`/compare?product=${DEMO_PRODUCT}`}
+          viewTransition
+          className="mt-8 inline-flex h-12 animate-fade-up items-center gap-2 rounded-control border-[1.5px] border-ink bg-paper-raised px-5 font-semibold text-ink tag-shadow transition-[translate,box-shadow] [animation-delay:160ms] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_var(--color-ink)]"
+        >
+          <ScanBarcode className="size-5" aria-hidden="true" />
+          Scan or look up a product
+        </Link>
       </section>
 
-      <nav aria-label="Quick actions">
-        <ul className="card divide-y divide-line overflow-hidden">
-          {ACTIONS.map(({ to, title, body, icon: Icon }) => (
-            <li key={to}>
-              <Link to={to} className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-sunken/60">
-                <span className="grid size-10 shrink-0 place-items-center rounded-control bg-leaf-soft text-leaf-ink">
-                  <Icon className="size-5" aria-hidden="true" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block font-semibold">{title}</span>
-                  <span className="block text-sm text-ink-muted">{body}</span>
-                </span>
-                <ArrowRight
-                  className="size-5 text-ink-faint transition-transform group-hover:translate-x-1 group-hover:text-ink"
-                  aria-hidden="true"
-                />
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <div className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
+        {demo && (
+          <section aria-labelledby="demo-title">
+            <h2 id="demo-title" className="section-title">
+              On the shelf today
+            </h2>
+            <p className="mt-1 mb-4 text-sm text-ink-muted">
+              The 64 oz bottle costs more and wins per ounce.
+            </p>
+            <Link to={`/compare?product=${DEMO_PRODUCT}`} viewTransition className="block">
+              <PriceTag repo={repo} comparison={demo} />
+            </Link>
+          </section>
+        )}
 
-      <p className="mt-8 text-xs text-ink-faint">
-        Demo build: stores, prices and receipts are sample data for the Westwood area of Los Angeles.
+        <div className="flex flex-col gap-10">
+          <section aria-labelledby="ledger-title">
+            <h2 id="ledger-title" className="section-title mb-4">
+              Your {monthName}
+            </h2>
+            <Ledger
+              entries={[
+                { label: 'Saved this month', value: formatCents(saved), saved: true, detail: 'vs. typical per-oz prices' },
+                { label: `Spent in ${monthName}`, value: formatCents(summary.thisMonthCents), detail: plural(monthReceipts, 'receipt') },
+              ]}
+            />
+            <Link to="/spending" viewTransition className="mt-3 inline-block text-sm font-semibold text-teal hover:underline">
+              See all spending
+            </Link>
+          </section>
+
+          <nav aria-label="Quick actions" className="flex flex-col border-t-2 border-ink">
+            <QuickAction to="/trip" icon={<Route className="size-5" aria-hidden="true" />} title="Plan a trip">
+              Is the cheaper store worth the drive?
+            </QuickAction>
+            <QuickAction to="/receipts" icon={<ReceiptText className="size-5" aria-hidden="true" />} title="Add a receipt">
+              Your receipt keeps prices honest for everyone nearby.
+            </QuickAction>
+          </nav>
+        </div>
+      </div>
+
+      <p className="mt-12 font-mono text-xs text-ink-faint">
+        Demo build: stores, prices and receipts are sample data for Westwood, Los Angeles.
       </p>
-    </div>
+    </>
+  )
+}
+
+function QuickAction({
+  to,
+  icon,
+  title,
+  children,
+}: {
+  to: string
+  icon: React.ReactNode
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <Link to={to} viewTransition className="group flex items-center gap-4 border-b border-rule py-4 hover:bg-paper-raised">
+      <span className="grid size-10 shrink-0 place-items-center rounded-tag border-[1.5px] border-ink">{icon}</span>
+      <span className="min-w-0 flex-1">
+        <span className="block font-display text-lg font-bold tracking-[-0.02em]">{title}</span>
+        <span className="block text-sm text-ink-muted">{children}</span>
+      </span>
+      <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+    </Link>
   )
 }

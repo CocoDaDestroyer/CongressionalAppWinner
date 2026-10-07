@@ -84,7 +84,7 @@ export function ProductFinder({ repo, packageId, onSelect, onUnknown }: ProductF
       </Field>
 
       <form onSubmit={lookUp} noValidate>
-        <label htmlFor="barcode" className="mb-1.5 block text-sm font-semibold text-ink-muted">
+        <label htmlFor="barcode" className="mb-1.5 block text-sm font-semibold">
           Or enter a barcode
         </label>
         <div className="flex gap-2">
@@ -95,7 +95,7 @@ export function ProductFinder({ repo, packageId, onSelect, onUnknown }: ProductF
             />
             <input
               id="barcode"
-              className={`${inputClass} pl-10 tabular`}
+              className={`${inputClass} pl-10 font-mono`}
               inputMode="numeric"
               autoComplete="off"
               placeholder="00013000006415"
@@ -123,7 +123,7 @@ export function ProductFinder({ repo, packageId, onSelect, onUnknown }: ProductF
           </div>
         )}
         {error && (
-          <p id="barcode-error" className="mt-1.5 text-sm text-danger">
+          <p id="barcode-error" className="mt-1.5 text-sm text-brick">
             {error}
           </p>
         )}
