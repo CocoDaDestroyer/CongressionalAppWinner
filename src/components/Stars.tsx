@@ -8,10 +8,10 @@ export function Stars({ quality, reviewCount }: { quality: number | null; review
   const stars = (Math.round(quality * 50) / 10).toFixed(1)
   return (
     <span
-      className="inline-flex items-center gap-1 text-sm font-semibold text-ink tabular"
+      className="inline-flex items-center gap-1 text-xs font-medium text-ink-muted tabular"
       aria-label={`Rated ${stars} out of 5${reviewCount ? ` from ${reviewCount.toLocaleString('en-US')} reviews` : ''}`}
     >
-      <Star className="size-3.5 fill-rating text-rating" aria-hidden="true" />
+      <Star className="size-3 fill-rating text-rating" aria-hidden="true" />
       {stars}
     </span>
   )

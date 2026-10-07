@@ -21,7 +21,8 @@ function renderCompare(path = '/compare') {
 
 const list = () => screen.getByRole('list', { name: 'All prices' })
 const rows = () => within(list()).getAllByRole('listitem')
-const bestValue = () => screen.getByText(/^Best value/).parentElement!.textContent ?? ''
+const bestValue = () =>
+  within(screen.getByRole('region', { name: 'Best value' })).getByRole('heading').textContent ?? ''
 
 describe('Compare screen', () => {
   it('lists sibling brands and sizes, not just the selected package', () => {

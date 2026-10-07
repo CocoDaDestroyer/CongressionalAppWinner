@@ -39,7 +39,7 @@ export function Profile() {
       <PageHeader title="Profile" />
 
       <section aria-labelledby="cards-title">
-        <h2 id="cards-title" className="text-xl font-bold">
+        <h2 id="cards-title" className="text-lg font-semibold">
           Store cards
         </h2>
         <p className="mt-1 max-w-[60ch] text-sm text-ink-muted">
@@ -61,10 +61,10 @@ export function Profile() {
 
       <div className="mt-10 grid gap-6 lg:grid-cols-2">
         <Panel aria-labelledby="appearance-title" className="p-5">
-          <h2 id="appearance-title" className="text-lg font-bold">
+          <h2 id="appearance-title" className="font-semibold">
             Appearance
           </h2>
-          <div role="radiogroup" aria-labelledby="appearance-title" className="mt-3 grid grid-cols-3 gap-1 rounded-full bg-sunken p-1">
+          <div role="radiogroup" aria-labelledby="appearance-title" className="mt-3 grid grid-cols-3 gap-1 rounded-control bg-sunken p-1">
             {THEMES.map(({ value, label, icon: Icon }) => (
               <button
                 key={value}
@@ -72,7 +72,7 @@ export function Profile() {
                 role="radio"
                 aria-checked={theme === value}
                 onClick={() => themeStore.setPreference(value)}
-                className={`flex h-10 items-center justify-center gap-2 rounded-full text-sm font-bold transition-colors ${
+                className={`flex h-9 items-center justify-center gap-2 rounded-[8px] text-sm font-medium transition-colors ${
                   theme === value ? 'bg-surface text-ink shadow-sm' : 'text-ink-muted hover:text-ink'
                 }`}
               >
@@ -84,7 +84,7 @@ export function Profile() {
         </Panel>
 
         <Panel aria-labelledby="demo-title" className="p-5">
-          <h2 id="demo-title" className="text-lg font-bold">
+          <h2 id="demo-title" className="font-semibold">
             Demo data
           </h2>
           <p className="mt-1 text-sm text-ink-muted">

@@ -18,14 +18,14 @@ export function StopCard({ repo, stop, store, purchases }: StopCardProps) {
   return (
     <Panel aria-label={`Stop ${stop}: ${storeLabel(repo, store)}`}>
       <header className="flex items-center gap-3 border-b border-line px-4 py-3">
-        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-leaf font-display text-sm font-extrabold text-on-leaf">
+        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-leaf text-xs font-semibold text-on-leaf">
           {stop}
         </span>
         <div className="min-w-0 flex-1">
-          <h3 className="font-bold">{storeLabel(repo, store)}</h3>
+          <h3 className="font-semibold">{storeLabel(repo, store)}</h3>
           <p className="truncate text-xs text-ink-muted">{store.address}</p>
         </div>
-        <span className="font-display font-bold tabular">{formatCents(subtotal)}</span>
+        <span className="numeral">{formatCents(subtotal)}</span>
       </header>
       <ul className="divide-y divide-line">
         {purchases.map((p) => (

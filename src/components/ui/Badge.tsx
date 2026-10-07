@@ -3,12 +3,12 @@ import type { ReactNode } from 'react'
 export type BadgeTone = 'neutral' | 'leaf' | 'warn' | 'community' | 'savings' | 'danger'
 
 const TONES: Record<BadgeTone, string> = {
-  neutral: 'bg-sunken text-ink-muted',
-  leaf: 'bg-leaf-soft text-leaf-ink',
-  warn: 'bg-warn-soft text-warn-ink',
-  community: 'bg-community-soft text-community-ink',
-  savings: 'bg-savings-soft text-savings-ink',
-  danger: 'bg-danger-soft text-danger-ink',
+  neutral: 'text-ink-muted',
+  leaf: 'text-leaf-ink',
+  warn: 'text-warn',
+  community: 'text-community',
+  savings: 'text-savings',
+  danger: 'text-danger',
 }
 
 interface BadgeProps {
@@ -17,11 +17,10 @@ interface BadgeProps {
   children: ReactNode
 }
 
+/** A small coloured label: text and an icon, no fill, so a row never turns into a pill wall. */
 export function Badge({ tone = 'neutral', icon, children }: BadgeProps) {
   return (
-    <span
-      className={`inline-flex h-6 items-center gap-1 rounded-full px-2 text-xs font-semibold whitespace-nowrap ${TONES[tone]}`}
-    >
+    <span className={`inline-flex items-center gap-1 text-xs font-medium whitespace-nowrap ${TONES[tone]}`}>
       {icon}
       {children}
     </span>

@@ -49,7 +49,7 @@ export function CameraScanner({ onCode, onClose }: CameraScannerProps) {
   }, [])
 
   return (
-    <section aria-label="Barcode camera" className="overflow-hidden rounded-card border border-line bg-ink">
+    <section aria-label="Barcode camera" className="overflow-hidden rounded-card bg-ink">
       {error ? (
         <p role="alert" className="flex items-center gap-2 p-4 text-sm text-ground">
           <CameraOff className="size-5 shrink-0" aria-hidden="true" />

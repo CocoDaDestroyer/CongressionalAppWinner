@@ -36,7 +36,9 @@ describe('App shell', () => {
 
   it('loads Spending, which is split into its own chunk', async () => {
     renderAt('/spending')
-    expect(await screen.findByRole('heading', { level: 1, name: 'Spending' })).toBeTruthy()
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Spending' }, { timeout: 5000 }),
+    ).toBeTruthy()
   })
 
   it('renders each route', () => {

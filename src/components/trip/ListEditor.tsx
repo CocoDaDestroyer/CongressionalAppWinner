@@ -21,15 +21,15 @@ export function ListEditor({
 }: ListEditorProps) {
   return (
     <Panel id="list" aria-labelledby="list-title" className="scroll-mt-20">
-      <h2 id="list-title" className="border-b border-line px-4 py-3 text-lg font-bold">
+      <h2 id="list-title" className="border-b border-line px-4 py-3.5 font-semibold">
         Your list
       </h2>
       <ul className="divide-y divide-line">
         {concepts.map((concept) => {
           const quantity = quantities[concept.id] ?? 0
           return (
-            <li key={concept.id} className="flex items-center justify-between gap-3 px-4 py-2">
-              <span className={quantity > 0 ? 'font-semibold' : 'text-ink-muted'}>{concept.name}</span>
+            <li key={concept.id} className="flex items-center justify-between gap-3 px-4 py-1.5">
+              <span className={`text-[15px] ${quantity > 0 ? 'text-ink' : 'text-ink-faint'}`}>{concept.name}</span>
               <span className="flex items-center gap-1">
                 <StepButton
                   label={`One fewer ${concept.name}`}
@@ -38,7 +38,7 @@ export function ListEditor({
                 >
                   <Minus className="size-4" aria-hidden="true" />
                 </StepButton>
-                <span className="w-7 text-center font-semibold tabular" aria-live="polite">
+                <span className="w-6 text-center text-[15px] font-medium tabular" aria-live="polite">
                   {quantity}
                 </span>
                 <StepButton label={`One more ${concept.name}`} onClick={() => onChange(concept.id, quantity + 1)}>
@@ -51,14 +51,14 @@ export function ListEditor({
       </ul>
 
       <fieldset className="border-t border-line px-4 py-4">
-        <legend className="float-left mb-2 w-full text-sm font-semibold text-ink-muted">
+        <legend className="float-left mb-2 w-full text-sm font-medium text-ink-muted">
           Most stops you'll make
         </legend>
-        <div className="clear-both grid grid-cols-4 gap-1 rounded-full bg-sunken p-1">
+        <div className="clear-both grid grid-cols-4 gap-1 rounded-control bg-sunken p-1">
           {STOP_CHOICES.map((n) => (
             <label
               key={n}
-              className={`grid h-9 cursor-pointer place-items-center rounded-full text-sm font-bold transition-colors has-focus-visible:outline-2 has-focus-visible:outline-leaf ${
+              className={`grid h-9 cursor-pointer place-items-center rounded-[8px] text-sm font-medium transition-colors has-focus-visible:outline-2 has-focus-visible:outline-leaf ${
                 maxStores === n ? 'bg-surface text-ink shadow-sm' : 'text-ink-muted hover:text-ink'
               }`}
             >
@@ -96,7 +96,7 @@ function StepButton({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="grid size-9 place-items-center rounded-full border border-line-strong text-ink transition-colors hover:bg-sunken disabled:opacity-35"
+      className="grid size-8 place-items-center rounded-[8px] text-ink-muted transition-colors hover:bg-sunken hover:text-ink disabled:opacity-30"
     >
       {children}
     </button>

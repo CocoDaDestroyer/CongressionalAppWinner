@@ -8,7 +8,7 @@ const VARIANTS: Record<Variant, string> = {
   primary: 'bg-leaf text-on-leaf hover:bg-leaf-hover',
   secondary: 'border border-line-strong bg-surface text-ink hover:bg-sunken',
   ghost: 'text-ink-muted hover:bg-sunken hover:text-ink',
-  danger: 'border border-line-strong bg-surface text-danger-ink hover:bg-danger-soft',
+  danger: 'border border-line-strong bg-surface text-danger hover:bg-danger-soft',
 }
 
 const SIZES: Record<Size, string> = {
@@ -16,9 +16,9 @@ const SIZES: Record<Size, string> = {
   sm: 'h-9 px-3 text-sm gap-1.5',
 }
 
-function buttonClass(variant: Variant = 'primary', size: Size = 'md', extra = ''): string {
+function buttonClass(variant: Variant, size: Size, extra: string): string {
   return [
-    'inline-flex shrink-0 items-center justify-center rounded-full font-semibold',
+    'inline-flex shrink-0 items-center justify-center rounded-control font-medium',
     'transition-colors duration-150 disabled:pointer-events-none disabled:opacity-50',
     VARIANTS[variant],
     SIZES[size],

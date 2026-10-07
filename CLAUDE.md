@@ -155,16 +155,17 @@ src/lib/theme.ts       light/dark/system, applied as <html data-theme>
 src/lib/supabase.ts    the single Supabase client (unused -- nothing is hosted)
 src/data/seed.ts       sample catalog, prices and six months of generated receipt history
 src/index.css          design tokens (Tailwind v4 @theme), light and dark
-src/components/        AppShell, Logo, Sticker (the per-unit oval), ui/ primitives, one folder per screen
+src/components/        AppShell, Logo, UnitPrice (the big per-unit number), ui/ primitives, one folder per screen
 src/routes/            one file per screen; Spending is lazy-loaded (recharts)
 supabase/migrations/   schema, applied in filename order -- never applied anywhere yet
 PRODUCT.md, DESIGN.md  product truth and the design system, for the Impeccable skill
-docs/                  polish plan, demo script, screenshots
+docs/                  polish plan, design plan, demo script, screenshots
 ```
 
-Design rules that are easy to break: colors only through tokens (no hex in components), tangerine
-(`savings`) only for money saved, panels never nest, and the filled leaf sticker marks the one
-recommended option on a screen.
+Design rules that are easy to break (see `docs/design-plan.md`): one typeface (Figtree), colors only
+through tokens (no hex in components), leaf green only for "the one to buy" or "you are here",
+orange (`savings`) only for money saved, status shown as small text labels rather than filled pills,
+no uppercase labels, and cards never nest.
 
 ## Working without a backend
 

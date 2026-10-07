@@ -104,47 +104,31 @@ export function Trip() {
 
   return (
     <>
-      <PageHeader title="Trip" description="Which stores to visit, and what to buy at each, with the drive counted." />
+      <PageHeader title="Trip" description="Where to shop and what to buy, with the drive counted." />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-8">
         <div className="flex flex-col gap-6">
           <Panel aria-label="Trip total" className="p-5 sm:p-6">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <p className="text-sm font-semibold text-ink-muted">
-                  Trip total for {plural(itemCount, 'item')}
-                </p>
-                <p className="font-display text-5xl leading-none font-extrabold tracking-tight tabular">
-                  {formatCents(best.totalCents)}
-                </p>
-              </div>
-              {savedVsOneStore >= 1 ? (
-                <p className="rounded-full bg-savings-soft px-3 py-1.5 font-bold text-savings-ink">
-                  You save {formatCents(savedVsOneStore)} vs. one store
-                </p>
-              ) : (
-                <p className="rounded-full bg-leaf-soft px-3 py-1.5 font-bold text-leaf-ink">
-                  One store is your best bet
-                </p>
-              )}
-            </div>
-            <p className="mt-3 text-sm text-ink-muted tabular">
-              {formatCents(best.groceryCents)} groceries + {formatCents(best.drivingCents)} fuel ·{' '}
-              {plural(best.stores.length, 'stop')} · {formatMiles(best.miles)} round trip
-              <span className="lg:hidden">
-                {' · '}
-                <a href="#list" className="font-semibold text-leaf-ink underline">
-                  Edit list
-                </a>
-              </span>
+            <p className="text-sm text-ink-muted">Trip total for {plural(itemCount, 'item')}</p>
+            <p className="mt-1 numeral text-[44px] leading-none">{formatCents(best.totalCents)}</p>
+            {savedVsOneStore >= 1 ? (
+              <p className="mt-2 font-semibold text-savings">
+                You save {formatCents(savedVsOneStore)} vs. one store
+              </p>
+            ) : (
+              <p className="mt-2 font-semibold text-leaf-ink">One store is your best bet</p>
+            )}
+            <p className="mt-1 text-sm text-ink-muted tabular">
+              {formatCents(best.groceryCents)} groceries + {formatCents(best.drivingCents)} fuel,{' '}
+              {plural(best.stores.length, 'stop')}, {formatMiles(best.miles)} round trip
             </p>
 
             {cardSavings >= 1 && cardsToLink.length > 0 && (
               <Link
                 to="/profile"
-                className="mt-4 flex items-center gap-3 rounded-xl border border-leaf/25 bg-leaf-soft px-3 py-2.5 text-sm font-semibold text-leaf-ink hover:border-leaf/50"
+                className="mt-4 flex items-center gap-2.5 border-t border-line pt-4 text-sm font-medium text-leaf-ink hover:underline"
               >
-                <CreditCard className="size-5 shrink-0" aria-hidden="true" />
+                <CreditCard className="size-4 shrink-0" aria-hidden="true" />
                 Link your {cardsToLink.join(' and ')} {cardsToLink.length > 1 ? 'cards' : 'card'} to save{' '}
                 {formatCents(cardSavings)} more on this trip
               </Link>
@@ -152,19 +136,19 @@ export function Trip() {
           </Panel>
 
           {best.unavailable.length > 0 && (
-            <p role="status" className="flex items-center gap-2 rounded-xl bg-warn-soft px-4 py-3 text-sm text-warn-ink">
+            <p role="status" className="flex items-center gap-2 text-sm text-warn">
               <TriangleAlert className="size-4 shrink-0" aria-hidden="true" />
               No store nearby has a price on file for {best.unavailable.join(', ')}.
             </p>
           )}
 
-          <Panel className="grid gap-6 p-5 sm:p-6 xl:grid-cols-2">
+          <Panel className="grid gap-8 p-5 sm:p-6">
             <RouteMap repo={repo} home={SEED_HOME} route={best.routeOrder} />
             <PlanComparison repo={repo} result={result} />
           </Panel>
 
           <section aria-labelledby="stops-title" className="flex flex-col gap-3">
-            <h2 id="stops-title" className="text-lg font-bold">
+            <h2 id="stops-title" className="font-semibold">
               What to buy where
             </h2>
             <div className="grid gap-4 xl:grid-cols-2">

@@ -9,3 +9,9 @@
   marketplace (`claude-code-workflows`) rather than vendored. `.claude/settings.json` registers it and enables the plugins below; to add it by hand, run
   `/plugin marketplace add wshobson/agents`, then install `ui-design`, `frontend-mobile-development`,
   `javascript-typescript`, `unit-testing`, `accessibility-compliance` and `avoid-ai-writing`.
+
+## frontend-design
+
+`.claude/skills/frontend-design/` is Anthropic's frontend-design skill, vendored from
+https://github.com/anthropics/claude-plugins-official (plugins/frontend-design). License terms are in
+its LICENSE.txt.

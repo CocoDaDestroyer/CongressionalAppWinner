@@ -1,9 +1,9 @@
-import { formatCents, type CompareOption } from '../../lib/compare'
+import { formatAge, formatCents, type CompareOption } from '../../lib/compare'
 import { storeLabel } from '../../lib/labels'
 import type { CatalogRepository } from '../../lib/repository'
 import { Badge } from '../ui/Badge'
 import { Stars } from '../Stars'
-import { Sticker } from '../Sticker'
+import { UnitPrice } from '../UnitPrice'
 import { PriceBadges } from './PriceBadges'
 
 interface OptionRowProps {
@@ -15,29 +15,27 @@ interface OptionRowProps {
 
 export function OptionRow({ repo, option, isPick, isCheapest }: OptionRowProps) {
   return (
-    <li
-      className={`flex gap-4 px-4 py-4 sm:px-5 ${option.memberLocked ? 'opacity-75' : ''} ${isPick ? 'bg-leaf-soft/50' : ''}`}
-    >
-      <Sticker
-        price={option.normalized}
-        variant={isPick ? 'winner' : option.memberLocked ? 'locked' : 'plain'}
-      />
+    <li className={`flex gap-4 px-4 py-3.5 sm:px-5 ${isPick ? 'bg-leaf-soft' : ''}`}>
       <div className="min-w-0 flex-1">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="leading-snug font-semibold text-ink">{option.pkg.displayName}</p>
-            <p className="mt-0.5 text-sm text-ink-muted">
-              {storeLabel(repo, option.store)} ·{' '}
-              <span className="tabular">{formatCents(option.priceCents)}</span>
-            </p>
-          </div>
-          <Stars quality={option.quality} reviewCount={option.reviewCount} />
-        </div>
-        <div className="mt-2 flex flex-wrap items-center gap-1">
-          {isPick && <Badge tone="leaf">Top pick</Badge>}
-          {isCheapest && !isPick && <Badge tone="neutral">Lowest per unit</Badge>}
+        <p className={`leading-snug font-medium ${option.memberLocked ? 'text-ink-muted' : 'text-ink'}`}>
+          {option.pkg.displayName}
+        </p>
+        <p className="mt-0.5 text-sm text-ink-muted">
+          {storeLabel(repo, option.store)} · <span className="tabular">{formatCents(option.priceCents)}</span>
+          <span className="whitespace-nowrap text-ink-faint"> · {formatAge(option.ageDays)}</span>
+        </p>
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 empty:hidden">
+          {isPick && <Badge tone="leaf">Best value</Badge>}
+          {isCheapest && !isPick && <Badge>Lowest per unit</Badge>}
           <PriceBadges option={option} />
         </div>
+      </div>
+      <div className="flex shrink-0 flex-col items-end gap-1">
+        <UnitPrice
+          price={option.normalized}
+          tone={isPick ? 'leaf' : option.memberLocked ? 'faint' : 'ink'}
+        />
+        <Stars quality={option.quality} reviewCount={option.reviewCount} />
       </div>
     </li>
   )

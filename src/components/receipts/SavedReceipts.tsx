@@ -22,7 +22,7 @@ export function SavedReceipts({ repo, receipts }: SavedReceiptsProps) {
 
   return (
     <Panel aria-labelledby="saved-title">
-      <h2 id="saved-title" className="flex items-baseline justify-between border-b border-line px-4 py-3 text-lg font-bold">
+      <h2 id="saved-title" className="flex items-baseline justify-between border-b border-line px-4 py-3.5 font-semibold">
         Saved receipts
         {receipts.length > 0 && <span className="text-sm font-semibold text-ink-muted tabular">{receipts.length}</span>}
       </h2>
@@ -44,7 +44,7 @@ export function SavedReceipts({ repo, receipts }: SavedReceiptsProps) {
                         {shortDate(receipt.purchasedAt)} · {plural(receipt.lines.length, 'item')}
                       </span>
                     </span>
-                    <span className="font-display font-bold tabular">{formatCents(receiptTotalCents(receipt))}</span>
+                    <span className="numeral">{formatCents(receiptTotalCents(receipt))}</span>
                     <ChevronDown
                       className="size-4 text-ink-faint transition-transform group-open:rotate-180"
                       aria-hidden="true"

@@ -52,10 +52,10 @@ export function Home() {
   return (
     <div className="mx-auto max-w-3xl">
       <section aria-labelledby="home-title" className="animate-rise pt-2 pb-8 lg:pt-6">
-        <h1 id="home-title" className="font-display text-[40px] leading-[1.05] font-extrabold lg:text-6xl">
-          Saved <span className="text-savings-ink tabular">{formatCents(saved)}</span> this month
+        <h1 id="home-title" className="text-[34px] leading-tight font-semibold tabular lg:text-[44px]">
+          Saved {formatCents(saved)} this month
         </h1>
-        <p className="mt-3 max-w-[52ch] text-lg text-ink-muted">
+        <p className="mt-2 max-w-[52ch] text-[17px] text-ink-muted">
           {monthReceipts > 0 ? (
             <>
               By paying less per ounce than the typical price on {plural(monthReceipts, 'receipt')} in{' '}
@@ -72,15 +72,15 @@ export function Home() {
       </section>
 
       <nav aria-label="Quick actions">
-        <ul className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface">
+        <ul className="card divide-y divide-line overflow-hidden">
           {ACTIONS.map(({ to, title, body, icon: Icon }) => (
             <li key={to}>
-              <Link to={to} className="group flex items-center gap-4 px-5 py-5 transition-colors hover:bg-sunken/60">
-                <span className="grid size-12 shrink-0 place-items-center rounded-full bg-leaf-soft text-leaf-ink">
-                  <Icon className="size-6" aria-hidden="true" />
+              <Link to={to} className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-sunken/60">
+                <span className="grid size-10 shrink-0 place-items-center rounded-control bg-leaf-soft text-leaf-ink">
+                  <Icon className="size-5" aria-hidden="true" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block font-display text-lg font-bold">{title}</span>
+                  <span className="block font-semibold">{title}</span>
                   <span className="block text-sm text-ink-muted">{body}</span>
                 </span>
                 <ArrowRight

@@ -28,7 +28,7 @@ export function PlanComparison({ repo, result }: PlanComparisonProps) {
 
   return (
     <section aria-labelledby="plan-comparison">
-      <h2 id="plan-comparison" className="text-lg font-bold">
+      <h2 id="plan-comparison" className="font-semibold">
         Why this plan
       </h2>
       <p className="mt-1 text-sm text-ink-muted">
@@ -49,13 +49,13 @@ export function PlanComparison({ repo, result }: PlanComparisonProps) {
                       {delta > 0.5 ? `+${formatCents(delta)}` : 'same'}
                     </span>
                   )}
-                  <data value={Math.round(plan.totalCents)} className="font-display text-lg font-bold">
+                  <data value={Math.round(plan.totalCents)} className="numeral text-[17px]">
                     {formatCents(plan.totalCents)}
                   </data>
                 </span>
               </div>
               <div
-                className="mt-1.5 flex h-3 overflow-hidden rounded-full bg-sunken"
+                className="mt-1.5 flex h-2 overflow-hidden rounded-full bg-sunken"
                 role="img"
                 aria-label={`${formatCents(plan.groceryCents)} groceries and ${formatCents(plan.drivingCents)} fuel`}
               >
@@ -64,7 +64,7 @@ export function PlanComparison({ repo, result }: PlanComparisonProps) {
                   style={{ width: `${(plan.groceryCents / max) * 100}%` }}
                 />
                 <span
-                  className="border-l-2 border-surface bg-warn-ink"
+                  className="border-l-2 border-surface bg-warn"
                   style={{ width: `${Math.max((plan.drivingCents / max) * 100, 1)}%` }}
                 />
               </div>
@@ -78,7 +78,7 @@ export function PlanComparison({ repo, result }: PlanComparisonProps) {
       </ul>
       <p className="mt-4 flex items-center gap-2 text-xs text-ink-faint">
         <span className="inline-block h-2 w-4 rounded-full bg-leaf" aria-hidden="true" /> Groceries
-        <span className="ml-2 inline-block h-2 w-4 rounded-full bg-warn-ink" aria-hidden="true" /> Fuel
+        <span className="ml-2 inline-block h-2 w-4 rounded-full bg-warn" aria-hidden="true" /> Fuel
       </p>
     </section>
   )

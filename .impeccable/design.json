@@ -4,53 +4,103 @@
   "title": "Design System: CartWise",
   "extensions": {
     "colorMeta": {
-      "leaf": { "role": "primary", "displayName": "Leaf", "canonical": "oklch(0.47 0.11 156)" },
-      "savings": { "role": "secondary", "displayName": "Tangerine", "canonical": "oklch(0.72 0.16 55)" },
-      "ground": { "role": "neutral", "displayName": "Leaf-tinted ground", "canonical": "oklch(0.972 0.009 155)" },
-      "shell": { "role": "neutral", "displayName": "Shell green", "canonical": "oklch(0.31 0.065 160)" }
+      "leaf": {
+        "role": "primary",
+        "displayName": "Leaf",
+        "canonical": "#13804a"
+      },
+      "savings": {
+        "role": "secondary",
+        "displayName": "Savings orange",
+        "canonical": "#c24e14"
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "canonical": "#f4f6f3"
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Headings and every number that matters." },
-      "body": { "displayName": "Body", "purpose": "All UI text." }
+      "body": {
+        "displayName": "Figtree",
+        "purpose": "The only family: body, titles and numbers."
+      }
     },
     "shadows": [
-      { "name": "float", "value": "0 8px 24px -8px oklch(0.2 0.03 160 / 0.28), 0 2px 6px -2px oklch(0.2 0.03 160 / 0.12)", "purpose": "Only for toasts and tooltips that float over content." }
+      {
+        "name": "card",
+        "value": "0 1px 2px rgb(23 32 27 / 0.04)",
+        "purpose": "Lifts cards off the ground."
+      },
+      {
+        "name": "float",
+        "value": "0 12px 32px -12px rgb(23 32 27 / 0.3), 0 2px 6px rgb(23 32 27 / 0.08)",
+        "purpose": "Toast and tooltip only."
+      }
     ],
     "motion": [
-      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Toast entrance, switch thumb, Home hero rise." }
+      {
+        "name": "settle",
+        "value": "360ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Best-value hero re-keys when the pick changes."
+      }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "640px" },
-      { "name": "lg", "value": "1024px", "purpose": "Rail replaces header and tab bar." }
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px",
+        "purpose": "Rail replaces header and tab bar."
+      }
     ]
   },
   "components": [
     {
-      "name": "Per-unit sticker",
+      "name": "Unit price",
       "kind": "custom",
-      "refersTo": "sticker-winner",
-      "description": "The per-unit price as a produce sticker; filled for the recommended option, outlined otherwise.",
-      "html": "<span class=\"ds-sticker\"><b>14.0¢</b><small>PER OZ</small></span>",
-      "css": ".ds-sticker{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:88px;height:64px;border-radius:50%;background:oklch(0.47 0.11 156);color:oklch(0.985 0.01 150);outline:1px solid oklch(0.985 0.01 150 / .45);outline-offset:-5px;font-family:'Bricolage Grotesque Variable',sans-serif}.ds-sticker b{font-size:20px;font-weight:800;line-height:1}.ds-sticker small{font-size:10px;font-weight:700}"
+      "refersTo": "card",
+      "description": "Per-unit price as a big tabular numeral plus a small muted unit.",
+      "html": "<span class=\"ds-up\"><b>14.0\u00a2</b><small>/oz</small></span>",
+      "css": ".ds-up{font-family:'Figtree Variable',sans-serif;color:#13804a;display:inline-flex;align-items:baseline;gap:4px}.ds-up b{font-size:44px;font-weight:700;letter-spacing:-0.03em}.ds-up small{font-size:16px;color:#5d6962}"
     },
     {
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Pill button for the one main action on a screen.",
+      "description": "The one main action on a screen.",
       "html": "<button class=\"ds-btn\">Save receipt</button>",
-      "css": ".ds-btn{height:44px;padding:0 16px;border:0;border-radius:9999px;background:oklch(0.47 0.11 156);color:oklch(0.985 0.01 150);font-weight:600;font-family:'Figtree Variable',sans-serif}.ds-btn:hover{background:oklch(0.41 0.1 157)}"
+      "css": ".ds-btn{height:44px;padding:0 16px;border:0;border-radius:10px;background:#13804a;color:#fff;font-weight:500;font-family:'Figtree Variable',sans-serif}.ds-btn:hover{background:#0f6b3d}"
     }
   ],
   "narrative": {
-    "northStar": "The produce sticker",
-    "overview": "A flat, leaf-green working tool where the per-unit price is printed on an oval sticker and the winner gets the filled one.",
-    "keyCharacteristics": ["Per-unit sticker leads every row", "Leaf green means this one", "Tangerine only for savings", "Flat panels split by hairlines"],
-    "rules": [
-      { "name": "The Tangerine Rule", "body": "If it isn't money the shopper saved, it isn't tangerine.", "section": "colors" },
-      { "name": "One filled sticker", "body": "Only the recommended option wears the filled leaf sticker.", "section": "colors" }
+    "northStar": "The price tag, not the poster",
+    "overview": "Calm white surfaces, one typeface, one green, and numbers that do the talking.",
+    "keyCharacteristics": [
+      "One family (Figtree)",
+      "One brand green",
+      "Status as text, not pills",
+      "Big per-unit price on Compare"
     ],
-    "dos": ["Lead with the per-unit price", "Show source and age on every price"],
-    "donts": ["No gradients, glass or nested panels", "No hex in components"]
+    "rules": [
+      {
+        "name": "One green",
+        "body": "Leaf means the one to buy or you are here.",
+        "section": "colors"
+      },
+      {
+        "name": "Orange is money saved",
+        "body": "Savings orange is never used for costs or warnings.",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Lead with the per-unit price"
+    ],
+    "donts": [
+      "No gradients, ornament, uppercase labels or nested cards"
+    ]
   }
 }

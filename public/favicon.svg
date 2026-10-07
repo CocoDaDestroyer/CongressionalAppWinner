@@ -1,12 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- CartWise mark: a produce sticker with a cart on it. -->
-  <g transform="rotate(-12 16 16)">
-    <ellipse cx="16" cy="16" rx="15" ry="12.5" fill="#1f7a4d"/>
-    <ellipse cx="16" cy="16" rx="12.6" ry="10.2" fill="none" stroke="#f3fbf5" stroke-opacity=".45" stroke-width="1"/>
-  </g>
-  <g fill="none" stroke="#f3fbf5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M8.6 10.6h2.3l2 8.2h8.5l1.9-6H11.9"/>
-  </g>
-  <circle cx="14" cy="22.4" r="1.45" fill="#f3fbf5"/>
-  <circle cx="20.4" cy="22.4" r="1.45" fill="#f3fbf5"/>
+  <!-- CartWise mark: a cart in a rounded green tile. -->
+  <rect width="32" height="32" rx="9" fill="#13804a"/>
+  <path d="M8.5 10h2.4l2.1 8.6h8.6l2-6.3H11.9" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="14" cy="22.6" r="1.5" fill="#fff"/>
+  <circle cx="20.6" cy="22.6" r="1.5" fill="#fff"/>
 </svg>

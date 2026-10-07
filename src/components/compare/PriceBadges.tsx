@@ -1,59 +1,45 @@
 /**
- * Provenance travels with every price: where it came from, how old it is, and
- * whether it needs a store card.
+ * Provenance labels. A fresh store-site price needs none; only the facts a
+ * shopper should notice get one: member pricing, community or receipt
+ * evidence, staleness, and an unverified package.
  */
 import { Link } from 'react-router-dom'
-import { BadgeCheck, Clock, CreditCard, Globe, Lock, ReceiptText, TriangleAlert, Users } from 'lucide-react'
-import { formatAge, isStale, type CompareOption } from '../../lib/compare'
-import type { PriceSource } from '../../lib/catalog'
-import { Badge, type BadgeTone } from '../ui/Badge'
+import { CircleAlert, CreditCard, Lock, ReceiptText, Users } from 'lucide-react'
+import { isStale, type CompareOption } from '../../lib/compare'
+import { Badge } from '../ui/Badge'
 
-const SOURCE: Record<PriceSource, { label: string; tone: BadgeTone; icon: typeof Globe }> = {
-  scrape: { label: 'Store site', tone: 'neutral', icon: Globe },
-  loyalty_sync: { label: 'Member price', tone: 'leaf', icon: CreditCard },
-  receipt: { label: 'Receipt', tone: 'neutral', icon: ReceiptText },
-  user_report: { label: 'Community', tone: 'community', icon: Users },
-}
-
-const iconClass = 'size-3.5'
+const icon = 'size-3.5'
 
 export function PriceBadges({ option }: { option: CompareOption }) {
-  const source = SOURCE[option.source]
-  const stale = isStale(option)
-
   return (
     <>
       {option.memberLocked ? (
-        <Link to="/profile" className="rounded-full">
-          <Badge tone="neutral" icon={<Lock className={iconClass} aria-hidden="true" />}>
+        <Link to="/profile" className="rounded-sm hover:underline">
+          <Badge icon={<Lock className={icon} aria-hidden="true" />}>
             Member price · link {option.retailerName} card
           </Badge>
         </Link>
       ) : (
-        <Badge tone={source.tone} icon={<source.icon className={iconClass} aria-hidden="true" />}>
-          {source.label}
+        option.isMemberPrice && (
+          <Badge tone="leaf" icon={<CreditCard className={icon} aria-hidden="true" />}>
+            Member price
+          </Badge>
+        )
+      )}
+      {option.source === 'receipt' && (
+        <Badge icon={<ReceiptText className={icon} aria-hidden="true" />}>Receipt</Badge>
+      )}
+      {option.source === 'user_report' && (
+        <Badge tone="community" icon={<Users className={icon} aria-hidden="true" />}>
+          Community
         </Badge>
       )}
-      {option.isMemberPrice && option.source !== 'loyalty_sync' && !option.memberLocked && (
-        <Badge tone="leaf">Member price</Badge>
-      )}
-      <Badge
-        tone={stale ? 'warn' : 'neutral'}
-        icon={
-          stale ? (
-            <TriangleAlert className={iconClass} aria-hidden="true" />
-          ) : (
-            <Clock className={iconClass} aria-hidden="true" />
-          )
-        }
-      >
-        {stale ? `Stale · ${option.ageDays}d old` : formatAge(option.ageDays)}
-      </Badge>
-      {option.pkg.verifiedAt === null && (
-        <Badge tone="warn" icon={<BadgeCheck className={iconClass} aria-hidden="true" />}>
-          Unverified
+      {isStale(option) && (
+        <Badge tone="warn" icon={<CircleAlert className={icon} aria-hidden="true" />}>
+          Stale
         </Badge>
       )}
+      {option.pkg.verifiedAt === null && <Badge tone="warn">Unverified</Badge>}
     </>
   )
 }

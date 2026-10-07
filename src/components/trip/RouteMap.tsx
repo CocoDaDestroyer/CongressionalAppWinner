@@ -43,7 +43,7 @@ export function RouteMap({ repo, home, route }: RouteMapProps) {
 
   return (
     <figure className="m-0">
-      <svg viewBox={`0 0 ${WIDTH} 140`} className="h-auto w-full" role="img" aria-labelledby="route-title">
+      <svg viewBox={`0 0 ${WIDTH} 140`} className="h-auto w-full max-w-[520px]" role="img" aria-labelledby="route-title">
         <title id="route-title">{`Loop diagram of a ${route.length}-stop trip from home and back`}</title>
 
         {/* Out along the top, back along the bottom. */}
@@ -51,7 +51,7 @@ export function RouteMap({ repo, home, route }: RouteMapProps) {
           d={`M${LEFT},${TOP} H${lastX} Q${lastX + 22},${TOP} ${lastX + 22},${TOP + 22} V${BOTTOM - 22} Q${lastX + 22},${BOTTOM} ${lastX},${BOTTOM} H${LEFT + 18} Q${LEFT},${BOTTOM} ${LEFT},${BOTTOM - 18} V${TOP}`}
           fill="none"
           className="stroke-leaf"
-          strokeWidth="4"
+          strokeWidth="2.5"
           strokeLinejoin="round"
         />
 
@@ -74,8 +74,8 @@ export function RouteMap({ repo, home, route }: RouteMapProps) {
 
         {route.map((store, i) => (
           <g key={store.id}>
-            <circle cx={xs[i]} cy={TOP} r="13" className="fill-leaf stroke-surface" strokeWidth="3" />
-            <text x={xs[i]} y={TOP} dy="0.35em" textAnchor="middle" className="fill-on-leaf font-display text-[13px] font-extrabold">
+            <circle cx={xs[i]} cy={TOP} r="11" className="fill-leaf stroke-surface" strokeWidth="3" />
+            <text x={xs[i]} y={TOP} dy="0.35em" textAnchor="middle" className="fill-on-leaf text-[12px] font-bold">
               {i + 1}
             </text>
             <StopName

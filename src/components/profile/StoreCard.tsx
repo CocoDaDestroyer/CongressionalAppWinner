@@ -23,16 +23,11 @@ export function StoreCard({ retailer, index, linked, memberPriceCount }: StoreCa
   return (
     <article
       aria-label={`${retailer.name} card`}
-      className={`relative flex aspect-[1.7] max-h-52 flex-col justify-between overflow-hidden rounded-2xl p-5 text-on-card ${FILLS[index % FILLS.length]} ${retailer.supportsLoyalty ? '' : 'opacity-80'}`}
+      className={`relative flex h-36 flex-col justify-between overflow-hidden rounded-card p-5 text-on-card ${FILLS[index % FILLS.length]} ${retailer.supportsLoyalty ? '' : 'opacity-80'}`}
     >
-      {/* The sticker motif, oversized and faint, as the card's only ornament. */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-10 -bottom-14 h-40 w-52 -rotate-12 rounded-[50%] border-[14px] border-on-card/10"
-      />
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="font-display text-2xl font-extrabold">{retailer.name}</h3>
+          <h3 className="text-xl font-semibold">{retailer.name}</h3>
           <p className="text-sm text-on-card/75">
             {retailer.supportsLoyalty ? 'Rewards card' : 'No member pricing'}
           </p>
@@ -47,7 +42,7 @@ export function StoreCard({ retailer, index, linked, memberPriceCount }: StoreCa
         )}
       </div>
       <div className="flex items-end justify-between gap-3">
-        <span className="font-display text-lg tracking-[0.2em] tabular">•••• {lastFour}</span>
+        <span className="text-[15px] tracking-[0.15em] tabular opacity-90">•••• {lastFour}</span>
         {retailer.supportsLoyalty && (
           <span className="flex items-center gap-1.5 text-sm font-semibold">
             <CreditCard className="size-4" aria-hidden="true" />

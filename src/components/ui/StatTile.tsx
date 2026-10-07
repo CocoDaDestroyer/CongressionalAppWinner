@@ -9,14 +9,12 @@ interface StatTileProps {
 
 export function StatTile({ label, value, detail, tone = 'ink' }: StatTileProps) {
   return (
-    <div className="rounded-card border border-line bg-surface p-4">
-      <p className="text-sm font-semibold text-ink-muted">{label}</p>
-      <p
-        className={`mt-1 font-display text-[28px] leading-tight font-extrabold tracking-tight tabular ${tone === 'savings' ? 'text-savings-ink' : 'text-ink'}`}
-      >
+    <div className="card p-4 lg:p-5">
+      <p className="text-sm text-ink-muted">{label}</p>
+      <p className={`mt-1 numeral text-[26px] leading-tight ${tone === 'savings' ? 'text-savings' : 'text-ink'}`}>
         {value}
       </p>
-      {detail && <p className="mt-0.5 text-xs text-ink-muted">{detail}</p>}
+      {detail && <p className="mt-1 text-xs text-ink-faint">{detail}</p>}
     </div>
   )
 }

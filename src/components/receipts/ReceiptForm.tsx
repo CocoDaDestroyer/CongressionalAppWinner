@@ -76,16 +76,16 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
   }
 
   return (
-    <div className="drop-shadow-[0_1px_2px_var(--color-line-strong)]">
+    <div>
       <form
         onSubmit={save}
         noValidate
         aria-label="New receipt"
-        className="receipt-edge bg-surface px-5 pt-6 pb-10 sm:px-7"
+        className="card px-5 py-5 sm:px-6 sm:py-6"
       >
-        <div className="grid gap-3 text-center sm:grid-cols-2 sm:text-left">
+        <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="mb-1 block text-xs font-bold tracking-wide text-ink-faint uppercase">Store</span>
+            <span className="mb-1.5 block text-sm font-medium text-ink-muted">Store</span>
             <select className={`${inputClass} font-semibold`} value={storeId} onChange={(e) => setStoreId(e.target.value)}>
               {stores.map((store) => (
                 <option key={store.id} value={store.id}>
@@ -95,7 +95,7 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
             </select>
           </label>
           <label className="block">
-            <span className="mb-1 block text-xs font-bold tracking-wide text-ink-faint uppercase">Purchased</span>
+            <span className="mb-1.5 block text-sm font-medium text-ink-muted">Purchased</span>
             <input
               className={`${inputClass} tabular`}
               type="date"
@@ -105,7 +105,7 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
           </label>
         </div>
 
-        <hr className="my-5 border-t-2 border-dashed border-line" />
+        <hr className="my-5 border-t border-dashed border-line-strong" />
 
         <ol className="flex flex-col gap-4">
           {lines.map((line, index) => {
@@ -172,17 +172,17 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
           Add line
         </Button>
 
-        <hr className="my-5 border-t-2 border-dashed border-line" />
+        <hr className="my-5 border-t border-dashed border-line-strong" />
 
         <div className="flex items-baseline justify-between">
-          <span className="font-display text-lg font-extrabold tracking-wide uppercase">Total</span>
-          <output aria-label="Receipt total" className="font-display text-3xl font-extrabold tabular">
+          <span className="font-medium text-ink-muted">Total</span>
+          <output aria-label="Receipt total" className="numeral text-[28px]">
             {formatCents(total)}
           </output>
         </div>
 
         {error && (
-          <p role="alert" className="mt-3 text-sm font-semibold text-danger-ink">
+          <p role="alert" className="mt-3 text-sm font-medium text-danger">
             {error}
           </p>
         )}

@@ -36,7 +36,7 @@ export function Receipts() {
     <>
       <PageHeader
         title="Receipts"
-        description="Type in a receipt and its prices update Compare and Trip for everyone, then count toward your spending."
+        description="Each receipt updates prices for everyone and counts toward your spending."
       />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-8">

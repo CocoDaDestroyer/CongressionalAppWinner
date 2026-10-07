@@ -123,7 +123,7 @@ export function ProductFinder({ repo, packageId, onSelect, onUnknown }: ProductF
           </div>
         )}
         {error && (
-          <p id="barcode-error" className="mt-1.5 text-sm text-danger-ink">
+          <p id="barcode-error" className="mt-1.5 text-sm text-danger">
             {error}
           </p>
         )}

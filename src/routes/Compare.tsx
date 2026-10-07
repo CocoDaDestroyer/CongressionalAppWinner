@@ -50,7 +50,7 @@ export function Compare() {
     <>
       <PageHeader
         title="Compare"
-        description="Every brand, size and nearby store for one product, ranked by what you actually pay per ounce."
+        description="Every brand, size and nearby store, ranked by price per ounce."
       />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-8">
@@ -90,13 +90,11 @@ export function Compare() {
           </Panel>
         ) : (
           <Panel aria-labelledby="all-prices" className="overflow-hidden">
-            <div className="flex items-baseline justify-between gap-3 border-b border-line px-4 py-4 sm:px-5">
-              <h2 id="all-prices" className="text-lg font-bold">
-                Every {comparison.conceptName.toLowerCase()} nearby
+            <div className="flex items-baseline justify-between gap-3 border-b border-line px-4 py-3.5 sm:px-5">
+              <h2 id="all-prices" className="font-semibold">
+                {comparison.conceptName} nearby
               </h2>
-              <span className="text-sm text-ink-muted tabular">
-                {comparison.options.length} prices · cheapest per unit first
-              </span>
+              <span className="text-sm text-ink-faint tabular">{comparison.options.length} prices</span>
             </div>
             <ol aria-label="All prices" className="divide-y divide-line">
               {comparison.options.map((option) => (

@@ -66,7 +66,7 @@ export function Spending() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-8">
         <Panel aria-labelledby="by-month" className="p-5">
-          <h2 id="by-month" className="text-lg font-bold">
+          <h2 id="by-month" className="font-semibold">
             Spent per month
           </h2>
           <p className="mb-4 text-sm text-ink-muted">Last six months, this month to date.</p>
@@ -74,7 +74,7 @@ export function Spending() {
         </Panel>
 
         <Panel aria-labelledby="by-store" className="p-5">
-          <h2 id="by-store" className="text-lg font-bold">
+          <h2 id="by-store" className="font-semibold">
             Where it went
           </h2>
           <p className="mb-4 text-sm text-ink-muted">Stores by spend, {SEED_NOW.getUTCFullYear()}.</p>
@@ -85,7 +85,7 @@ export function Spending() {
                   <span className="font-semibold">{storeLabel(repo, store.storeId)}</span>
                   <span className="tabular">{formatCents(store.cents)}</span>
                 </div>
-                <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-sunken">
+                <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-sunken">
                   <div
                     className="h-full rounded-full bg-leaf"
                     style={{ width: `${(store.cents / yearTotal) * 100}%` }}

@@ -18,15 +18,15 @@ export function Toast({ children, onClose, duration = 7000 }: ToastProps) {
   return (
     <div
       role="status"
-      className="fixed inset-x-4 bottom-20 z-30 mx-auto flex max-w-md animate-rise items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-ground shadow-float lg:bottom-8 lg:left-[calc(248px+2rem)] lg:mx-0"
+      className="fixed inset-x-4 bottom-20 z-30 mx-auto flex max-w-md animate-rise items-center gap-3 rounded-card bg-ink px-4 py-3 text-surface shadow-float lg:bottom-8 lg:left-[calc(232px+3rem)] lg:mx-0"
     >
-      <CircleCheck className="size-5 shrink-0 text-leaf-soft" aria-hidden="true" />
+      <CircleCheck className="size-5 shrink-0 text-leaf-hover" aria-hidden="true" />
       <div className="min-w-0 flex-1 text-sm">{children}</div>
       <button
         type="button"
         onClick={onClose}
         aria-label="Dismiss"
-        className="grid size-8 shrink-0 place-items-center rounded-full text-ground/70 hover:text-ground"
+        className="grid size-8 shrink-0 place-items-center rounded-full opacity-70 hover:opacity-100"
       >
         <X className="size-4" aria-hidden="true" />
       </button>
