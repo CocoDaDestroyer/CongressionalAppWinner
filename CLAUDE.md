@@ -8,6 +8,26 @@ Skeleton stage. Comparison, trip planning and receipt entry work end to end agai
 store; every other feature is a route stub. There is no Supabase project, no hosting, and no paid service anywhere in the
 loop -- keep it that way unless the user says otherwise.
 
+## Purpose: a presentation app, not a production app
+
+This is a Congressional App Challenge / hackathon-style entry. It wins or loses on what judges see in a
+1-3 minute demo video and a quick click-through: how polished and coherent it looks, and how cleanly
+each feature works on screen. It is **not** meant to handle real traffic, real users, or real attackers.
+
+What that means in practice:
+
+- **Optimize for aesthetics and demo clarity.** Visual polish, consistent design, smooth interactions,
+  believable data, and features that work flawlessly on the happy path come first.
+- **Do not spend effort on scale or hardening.** No load handling, rate limiting, caching layers, auth
+  hardening, RLS audits, or abuse prevention unless the user asks. Local in-memory/`localStorage` data is
+  fine; a feature that looks real and behaves correctly in the demo is done.
+- **"Clean implementation" still matters** -- judges score code quality too. Keep the existing seams
+  (`CatalogRepository`, `useCatalog()`, per-unit normalization, provenance rules) intact, keep tests
+  green, and prefer a small, readable component over a clever one. Fake the *data source* where needed,
+  never the *logic*: a ranking shown on screen must be the real ranking.
+- **Finished beats broad.** A feature shown in the demo must look finished: loading, empty and error
+  states designed, no "stub" text, no layout jank. A half-built screen is worse than a missing nav item.
+
 ## Project: CartWise
 
 A grocery price-comparison app. Users compare prices for a given product across nearby stores and
@@ -35,11 +55,13 @@ Two cross-cutting rules shape most of the data model and most of the math:
 - **Tailwind** for styling
 - **Google Maps API** for geocoding, store proximity, and trip routing
 
-## Current task: skeleton
+## Current task: polish for presentation
 
-Build structure, routes, data model, and stubbed data flow. **Design/visual polish is explicitly
-deferred** — use unstyled or minimally styled Tailwind and do not spend effort on look-and-feel.
-Prefer wiring a feature end-to-end with a placeholder UI over a polished UI with no data path.
+The skeleton phase is over (comparison, trip planning and receipts work end to end). Design is no longer
+deferred -- it is now the priority. Build a consistent design system (tokens in `src/index.css` via
+Tailwind v4 `@theme`, shared components under `src/components/`), apply it to every screen, and turn the
+remaining stub routes into convincing, working features backed by the local catalog store. Mobile-first:
+the app should look like a phone app in the demo, and also look intentional on a laptop.
 
 ## Feature domains
 
