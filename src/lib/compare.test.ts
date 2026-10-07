@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   compareByPackage,
   explainPick,
+  formatCents,
   formatPerUnit,
   formatShelfUnit,
   isStale,
@@ -203,5 +204,12 @@ describe('shelf-tag formatting', () => {
 
   it('names a package by its size', () => {
     expect(packageSize(seed.packages.find((p) => p.id === 'p-heinz-64')!)).toBe('64 oz')
+  })
+})
+
+describe('formatCents', () => {
+  it('groups thousands', () => {
+    expect(formatCents(429)).toBe('$4.29')
+    expect(formatCents(226_047)).toBe('$2,260.47')
   })
 })

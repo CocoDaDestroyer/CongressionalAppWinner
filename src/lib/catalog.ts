@@ -44,6 +44,8 @@ export interface Retailer {
 export interface Store {
   id: string
   retailerId: string
+  /** Neighborhood the shopper knows the store by: "Westwood", "Santa Monica". */
+  area: string
   address: string
   latitude: number
   longitude: number

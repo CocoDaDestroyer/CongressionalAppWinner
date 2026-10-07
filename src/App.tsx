@@ -1,48 +1,33 @@
-import { NavLink, Navigate, Route, Routes } from 'react-router-dom'
-import {
-  Community,
-  Contribute,
-  Memberships,
-  Receipts,
-  Scan,
-  ShoppingList,
-  Spending,
-} from './routes'
+import { lazy, Suspense } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { AppShell } from './components/AppShell'
+import { Compare, Home, Profile, Receipts, Trip } from './routes'
 
-const NAV = [
-  { to: '/scan', label: 'Scan' },
-  { to: '/list', label: 'List' },
-  { to: '/receipts', label: 'Receipts' },
-  { to: '/spending', label: 'Spending' },
-  { to: '/community', label: 'Community' },
-  { to: '/contribute', label: 'Contribute' },
-  { to: '/memberships', label: 'Memberships' },
-]
+// The chart library is the heaviest dependency and only Spending needs it.
+const Spending = lazy(() => import('./routes/Spending').then((m) => ({ default: m.Spending })))
 
 export default function App() {
   return (
-    <div className="min-h-screen">
-      <nav className="flex flex-wrap gap-3 border-b p-4 text-sm">
-        {NAV.map(({ to, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) => (isActive ? 'font-semibold underline' : '')}
-          >
-            {label}
-          </NavLink>
-        ))}
-      </nav>
+    <AppShell>
       <Routes>
-        <Route path="/" element={<Navigate to="/scan" replace />} />
-        <Route path="/scan" element={<Scan />} />
-        <Route path="/list" element={<ShoppingList />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/compare" element={<Compare />} />
+        <Route path="/trip" element={<Trip />} />
         <Route path="/receipts" element={<Receipts />} />
-        <Route path="/spending" element={<Spending />} />
-        <Route path="/community" element={<Community />} />
-        <Route path="/contribute" element={<Contribute />} />
-        <Route path="/memberships" element={<Memberships />} />
+        <Route
+          path="/spending"
+          element={
+            <Suspense fallback={<p className="text-ink-muted">Loading spending…</p>}>
+              <Spending />
+            </Suspense>
+          }
+        />
+        <Route path="/profile" element={<Profile />} />
+        {/* Old skeleton paths, kept so bookmarks still land somewhere sensible. */}
+        <Route path="/scan" element={<Navigate to="/compare" replace />} />
+        <Route path="/list" element={<Navigate to="/trip" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </div>
+    </AppShell>
   )
 }

@@ -13,32 +13,50 @@ function renderAt(path: string) {
 }
 
 describe('App shell', () => {
-  it('renders navigation to every feature domain', () => {
+  it('renders navigation to every destination', () => {
     renderAt('/')
-    for (const label of [
-      'Scan', 'List', 'Receipts', 'Spending', 'Community', 'Contribute', 'Memberships',
-    ]) {
-      expect(screen.getByRole('link', { name: label })).toBeTruthy()
+    // The rail and the tab bar both render; CSS shows one per screen size.
+    for (const label of ['Home', 'Compare', 'Trip', 'Receipts', 'Spending']) {
+      expect(screen.getAllByRole('link', { name: label }).length).toBeGreaterThan(0)
+    }
+    expect(screen.getAllByRole('link', { name: 'Profile' }).length).toBeGreaterThan(0)
+  })
+
+  it('no longer offers the cut Community and Contribute tabs', () => {
+    renderAt('/')
+    for (const label of ['Community', 'Contribute', 'Memberships', 'Scan', 'List']) {
+      expect(screen.queryByRole('link', { name: label })).toBeNull()
     }
   })
 
-  it('redirects the index to the scan route', () => {
+  it('opens on Home with the month savings', () => {
     renderAt('/')
-    expect(screen.getByRole('heading', { name: 'Scan' })).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 1, name: /^Saved \$\d+\.\d\d this month$/ })).toBeTruthy()
   })
 
-  it('renders each route stub', () => {
+  it('loads Spending, which is split into its own chunk', async () => {
+    renderAt('/spending')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Spending' })).toBeTruthy()
+  })
+
+  it('renders each route', () => {
     for (const [path, heading] of [
-      ['/list', 'Shopping list'],
+      ['/compare', 'Compare'],
+      ['/trip', 'Trip'],
       ['/receipts', 'Receipts'],
-      ['/spending', 'Spending'],
-      ['/community', 'Community'],
-      ['/contribute', 'Contribute'],
-      ['/memberships', 'Memberships'],
+      ['/profile', 'Profile'],
     ] as const) {
       const { unmount } = renderAt(path)
-      expect(screen.getByRole('heading', { name: heading })).toBeTruthy()
+      expect(screen.getByRole('heading', { level: 1, name: heading })).toBeTruthy()
       unmount()
     }
+  })
+
+  it('sends the old skeleton paths to their new screens', () => {
+    const { unmount } = renderAt('/scan')
+    expect(screen.getByRole('heading', { level: 1, name: 'Compare' })).toBeTruthy()
+    unmount()
+    renderAt('/list')
+    expect(screen.getByRole('heading', { level: 1, name: 'Trip' })).toBeTruthy()
   })
 })

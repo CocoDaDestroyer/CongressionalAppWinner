@@ -191,9 +191,11 @@ export function bestByValue<T extends Valuable>(
   return best
 }
 
-/** Cents to a display string: 429 -> "$4.29". */
+const DOLLARS = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+/** Cents to a display string: 429 -> "$4.29", 226047 -> "$2,260.47". */
 export function formatCents(cents: number): string {
-  return `$${(cents / 100).toFixed(2)}`
+  return `$${DOLLARS.format(cents / 100)}`
 }
 
 /**

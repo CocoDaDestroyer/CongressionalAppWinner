@@ -326,6 +326,7 @@ export const retailers: Retailer[] = [
 export const stores: Store[] = [
   {
     id: 's-ralphs-westwood',
+    area: 'Westwood',
     retailerId: 'r-ralphs',
     address: '10861 Weyburn Ave, Los Angeles, CA',
     latitude: 34.0625,
@@ -333,6 +334,7 @@ export const stores: Store[] = [
   },
   {
     id: 's-target-westwood',
+    area: 'Westwood',
     retailerId: 'r-target',
     address: '10861 Weyburn Ave, Los Angeles, CA',
     latitude: 34.0601,
@@ -340,6 +342,7 @@ export const stores: Store[] = [
   },
   {
     id: 's-wf-westwood',
+    area: 'Westwood',
     retailerId: 'r-wholefoods',
     address: '1050 Gayley Ave, Los Angeles, CA',
     latitude: 34.0608,
@@ -349,6 +352,7 @@ export const stores: Store[] = [
   // the case the trip optimizer has to weigh against the drive.
   {
     id: 's-ralphs-santa-monica',
+    area: 'Santa Monica',
     retailerId: 'r-ralphs',
     address: '1644 Cloverfield Blvd, Santa Monica, CA',
     latitude: 34.0195,

@@ -267,6 +267,29 @@ export function receiptTotalCents(receipt: Receipt): number {
   )
 }
 
+/**
+ * How many of a receipt's lines are now the current price for their package
+ * and store. A backdated receipt can be outranked by a newer scrape; it still
+ * counts toward spending but updates nothing.
+ */
+export function pricesUpdatedBy(repo: CatalogRepository, receipt: Receipt): number {
+  const current = repo.getCurrentPrices(receipt.lines.map((l) => l.packageId))
+  const updated = new Set<string>()
+  for (const line of receipt.lines) {
+    const won = current.some(
+      (p) =>
+        p.packageId === line.packageId &&
+        p.storeId === receipt.storeId &&
+        p.isMemberPrice === line.isMemberPrice &&
+        p.source === 'receipt' &&
+        p.observedAt === receipt.purchasedAt &&
+        p.priceCents === line.unitPriceCents,
+    )
+    if (won) updated.add(line.packageId)
+  }
+  return updated.size
+}
+
 export function lineTotalCents(line: ReceiptLine): number {
   return line.unitPriceCents * line.quantity
 }

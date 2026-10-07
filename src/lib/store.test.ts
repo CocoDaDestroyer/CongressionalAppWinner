@@ -1,6 +1,11 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from 'vitest'
-import { CatalogStore, receiptTotalCents, receiptsToObservations } from './store'
+import {
+  CatalogStore,
+  pricesUpdatedBy,
+  receiptTotalCents,
+  receiptsToObservations,
+} from './store'
 import { compareByPackage } from './compare'
 import * as seed from '../data/seed'
 
@@ -318,5 +323,30 @@ describe('resetDemoData', () => {
         without.getRepository().getCurrentPrices(ids),
       )
     }
+  })
+})
+
+describe('pricesUpdatedBy', () => {
+  it('counts lines that became the current price', () => {
+    const store = newStore()
+    const receipt = store.recordReceipt({
+      storeId: 's-target-westwood',
+      purchasedAt: TODAY,
+      lines: [
+        { packageId: 'p-heinz-20', quantity: 1, unitPriceCents: 299 },
+        { packageId: 'p-hunts-32', quantity: 2, unitPriceCents: 449 },
+      ],
+    })
+    expect(pricesUpdatedBy(store.getRepository(), receipt)).toBe(2)
+  })
+
+  it('does not count a backdated line a newer scrape outranks', () => {
+    const store = newStore()
+    const receipt = store.recordReceipt({
+      storeId: 's-target-westwood',
+      purchasedAt: new Date(seed.SEED_NOW.getTime() - 30 * 86_400_000).toISOString(),
+      lines: [{ packageId: 'p-heinz-20', quantity: 1, unitPriceCents: 199 }],
+    })
+    expect(pricesUpdatedBy(store.getRepository(), receipt)).toBe(0)
   })
 })
