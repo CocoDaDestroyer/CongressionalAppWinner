@@ -42,6 +42,8 @@ export interface CatalogRepository {
   getQuality(packageId: string): QualityScore | undefined
   /** Current price per (package, store, member/public) for the given packages. */
   getCurrentPrices(packageIds: readonly string[]): CurrentPrice[]
+  /** Every public observation of one package at one store, oldest first. */
+  getPriceHistory(packageId: string, storeId: string): PriceObservation[]
 }
 
 /**
@@ -102,6 +104,13 @@ export function createInMemoryRepository(data: InMemoryData): CatalogRepository 
     data.packages.filter((p) => p.gtin).map((p) => [p.gtin as string, p]),
   )
   const current = toCurrentPrices(data.priceObservations)
+  const history = new Map<string, PriceObservation[]>()
+  for (const o of data.priceObservations) {
+    if (o.isMemberPrice) continue
+    const key = `${o.packageId} ${o.storeId}`
+    history.set(key, [...(history.get(key) ?? []), o])
+  }
+  for (const rows of history.values()) rows.sort((a, b) => Date.parse(a.observedAt) - Date.parse(b.observedAt))
 
   return {
     getConcepts: () => [...data.concepts],
@@ -120,5 +129,6 @@ export function createInMemoryRepository(data: InMemoryData): CatalogRepository 
       const wanted = new Set(packageIds)
       return current.filter((p) => wanted.has(p.packageId))
     },
+    getPriceHistory: (packageId, storeId) => [...(history.get(`${packageId} ${storeId}`) ?? [])],
   }
 }

@@ -47,6 +47,7 @@ export function SavedReceipts({ repo, receipts, highlightId }: SavedReceiptsProp
                       <span className="block font-semibold">{storeLabel(repo, receipt.storeId)}</span>
                       <span className="font-mono text-xs text-ink-muted">
                         {shortDate(receipt.purchasedAt)} · {plural(receipt.lines.length, 'item')}
+                        {receipt.photo && ' · photo'}
                       </span>
                     </span>
                     <span className="font-mono font-medium">{formatCents(receiptTotalCents(receipt))}</span>
@@ -67,6 +68,13 @@ export function SavedReceipts({ repo, receipts, highlightId }: SavedReceiptsProp
                         </li>
                       ))}
                     </ul>
+                    {receipt.photo && (
+                      <img
+                        src={receipt.photo}
+                        alt={`Photo of the ${storeLabel(repo, receipt.storeId)} receipt`}
+                        className="mt-2 max-h-72 rounded-control border border-rule object-contain"
+                      />
+                    )}
                     <Button
                       variant="danger"
                       size="sm"

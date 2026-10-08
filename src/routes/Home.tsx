@@ -14,6 +14,8 @@ import { useMediaQuery } from '../lib/useMediaQuery'
 import { SEED_NOW } from '../data/seed'
 import { PriceTag } from '../components/compare/PriceTag'
 import { Ledger } from '../components/print/Ledger'
+import { Deals } from '../components/home/Deals'
+import { findDeals } from '../lib/deals'
 
 const DEMO_PRODUCT = 'p-heinz-20'
 
@@ -28,6 +30,10 @@ export function Home() {
   const summary = useMemo(() => summarizeSpending(receipts, SEED_NOW), [receipts])
   const demo = useMemo(
     () => compareByPackage(repo, DEMO_PRODUCT, { now: SEED_NOW, memberRetailerIds: linked }),
+    [repo, linked],
+  )
+  const deals = useMemo(
+    () => findDeals(repo, { now: SEED_NOW, memberRetailerIds: linked }),
     [repo, linked],
   )
   const monthReceipts = receipts.filter((r) => monthOf(r.purchasedAt) === month).length
@@ -81,6 +87,8 @@ export function Home() {
             {proof}
           </section>
         )}
+
+        <Deals repo={repo} deals={deals} />
 
         <div className="flex flex-col gap-10 lg:grid lg:grid-cols-2 lg:items-start lg:gap-12">
           <section aria-labelledby="ledger-title">

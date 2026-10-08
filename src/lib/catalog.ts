@@ -102,6 +102,8 @@ export interface Receipt {
   purchasedAt: string
   createdAt: string
   lines: ReceiptLine[]
+  /** A downscaled photo of the paper receipt, as a data URL. Kept for the shopper's records. */
+  photo?: string
 }
 
 /**

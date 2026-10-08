@@ -3,14 +3,21 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { Trip } from './Trip'
+import { shoppingList } from '../lib/list'
 import { catalogStore } from '../lib/store'
 import * as seed from '../data/seed'
 
 beforeEach(() => {
   localStorage.clear()
   catalogStore.resetDemoData()
+  shoppingList.reset()
 })
-afterEach(() => act(() => catalogStore.resetDemoData()))
+afterEach(() =>
+  act(() => {
+    catalogStore.resetDemoData()
+    shoppingList.reset()
+  }),
+)
 
 function renderTrip() {
   return render(

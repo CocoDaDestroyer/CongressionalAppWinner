@@ -295,15 +295,6 @@
   }
 }
 
-/* Odometer: each digit is a column of 0-9 that slides to its value. */
-@utility odometer-digit {
-  display: inline-block;
-  height: 1em;
-  line-height: 1;
-  overflow: hidden;
-  vertical-align: top;
-}
-
 @keyframes tag-print {
   from {
     opacity: 0;
@@ -362,6 +353,10 @@
   overflow: hidden;
   vertical-align: baseline;
   line-height: 1;
+  /* Tight tracking shrinks the box below the glyph, so overflow:hidden would shave the digit's edges.
+     Pad the clip window sideways and pull the margin back so the layout is unchanged. */
+  padding-inline: 0.1em;
+  margin-inline: -0.1em;
 }
 .odometer-digit::before {
   content: "0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9";

@@ -13,7 +13,7 @@ interface CameraScannerProps {
 }
 
 export function CameraScanner({ onCode, onClose }: CameraScannerProps) {
-  const video = useRef<HTMLVideoElement>(null)
+  const frame = useRef<HTMLDivElement>(null)
   const [error, setError] = useState<string | null>(null)
   // Held in a ref so a parent re-render never restarts the camera.
   const onCodeRef = useRef(onCode)
@@ -25,14 +25,34 @@ export function CameraScanner({ onCode, onClose }: CameraScannerProps) {
     let cancelled = false
     let stop: (() => void) | undefined
 
-    import('@zxing/browser')
-      .then(({ BrowserMultiFormatReader }) =>
-        new BrowserMultiFormatReader().decodeFromVideoDevice(undefined, video.current!, (result, _error, controls) => {
-          if (!result) return
-          controls.stop()
-          onCodeRef.current(result.getText())
-        }),
-      )
+    // Each run owns its <video>. React runs this effect twice in development, and a
+    // shared element let the first run's cleanup blank the stream the second had opened.
+    const video = document.createElement('video')
+    video.className = 'aspect-[4/3] w-full object-cover'
+    video.muted = true
+    video.playsInline = true
+    frame.current?.prepend(video)
+
+    Promise.all([import('@zxing/browser'), import('@zxing/library')])
+      .then(([{ BrowserMultiFormatReader }, { BarcodeFormat, DecodeHintType }]) => {
+        // Grocery barcodes only: fewer formats to try means faster, steadier reads.
+        const hints = new Map([
+          [
+            DecodeHintType.POSSIBLE_FORMATS,
+            [BarcodeFormat.EAN_13, BarcodeFormat.EAN_8, BarcodeFormat.UPC_A, BarcodeFormat.UPC_E],
+          ],
+        ])
+        // The back camera, not the selfie one a phone would otherwise pick first.
+        return new BrowserMultiFormatReader(hints).decodeFromConstraints(
+          { video: { facingMode: { ideal: 'environment' } } },
+          video,
+          (result, _error, controls) => {
+            if (!result) return
+            controls.stop()
+            onCodeRef.current(result.getText())
+          },
+        )
+      })
       .then((controls) => {
         // The panel may have closed while the camera was still starting.
         if (cancelled) controls.stop()
@@ -45,6 +65,7 @@ export function CameraScanner({ onCode, onClose }: CameraScannerProps) {
     return () => {
       cancelled = true
       stop?.()
+      video.remove()
     }
   }, [])
 
@@ -56,12 +77,11 @@ export function CameraScanner({ onCode, onClose }: CameraScannerProps) {
           {error}
         </p>
       ) : (
-        <div className="relative">
-          <video ref={video} className="aspect-[4/3] w-full object-cover" muted playsInline />
-          {/* A sticker-shaped target, so the shopper knows where to aim. */}
+        <div ref={frame} className="relative aspect-[4/3]">
+          {/* A wide rectangle, the shape of a barcode, so the shopper knows where to aim. */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-[15%] top-1/2 h-1/3 -translate-y-1/2 rounded-[50%] border-2 border-tag"
+            className="pointer-events-none absolute inset-x-[10%] top-1/2 h-[30%] -translate-y-1/2 rounded-[6px] border-2 border-tag"
           />
           <p className="absolute inset-x-0 bottom-0 p-3 text-center text-sm font-semibold text-paper">
             Point the camera at the barcode

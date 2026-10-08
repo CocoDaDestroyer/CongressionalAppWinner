@@ -17,7 +17,8 @@
  * a shopper considers a handful of nearby stores; `maxStores` and
  * `MAX_CANDIDATE_STORES` keep it honest.
  */
-import { bestByValue, type Valuable } from './compare'
+import { bestByValue, formatCents, type Valuable } from './compare'
+import { storeLabel } from './labels'
 import type { Package, Store } from './catalog'
 import {
   DEFAULT_DRIVING_COST,
@@ -276,4 +277,25 @@ function* subsetsUpTo<T>(items: readonly T[], maxSize: number): Generator<T[]> {
 
 export function formatMiles(miles: number): string {
   return `${miles.toFixed(1)} mi`
+}
+
+/** The plan as plain text, for sharing: stops in order, what to buy, and the bottom line. */
+export function tripSummaryText(
+  repo: CatalogRepository,
+  { best, bestSingleStore }: TripComparison,
+): string {
+  const lines = ['My CartWise trip plan']
+  best.routeOrder.forEach((store, index) => {
+    lines.push('', `${index + 1}. ${storeLabel(repo, store)}`)
+    for (const p of best.purchases.filter((q) => q.option.store.id === store.id)) {
+      lines.push(`   ${p.quantity}x ${p.option.pkg.displayName} - ${formatCents(p.lineTotalCents)}`)
+    }
+  })
+  lines.push(
+    '',
+    `Total ${formatCents(best.totalCents)} (${formatCents(best.groceryCents)} groceries + ${formatCents(best.drivingCents)} fuel, ${formatMiles(best.miles)})`,
+  )
+  const saved = bestSingleStore ? bestSingleStore.totalCents - best.totalCents : 0
+  if (saved >= 1) lines.push(`Saves ${formatCents(saved)} vs. shopping at one store.`)
+  return lines.join('\n')
 }

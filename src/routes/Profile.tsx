@@ -5,6 +5,7 @@
 import { useMemo, useState } from 'react'
 import { Monitor, Moon, RotateCcw, Sun } from 'lucide-react'
 import { catalogStore } from '../lib/store'
+import { shoppingList } from '../lib/list'
 import { themeStore, useThemePreference, type ThemePreference } from '../lib/theme'
 import { useCatalog, useLinkedRetailers } from '../lib/useCatalog'
 import { Button } from '../components/ui/Button'
@@ -100,6 +101,7 @@ export function Profile() {
                 icon={<RotateCcw className="size-4" aria-hidden="true" />}
                 onClick={() => {
                   catalogStore.resetDemoData()
+                  shoppingList.reset()
                   setConfirmReset(false)
                 }}
               >

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { optimizeTrip, type ListItem } from './trip'
+import { optimizeTrip, tripSummaryText, type ListItem } from './trip'
 import { createInMemoryRepository } from './repository'
 import { DEFAULT_DRIVING_COST, drivingCostCents, haversineMiles, shortestRoundTrip } from './geo'
 import * as seed from '../data/seed'
@@ -122,5 +122,16 @@ describe('optimizeTrip', () => {
     expect(result.bestSingleStore!.totalCents).toBeGreaterThanOrEqual(
       result.best.totalCents,
     )
+  })
+})
+
+describe('tripSummaryText', () => {
+  it('lists every stop in route order with its items and the total', () => {
+    const result = optimizeTrip(repo, list(['c-eggs', 1], ['c-milk', 2]), { home })!
+    const text = tripSummaryText(repo, result)
+    result.best.routeOrder.forEach((_, i) => expect(text).toContain(`${i + 1}. `))
+    for (const p of result.best.purchases) expect(text).toContain(p.option.pkg.displayName)
+    expect(text).toMatch(/^My CartWise trip plan/)
+    expect(text).toMatch(/Total \$\d+\.\d\d/)
   })
 })

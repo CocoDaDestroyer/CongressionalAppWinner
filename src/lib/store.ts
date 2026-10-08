@@ -71,6 +71,8 @@ export interface NewReceipt {
   /** ISO date or timestamp of checkout. */
   purchasedAt: string
   lines: NewReceiptLine[]
+  /** Data URL of a photo of the paper receipt. */
+  photo?: string
 }
 
 /** Turn stored receipts into the price observations they imply. */
@@ -154,6 +156,7 @@ export class CatalogStore {
       storeId: input.storeId,
       purchasedAt: input.purchasedAt,
       createdAt: new Date().toISOString(),
+      ...(input.photo ? { photo: input.photo } : {}),
       lines: usable.map((line, index) => ({
         id: `${receiptId}-${index}`,
         packageId: line.packageId,

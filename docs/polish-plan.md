@@ -20,20 +20,21 @@ has to stay out of the way.
 That is a cost-of-living story with a community angle, which fits a congressional audience well.
 Lead the video with that framing, then show the app proving it.
 
-## Where things stand (as of 2026-10-07)
+## Where things stand (updated 2026-10-07)
 
 | Feature | State | Demo value |
 |---|---|---|
-| Compare (Scan) | Works: per-unit ranking, quality vs. price slider, provenance | **Core.** The "aha": the 64 oz wins while costing more |
-| Trip planner (List) | Works: store-subset optimizer with fuel cost | **Core.** The algorithmic flex: "the cheap store isn't worth the drive" |
-| Receipts | Works: entry feeds live prices into Compare and Trip | **Core.** Closes the loop and shows data freshness |
-| Spending | Stub | High value, low cost: derived from receipts, makes a great chart |
-| Memberships | Stub | Medium: member pricing already exists in the logic, it just needs a switch |
-| Contribute | Stub | Low as its own tab; useful as the unknown-barcode fallback |
-| Community | Stub | Lowest: expensive to make convincing, off the core story |
-| Design | None | **The biggest gap.** Nothing is styled yet |
+| Compare | Done: per-unit ranking, quality vs. price slider, provenance, camera scan, unknown-barcode flow | **Core.** The "aha": the 64 oz wins while costing more |
+| Trip planner | Done: store-subset optimizer with fuel cost and route diagram | **Core.** "The cheap store isn't worth the drive" |
+| Receipts | Done: entry feeds live prices into Compare and Trip | **Core.** Closes the loop and shows data freshness |
+| Spending | Done: monthly chart, top stores, savings | High value: derived from receipts |
+| Store cards | Done, in Profile: linking changes prices in Compare and Trip | Medium |
+| Contribute | Done, as the unknown-barcode flow | Low as its own tab |
+| Community | Cut | Off the core story |
+| Design | Done: "shelf-tag print" system, see DESIGN.md | Light and dark, phone and laptop |
+| Receipt OCR, static deploy | Not started | Stretch |
 
-The logic is strong and tested (70 tests). The gap is almost entirely presentation.
+The logic is strong and tested (133 tests). Remaining work is the deploy, the README screenshots and the video.
 
 ## Feature decisions (tasteful scope)
 

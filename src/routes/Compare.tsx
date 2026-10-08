@@ -14,6 +14,8 @@ import { SEED_NOW } from '../data/seed'
 import { PageHeader } from '../components/ui/PageHeader'
 import { EmptyState } from '../components/ui/EmptyState'
 import { Panel } from '../components/ui/Panel'
+import { AddToList } from '../components/compare/AddToList'
+import { PriceHistory } from '../components/compare/PriceHistory'
 import { AddProductForm } from '../components/compare/AddProductForm'
 import { PriceTag } from '../components/compare/PriceTag'
 import { ProductFinder } from '../components/compare/ProductFinder'
@@ -64,12 +66,14 @@ export function Compare() {
             comparison && (
               <>
                 <PriceTag repo={repo} comparison={comparison} />
+                <AddToList conceptId={comparison.scanned.conceptId} conceptName={comparison.conceptName} />
                 {comparison.options.length > 1 && (
                   <QualitySlider value={qualityWeight} onChange={setQualityWeight} />
                 )}
               </>
             )
           )}
+          {comparison?.bestValue && !unknownGtin && <PriceHistory repo={repo} option={comparison.bestValue} />}
           <ProductFinder repo={repo} packageId={packageId} onSelect={select} onUnknown={setUnknownGtin} />
           {wide && comparison && !unknownGtin && (
             <Suspense fallback={null}>

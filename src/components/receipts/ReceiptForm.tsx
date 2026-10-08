@@ -1,17 +1,19 @@
 /**
- * Receipt entry, laid out like the paper it transcribes. The photo-and-OCR
- * step needs a phone camera; everything after the typing is the real thing:
- * a saved receipt writes price observations every other screen reads.
+ * Receipt entry, laid out like the paper it transcribes. A photo of the paper
+ * can be attached for the shopper's records (no OCR); a saved receipt writes price observations every other screen reads.
  */
 import { useState, type FormEvent } from 'react'
-import { Plus, X } from 'lucide-react'
+import { Camera, Plus, X } from 'lucide-react'
 import { formatCents } from '../../lib/compare'
 import { storeLabel } from '../../lib/labels'
 import type { CatalogRepository } from '../../lib/repository'
+import { canUseCamera } from '../../lib/camera'
+import { receiptPhotoDataUrl } from '../../lib/photo'
 import { catalogStore, type NewReceipt } from '../../lib/store'
 import type { Receipt } from '../../lib/catalog'
 import { Button } from '../ui/Button'
 import { inputClass } from '../ui/Field'
+import { ReceiptCamera } from './ReceiptCamera'
 
 interface DraftLine {
   packageId: string
@@ -37,11 +39,23 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
   const [purchasedOn, setPurchasedOn] = useState(defaultDate)
   const [lines, setLines] = useState<DraftLine[]>([blankLine()])
   const [error, setError] = useState<string | null>(null)
+  const [photo, setPhoto] = useState<string | null>(null)
+  const [cameraOpen, setCameraOpen] = useState(false)
 
   const total = lines.reduce((sum, line) => sum + cents(line.price) * line.quantity, 0)
 
   function updateLine(index: number, patch: Partial<DraftLine>) {
     setLines((current) => current.map((line, i) => (i === index ? { ...line, ...patch } : line)))
+  }
+
+  async function attach(file: File | undefined) {
+    if (!file) return
+    try {
+      setPhoto(await receiptPhotoDataUrl(file))
+      setError(null)
+    } catch {
+      setError('That photo could not be read. Try another one.')
+    }
   }
 
   function save(event: FormEvent) {
@@ -69,8 +83,10 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
       // Stored as an instant; the form only collects a date.
       purchasedAt: new Date(`${purchasedOn}T12:00:00Z`).toISOString(),
       lines: parsed,
+      photo: photo ?? undefined,
     })
     setLines([blankLine()])
+    setPhoto(null)
     setError(null)
     onSaved(receipt)
   }
@@ -172,6 +188,52 @@ export function ReceiptForm({ repo, defaultDate, onSaved }: ReceiptFormProps) {
         >
           Add line
         </Button>
+
+        <hr className="my-5 border-t border-dashed border-ink" />
+
+        {cameraOpen ? (
+          <ReceiptCamera
+            onCapture={(dataUrl) => {
+              setPhoto(dataUrl)
+              setCameraOpen(false)
+              setError(null)
+            }}
+            onClose={() => setCameraOpen(false)}
+          />
+        ) : photo ? (
+          <div className="flex items-center gap-3">
+            <img src={photo} alt="Attached receipt" className="size-16 rounded-control border-[1.5px] border-ink object-cover" />
+            <span className="flex-1 text-sm text-ink-muted">Photo attached. It stays with this receipt.</span>
+            <Button variant="ghost" size="sm" onClick={() => setPhoto(null)}>
+              Remove
+            </Button>
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center gap-x-1 gap-y-1">
+            {canUseCamera() && (
+              <Button
+                variant="secondary"
+                size="sm"
+                icon={<Camera className="size-4" aria-hidden="true" />}
+                onClick={() => setCameraOpen(true)}
+              >
+                Take a photo of the receipt
+              </Button>
+            )}
+            <label className="inline-flex h-9 cursor-pointer items-center rounded-control px-3 text-sm font-semibold text-ink-muted transition-colors has-focus-visible:outline-2 has-focus-visible:outline-teal hover:bg-paper-sunken hover:text-ink">
+              {canUseCamera() ? 'or choose a photo' : 'Attach a photo of the receipt'}
+              <input
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={(e) => {
+                  void attach(e.target.files?.[0])
+                  e.target.value = ''
+                }}
+              />
+            </label>
+          </div>
+        )}
 
         <hr className="my-5 border-t border-dashed border-ink" />
 

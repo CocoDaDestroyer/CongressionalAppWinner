@@ -32,6 +32,10 @@ Built for the 2026 Congressional App Challenge.
   Compare and Trip.
 - **Unknown barcodes.** If a barcode isn't in the catalog, you add it. Your price shows up with a
   Community badge until a store source confirms it.
+- **Deals near you.** Home lists the biggest per-ounce gaps in the catalog, each the same pick Compare would make.
+- **Price history.** Compare draws how the best pick's shelf price has moved at its store.
+- **Trip list and sharing.** Add a product to your trip list from Compare; the list is saved, and a finished plan can be shared as text.
+- **Receipt photos.** Attach a photo of the paper receipt to keep with it (no OCR).
 - Light and dark themes, phone and laptop layouts.
 
 ## How it works

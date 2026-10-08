@@ -6,18 +6,21 @@
  * the work: one stop, or the naive "buy everything wherever it is cheapest"
  * that ignores the drive.
  */
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CreditCard, TriangleAlert } from 'lucide-react'
+import { CreditCard, Share2, TriangleAlert } from 'lucide-react'
 import { formatCents } from '../lib/compare'
 import { DEFAULT_DRIVING_COST } from '../lib/geo'
 import { plural, retailerName } from '../lib/labels'
-import { formatMiles, optimizeTrip } from '../lib/trip'
-import { useCatalog, useLinkedRetailers } from '../lib/useCatalog'
+import { shoppingList } from '../lib/list'
+import { formatMiles, optimizeTrip, tripSummaryText } from '../lib/trip'
+import { useCatalog, useLinkedRetailers, useShoppingList } from '../lib/useCatalog'
 import { SEED_HOME } from '../data/seed'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Panel } from '../components/ui/Panel'
 import { EmptyState } from '../components/ui/EmptyState'
+import { Button } from '../components/ui/Button'
+import { Toast } from '../components/ui/Toast'
 import { ListEditor } from '../components/trip/ListEditor'
 import { PlanComparison } from '../components/trip/PlanComparison'
 import { RouteMap } from '../components/trip/RouteMap'
@@ -25,20 +28,12 @@ import { TripReceipt } from '../components/trip/TripReceipt'
 import { PriceNumeral } from '../components/print/Numeral'
 import { SaleTag } from '../components/print/SaleTag'
 
-/** A weekly top-up: big enough that the planner has real choices to make. */
-const STARTER_LIST: Record<string, number> = {
-  'c-milk': 1,
-  'c-ketchup': 1,
-  'c-bread': 1,
-  'c-pasta': 2,
-  'c-coffee': 1,
-  'c-yogurt': 1,
-}
-
 export function Trip() {
   const repo = useCatalog()
   const linked = useLinkedRetailers()
-  const [quantities, setQuantities] = useState(STARTER_LIST)
+  const quantities = useShoppingList()
+  const [shareNotice, setShareNotice] = useState<string | null>(null)
+  const closeNotice = useCallback(() => setShareNotice(null), [])
   const [maxStores, setMaxStores] = useState(3)
 
   const concepts = useMemo(() => repo.getConcepts(), [repo])
@@ -62,7 +57,24 @@ export function Trip() {
   const itemCount = list.reduce((sum, item) => sum + item.quantity, 0)
 
   function setQuantity(conceptId: string, quantity: number) {
-    setQuantities((q) => ({ ...q, [conceptId]: Math.max(0, quantity) }))
+    shoppingList.set(conceptId, quantity)
+  }
+
+  async function share() {
+    if (!result) return
+    const text = tripSummaryText(repo, result)
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'My CartWise trip plan', text })
+        return
+      }
+      await navigator.clipboard.writeText(text)
+      setShareNotice('Trip plan copied. Paste it into a message.')
+    } catch (error) {
+      // Dismissing the share sheet rejects with AbortError; that is not a failure.
+      if (error instanceof DOMException && error.name === 'AbortError') return
+      setShareNotice('Could not share from this browser.')
+    }
   }
 
   const editor = (
@@ -122,11 +134,20 @@ export function Trip() {
               {formatCents(best.groceryCents)} groceries + {formatCents(best.drivingCents)} fuel ·{' '}
               {plural(best.stores.length, 'stop')} · {formatMiles(best.miles)}
             </p>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="mt-4"
+              icon={<Share2 className="size-4" aria-hidden="true" />}
+              onClick={share}
+            >
+              Share plan
+            </Button>
             {cardSavings >= 1 && cardsToLink.length > 0 && (
               <Link
                 to="/profile"
                 viewTransition
-                className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-teal underline-offset-4 hover:underline"
+                className="mt-4 flex items-center gap-2 text-sm font-semibold text-teal underline-offset-4 hover:underline"
               >
                 <CreditCard className="size-4 shrink-0" aria-hidden="true" />
                 Link your {cardsToLink.join(' and ')} {cardsToLink.length > 1 ? 'cards' : 'card'} to save{' '}
@@ -157,6 +178,7 @@ export function Trip() {
           {editor}
         </div>
       </div>
+      {shareNotice && <Toast onClose={closeNotice}>{shareNotice}</Toast>}
     </>
   )
 }

@@ -6,17 +6,24 @@ import { CameraScanner } from './CameraScanner'
 type Callback = (result: { getText(): string } | undefined, error: unknown, controls: { stop(): void }) => void
 
 const stop = vi.fn()
+const constraints = vi.fn()
 let deliver: Callback = () => {}
 let fail = false
 
 vi.mock('@zxing/browser', () => ({
   BrowserMultiFormatReader: class {
-    decodeFromVideoDevice(_device: unknown, _video: unknown, callback: Callback) {
+    decodeFromConstraints(requested: unknown, _video: unknown, callback: Callback) {
+      constraints(requested)
       if (fail) return Promise.reject(new Error('NotAllowedError'))
       deliver = callback
       return Promise.resolve({ stop })
     }
   },
+}))
+
+vi.mock('@zxing/library', () => ({
+  BarcodeFormat: { EAN_13: 1, EAN_8: 2, UPC_A: 3, UPC_E: 4 },
+  DecodeHintType: { POSSIBLE_FORMATS: 5 },
 }))
 
 /** Let the lazy import and the camera promise settle. */
@@ -32,6 +39,13 @@ describe('CameraScanner', () => {
     act(() => deliver({ getText: () => '013000006415' }, undefined, { stop }))
     expect(onCode).toHaveBeenCalledWith('013000006415')
     expect(stop).toHaveBeenCalled()
+  })
+
+  it('asks for the back camera', async () => {
+    fail = false
+    render(<CameraScanner onCode={() => {}} onClose={() => {}} />)
+    await settle()
+    expect(constraints).toHaveBeenCalledWith({ video: { facingMode: { ideal: 'environment' } } })
   })
 
   it('ignores frames with no barcode in them', async () => {
